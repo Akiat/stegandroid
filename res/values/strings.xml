@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">stegandroid</string>
+    <string name="action_settings">Settings</string>
+    <string name="bt_choose_video">Choose a video</string>
+    <string name="bt_record_video">Record a video</string>
+
+</resources>
