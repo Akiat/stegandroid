@@ -1,0 +1,60 @@
+<ScrollView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context=".SettingsActivity">
+    
+    <LinearLayout
+	    android:layout_width="fill_parent"
+    	android:layout_height="wrap_content" 
+    	android:orientation="vertical">
+
+        <TextView
+	        android:id="@+id/labelSelectChannel"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="20sp"
+	        android:text="@string/lbl_select_channel" />
+	
+	    <CheckBox
+	        android:id="@+id/audioChannelCheckBox"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="14sp"
+	        android:text="@string/chkbox_audio_channel" />
+
+	    <Spinner
+	        android:id="@+id/audioAlgorithmSpinner"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content" 
+	        android:prompt="@string/chkbox_audio_channel"/>
+	    	    	    
+	    <CheckBox
+	        android:id="@+id/vidoChannelCheckBox"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="14sp"
+	        android:text="@string/chkbox_video_channel" />
+	    	
+	    <Spinner
+	        android:id="@+id/videoAlgorithmSpinner"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content" 
+	        android:prompt="@string/chkbox_video_channel"/>
+	    
+	    <CheckBox
+	        android:id="@+id/metadataChannelCheckBox"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="14sp"
+	        android:text="@string/chkbox_metadata_channel" />
+		
+		<Spinner
+	        android:id="@+id/metadataAlgorithmSpinner"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content" 
+	        android:prompt="@string/chkbox_metadata_channel"/>
+		
+	</LinearLayout>
+</ScrollView>

@@ -1,35 +1,51 @@
 package com.stegandroid;
 
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.app.Activity;
+import android.app.TabActivity;
 import android.content.Intent;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.Toast;
+import android.widget.TabHost;
+import android.widget.TabHost.TabSpec;
 
-public class MainActivity extends Activity {
+import com.stegandroid.activities.GeneralActivity;
+import com.stegandroid.activities.SettingsActivity;
+import com.stegandroid.activities.SocialNetworkActivity;
 
-	static final int REQUEST_VIDEO_RECORD = 1;
-	static final int REQUEST_VIDEO_PICK = 2;
+/* To do (or not): 
+ * Find a way to create tab without using TabActivity
+ * since it is deprecated
+ */
+@SuppressWarnings("deprecation")
+public class MainActivity extends TabActivity {
 
-	Button btChooseVideo;
-	Button btRecordVideo;
-
-
+	private TabHost _tabhost;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		TabSpec generalTab;
+		TabSpec	optionsTab;
+		TabSpec	socialNetworkTab;
+		
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
-		btChooseVideo = (Button) findViewById(R.id.bt_choose_video);
-		btRecordVideo = (Button) findViewById(R.id.bt_record_video);
-		btChooseVideo.setOnClickListener(onClickListener);
-		btRecordVideo.setOnClickListener(onClickListener);
+        _tabhost = getTabHost();
+        _tabhost.setup();
+        
+        generalTab = _tabhost.newTabSpec(getResources().getString(R.string.tabhost_general_tab_title));
+        generalTab.setIndicator(getResources().getString(R.string.tabhost_general_tab_title));
+        generalTab.setContent(new Intent(this, GeneralActivity.class));
+        _tabhost.addTab(generalTab);
+        
+        optionsTab = _tabhost.newTabSpec(getResources().getString(R.string.tabhost_settings_tab_title));
+        optionsTab.setIndicator(getResources().getString(R.string.tabhost_settings_tab_title));
+        optionsTab.setContent(new Intent(this, SettingsActivity.class));
+        _tabhost.addTab(optionsTab);
+        
+        socialNetworkTab = _tabhost.newTabSpec(getResources().getString(R.string.tabhost_socialnetwork_tab_title));
+        socialNetworkTab.setIndicator(getResources().getString(R.string.tabhost_socialnetwork_tab_title));
+        socialNetworkTab.setContent(new Intent(this, SocialNetworkActivity.class));
+        _tabhost.addTab(socialNetworkTab);
 	}
 
 	@Override
@@ -37,51 +53,5 @@ public class MainActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
-	}
-
-	private void recordVideoIntent() {
-		Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-		if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
-			startActivityForResult(takeVideoIntent, REQUEST_VIDEO_RECORD);
-		}
-	}
-
-	private OnClickListener onClickListener = new OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			if (v.getId() == R.id.bt_choose_video) {
-				Intent pickMedia = new Intent(Intent.ACTION_GET_CONTENT);
-				pickMedia.setType("video/*");
-				startActivityForResult(pickMedia,REQUEST_VIDEO_PICK);
-
-			} else if (v.getId() == R.id.bt_record_video) {
-				recordVideoIntent();
-			}
-		}
-	};
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-
-		if (requestCode == REQUEST_VIDEO_PICK) {
-			if (resultCode == Activity.RESULT_OK) {
-				Uri selectedVideoLocation = data.getData();
-				Log.d("DEBUG", selectedVideoLocation.toString());
-
-				Toast.makeText(this, R.string.toast_video_selected, Toast.LENGTH_LONG).show();
-			} else
-				Log.d("DEBUG", "No video picked");
-		} else if (requestCode == REQUEST_VIDEO_RECORD) {
-			if (resultCode == Activity.RESULT_OK) {
-				Uri selectedVideoLocation = data.getData();
-				Log.d("DEBUG", selectedVideoLocation.toString());
-
-				Toast.makeText(this, R.string.toast_video_recorded, Toast.LENGTH_LONG).show();
-			} else
-				Log.d("DEBUG", "No video recorded");
-		}
-
 	}
 }
