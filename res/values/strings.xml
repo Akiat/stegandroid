@@ -1,11 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">stegandroid</string>
-    <string name="action_settings">Settings</string>
-    <string name="bt_choose_video">Choose a video</string>
-    <string name="bt_record_video">Record a video</string>
-    <string name="toast_video_selected">Video selected...</string>
-    <string name="toast_video_recorded">Video recorded...</string>
+    <!-- General string resources -->
 
+    <string name="action_settings">Settings</string>
+    <string name="app_name">stegandroid</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="err_unknown">An unknown error occurred</string>
+        
+    <!-- String resources for GeneralActivity -->
+
+    <string name="title_activity_general">GeneralActivity</string>
+    <string name="tabhost_general_tab_title">General</string>
+    <string name="btn_choose_video">Choose video</string>
+    <string name="btn_choose_video_container">Choose video</string>
+    <string name="btn_choose_video_dest">Choose dest</string>
+    <string name="bt_record_video">Record a video</string>
+    <string name="toast_video_selected">Video selected</string>
+    <string name="toast_video_recorded">Video recorded</string>
+    <string name="lbl_select_video_container">Select video container</string>
+    <string name="lbl_select_video_dest">Select video destination</string>
+    <string name="err_file_manager">No file manager found</string>
+    <string name="btn_process">Process</string>
+	<string name="lbl_select">Select</string>
+    <string name="empty_choose_video_container">Please select a video</string>
+    <string name="empty_choose_video_dest">Please select a destination</string>
+    	
+    <!-- String resources for SettingsActivity -->
+	
+    <string name="title_activity_settings">OptionActivity</string>
+	<string name="tabhost_settings_tab_title">Settings</string>
+    <string name="lbl_select_channel">Select channels and algorithms</string>
+    <string name="chkbox_audio_channel">Audio channel</string>
+    <string name="chkbox_video_channel">Video channel</string>
+    <string name="chkbox_metadata_channel">Metadata channel</string>
+    	
+    <!-- String resources for SocialNetworkActivity -->
+
+	<string name="title_activity_social_network">SocialNetworkActivity</string>
+	<string name="tabhost_socialnetwork_tab_title">Social Network</string>
+    
+    
 </resources>

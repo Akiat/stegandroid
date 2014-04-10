@@ -1,11 +1,17 @@
 package com.stegandroid.activities;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -18,13 +24,17 @@ import com.stegandroid.tools.Utils;
 
 public class SettingsActivity extends Activity {
 	
+	final String AUDIO_PACKAGE_NAME = "com.stegandroid.algorithms.audio";
+	final String VIDEO_PACKAGE_NAME = "com.stegandroid.algorithms.video";
+	final String METADATA_PACKAGE_NAME = "com.stegandroid.algorithms.metadata";
+	
 	private Spinner		_spinAudioAlrogithm;
 	private Spinner		_spinVideoAlrogithm;
 	private Spinner		_spinMetadataAlrogithm;
 	private CheckBox	_chkboxAudioChannel;
 	private CheckBox	_chkboxVideoChannel;
 	private CheckBox	_chkboxMetadataChannel;
-	
+	private Map<String, String>	_mapClasses;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +49,12 @@ public class SettingsActivity extends Activity {
 		_spinVideoAlrogithm = (Spinner) findViewById(R.id.videoAlgorithmSpinner);
 		_spinMetadataAlrogithm = (Spinner) findViewById(R.id.metadataAlgorithmSpinner);
 		
+		_mapClasses = new HashMap<String, String>();
+		
 		this.initCheckboxes();
-		this.initSpinnersAlgorithm();
+		this.initSpinnerContentFromPackageName(this._spinAudioAlrogithm, AUDIO_PACKAGE_NAME, Configuration.getInstance().getAudioAlgorithm());
+		this.initSpinnerContentFromPackageName(this._spinVideoAlrogithm, VIDEO_PACKAGE_NAME, Configuration.getInstance().getVideoAlgorithm());
+		this.initSpinnerContentFromPackageName(this._spinMetadataAlrogithm, METADATA_PACKAGE_NAME, Configuration.getInstance().getMetadataAlgorithm());
 		this.actualizeSpinners();
 	}
 	
@@ -55,35 +69,34 @@ public class SettingsActivity extends Activity {
 		_chkboxMetadataChannel.setOnCheckedChangeListener(onCheckedChangeListener);		
 	}
 	
-	private void initSpinnersAlgorithm() {
-		final String audioPackageName = "com.stegandroid.algorithms.audio";
-		final String videoPackageName = "com.stegandroid.algorithms.video";
-		final String metadataPackageName = "com.stegandroid.algorithms.metadata";
-
-		List<String> audioClassName;
-		List<String> videoClassName;
-		List<String> metadataClassName;
-		ArrayAdapter<String> audioArrayAdaptater;
-		ArrayAdapter<String> videoArrayAdaptater;
-		ArrayAdapter<String> metadataArrayAdaptater;
+	private void initSpinnerContentFromPackageName(Spinner spinner, String packageName, String defaultValue) {
+		List<String> classes;
+		ArrayAdapter<String> adaptater;
+		String readable;
+		String fullpath;
+		int idx = 0;
 		
-		audioClassName = Utils.getClassesNameFromPackage(this.getApplicationContext(), audioPackageName);
-		videoClassName = Utils.getClassesNameFromPackage(this.getApplicationContext(), videoPackageName);
-		metadataClassName = Utils.getClassesNameFromPackage(this.getApplicationContext(), metadataPackageName);
-	
-		audioArrayAdaptater = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, audioClassName);
-		audioArrayAdaptater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		_spinAudioAlrogithm.setAdapter(audioArrayAdaptater);
+		if (_mapClasses == null)
+			_mapClasses = new HashMap<String, String>();
 		
-		videoArrayAdaptater = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, videoClassName);
-		videoArrayAdaptater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		_spinVideoAlrogithm.setAdapter(videoArrayAdaptater);
-		
-		metadataArrayAdaptater = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, metadataClassName);
-		metadataArrayAdaptater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		_spinMetadataAlrogithm.setAdapter(metadataArrayAdaptater);
+		adaptater = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new ArrayList<String>());
+		adaptater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		classes = Utils.getClassesPathFromPackage(this, packageName);
+		for (int i = 0; i < classes.size(); ++i) 
+		{		
+			fullpath = classes.get(i);
+			readable = Utils.convertClassNameToReadableName(fullpath);
+			_mapClasses.put(readable, fullpath);
+			adaptater.add(readable);
+			if (fullpath.equals(defaultValue)) {
+				idx = i;
+			}
+		}
+		spinner.setAdapter(adaptater);
+		spinner.setSelection(idx);
+		spinner.setOnItemSelectedListener(onItemSelectedListener);
 	}
-	
+		
 	private void actualizeSpinners() {
 		if (!_chkboxAudioChannel.isChecked() && _spinAudioAlrogithm.isEnabled()) {
 			_spinAudioAlrogithm.setEnabled(false);
@@ -107,7 +120,7 @@ public class SettingsActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.option, menu);
+		getMenuInflater().inflate(R.menu.settings, menu);
 		return true;
 	}
 	
@@ -132,5 +145,43 @@ public class SettingsActivity extends Activity {
 		}
 	};
 	
+	private OnItemSelectedListener onItemSelectedListener = new OnItemSelectedListener() {
+
+		@Override
+		public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long arg3) {
+			String key;
+			
+			switch (arg0.getId()) {
+				case R.id.audioAlgorithmSpinner:
+					key = (String) _spinAudioAlrogithm.getSelectedItem();
+					if (_mapClasses.containsKey(key))
+						Configuration.getInstance().setAudioAlgorithm(_mapClasses.get(key));
+					else
+						Configuration.getInstance().setAudioAlgorithm(null);
+					break;
+				case R.id.videoAlgorithmSpinner:
+					key = (String) _spinVideoAlrogithm.getSelectedItem();
+					if (_mapClasses.containsKey(key))
+						Configuration.getInstance().setVideoAlgorithm(_mapClasses.get(key));
+					else
+						Configuration.getInstance().setVideoAlgorithm(null);
+					break;
+				case R.id.metadataAlgorithmSpinner:
+					key = (String) _spinMetadataAlrogithm.getSelectedItem();
+					if (_mapClasses.containsKey(key))
+						Configuration.getInstance().setMetadataAlgorithm(_mapClasses.get(key));
+					else
+						Configuration.getInstance().setMetadataAlgorithm(null);
+					break;
+				default:
+					Log.d("DEBUG", "There is a big problem there!");
+			}
+		}
+
+		@Override
+		public void onNothingSelected(AdapterView<?> arg0) {
+			return;
+		}
+	};
 
 }

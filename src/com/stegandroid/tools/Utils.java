@@ -38,7 +38,7 @@ public class Utils {
 		return b >> index & 1;
 	}
 	
-	public static List<String> getClassesNameFromPackage(Context context, String packName) {
+	public static List<String> getClassesPathFromPackage(Context context, String packName) {
 		DexFile dex;
 		Enumeration<String> enumClasses;
 		String tmp;
@@ -50,12 +50,33 @@ public class Utils {
 		     while (enumClasses.hasMoreElements()) {
 		    	 tmp = enumClasses.nextElement();
 		    	 if (tmp.substring(0, tmp.lastIndexOf(".")).equals(packName)) {
-		    		 classes.add(tmp.substring(tmp.lastIndexOf(".")));
+		    		 classes.add(tmp);
 		    	 }
 		     }
 		 } catch (IOException e) {
 			 e.printStackTrace();
 		 }
 		 return (classes);
+	}
+	
+	public static String convertClassNameToReadableName(String name) {
+		StringBuffer res = new StringBuffer("");
+		
+		if (name.contains(".") && name.lastIndexOf(".") != name.length() - 1) {
+			res.append(name.substring(name.lastIndexOf(".") + 1));
+		} else {
+			res.append(name);
+		}
+		
+		if (!res.toString().toUpperCase().equals(res.toString())) {
+			for (int i = 0; i < res.length(); ++i) {
+				if ((res.charAt(i) >= 'A' && res.charAt(i) <= 'Z' || res.charAt(i) >= '0' && res.charAt(i) <= '9')
+						&& i != 0 && res.charAt(i - 1) != ' ') {
+					res.insert(i, ' ');
+					++i;
+				}
+			}
+		}
+		return (res.toString());
 	}
 }

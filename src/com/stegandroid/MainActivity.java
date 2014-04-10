@@ -10,6 +10,7 @@ import android.widget.TabHost.TabSpec;
 import com.stegandroid.activities.GeneralActivity;
 import com.stegandroid.activities.SettingsActivity;
 import com.stegandroid.activities.SocialNetworkActivity;
+import com.stegandroid.configuration.Configuration;
 
 /* To do (or not): 
  * Find a way to create tab without using TabActivity
@@ -29,6 +30,8 @@ public class MainActivity extends TabActivity {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Configuration.getInstance(this).loadData();
+        
         _tabhost = getTabHost();
         _tabhost.setup();
         
@@ -46,6 +49,7 @@ public class MainActivity extends TabActivity {
         socialNetworkTab.setIndicator(getResources().getString(R.string.tabhost_socialnetwork_tab_title));
         socialNetworkTab.setContent(new Intent(this, SocialNetworkActivity.class));
         _tabhost.addTab(socialNetworkTab);
+
 	}
 
 	@Override
