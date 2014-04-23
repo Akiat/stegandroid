@@ -6,6 +6,9 @@ import java.util.Enumeration;
 import java.util.List;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
 import dalvik.system.DexFile;
 
 public class Utils {
@@ -79,5 +82,42 @@ public class Utils {
 		}
 		return (res.toString());
 	}
-	
+
+	public static String getBasenameFromPath(String path) {
+		StringBuilder sb; 
+		String [] chunks;
+		
+		sb = new StringBuilder();
+		if (path == null) {
+			return (sb.toString());
+		}
+		
+		chunks = path.split("/");
+		if (chunks == null || chunks.length == 0) {
+			return (sb.toString());
+		}
+		
+		for (int i = 0; i < chunks.length - 1; ++i) {
+			if (chunks[i] != null && chunks[i].length() != 0) {
+				sb.append('/').append(chunks[i]);
+			}
+		}
+		return (sb.toString());
+	}
+
+	public static String getRealPathFromUri(Context context, Uri uri) {
+		Cursor cursor;
+		String [] projection = { MediaStore.Video.Media.DATA };
+		int idx;
+		String ret = "";
+		
+		cursor = context.getContentResolver().query(uri, projection, null, null, null);
+		idx = cursor.getColumnIndex(MediaStore.Video.Media.DATA);
+		if (idx != -1) {
+			cursor.moveToFirst();
+			ret = cursor.getString(idx);
+		}
+		cursor.close();
+		return (ret);
+	}
 }

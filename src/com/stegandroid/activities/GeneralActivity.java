@@ -16,6 +16,7 @@ import com.stegandroid.R;
 import com.stegandroid.directorydialog.ChoosenDirectoryListener;
 import com.stegandroid.directorydialog.DirectoryDialog;
 import com.stegandroid.process.EncodeProcess;
+import com.stegandroid.tools.Utils;
 
 public class GeneralActivity extends Activity {
 
@@ -68,8 +69,10 @@ public class GeneralActivity extends Activity {
 		
 		if (resultCode == Activity.RESULT_OK) {
 			selectedVideoLocation = data.getData();
-			_pathToVideoContainer = selectedVideoLocation.getPath();
+			_pathToVideoContainer = Utils.getRealPathFromUri(this, selectedVideoLocation);
+			_pathToVideoDestination = Utils.getBasenameFromPath(_pathToVideoContainer);
 			((TextView) findViewById(R.id.label_path_selected_video_container)).setText(_pathToVideoContainer);
+			((TextView) findViewById(R.id.label_path_selected_video_dest)).setText(_pathToVideoDestination);
 			testEnableProcessButton();
 		}
 	}
@@ -83,9 +86,10 @@ public class GeneralActivity extends Activity {
 	private void process() {
 		EncodeProcess encodeProcess = new EncodeProcess();
 
+        Toast.makeText(this, "Processing ... (or not)", Toast.LENGTH_SHORT).show();
+		
 		encodeProcess.encode(_pathToVideoContainer, _pathToVideoDestination);
 		
-        Toast.makeText(this, "Processing ... (or not)", Toast.LENGTH_SHORT).show();
 	}	
 	
 	@Override
