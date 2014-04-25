@@ -1,5 +1,6 @@
 package com.stegandroid.tools;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -112,12 +113,26 @@ public class Utils {
 		String ret = "";
 		
 		cursor = context.getContentResolver().query(uri, projection, null, null, null);
+		if (cursor == null) {
+			return (uri.getPath());
+		}
 		idx = cursor.getColumnIndex(MediaStore.Video.Media.DATA);
 		if (idx != -1) {
 			cursor.moveToFirst();
 			ret = cursor.getString(idx);
 		}
 		cursor.close();
+		return (ret);
+	}
+	
+	public static String getFileNameFromPath(String path) {
+		String ret = "";
+		File file;
+		
+		if (path != null) {
+			file = new File(path);
+			ret = file.getName();
+		}
 		return (ret);
 	}
 }

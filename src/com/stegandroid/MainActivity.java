@@ -35,18 +35,18 @@ public class MainActivity extends TabActivity {
         _tabhost = getTabHost();
         _tabhost.setup();
         
-        generalTab = _tabhost.newTabSpec(getResources().getString(R.string.tabhost_general_tab_title));
-        generalTab.setIndicator(getResources().getString(R.string.tabhost_general_tab_title));
+        generalTab = _tabhost.newTabSpec(getResources().getString(R.string.title_tabhost_general_tab));
+        generalTab.setIndicator(getResources().getString(R.string.title_tabhost_general_tab));
         generalTab.setContent(new Intent(this, GeneralActivity.class));
         _tabhost.addTab(generalTab);
         
-        optionsTab = _tabhost.newTabSpec(getResources().getString(R.string.tabhost_settings_tab_title));
-        optionsTab.setIndicator(getResources().getString(R.string.tabhost_settings_tab_title));
+        optionsTab = _tabhost.newTabSpec(getResources().getString(R.string.title_tabhost_settings_tab));
+        optionsTab.setIndicator(getResources().getString(R.string.title_tabhost_settings_tab));
         optionsTab.setContent(new Intent(this, SettingsActivity.class));
         _tabhost.addTab(optionsTab);
         
-        socialNetworkTab = _tabhost.newTabSpec(getResources().getString(R.string.tabhost_socialnetwork_tab_title));
-        socialNetworkTab.setIndicator(getResources().getString(R.string.tabhost_socialnetwork_tab_title));
+        socialNetworkTab = _tabhost.newTabSpec(getResources().getString(R.string.title_tabhost_socialnetwork_tab));
+        socialNetworkTab.setIndicator(getResources().getString(R.string.title_tabhost_socialnetwork_tab));
         socialNetworkTab.setContent(new Intent(this, SocialNetworkActivity.class));
         _tabhost.addTab(socialNetworkTab);
 

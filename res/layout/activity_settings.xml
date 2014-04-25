@@ -26,13 +26,14 @@
 	        android:layout_height="wrap_content"
 	        android:textSize="14sp"
 	        android:text="@string/chkbox_audio_channel" />
-
+	    
 	    <Spinner
 	        android:id="@+id/audioAlgorithmSpinner"
 	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content" 
-	        android:prompt="@string/chkbox_audio_channel"/>
-	    	    	    
+	        android:layout_height="wrap_content"
+	        android:textSize="2pt" 
+	        android:prompt="@string/chkbox_audio_channel"/>	    
+	    	    	    	    
 	    <CheckBox
 	        android:id="@+id/vidoChannelCheckBox"
 	        android:layout_width="wrap_content"

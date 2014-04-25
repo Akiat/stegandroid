@@ -11,25 +11,38 @@
     <!-- String resources for GeneralActivity -->
 
     <string name="title_activity_general">GeneralActivity</string>
-    <string name="tabhost_general_tab_title">General</string>
-    <string name="btn_choose_video">Choose video</string>
+    <string name="title_tabhost_general_tab">General</string>
+   
+    <string name="lbl_choose_video_container">Select video container</string>
+    <string name="lbl_empty_choose_video_container">Please select a video</string>
     <string name="btn_choose_video_container">Choose video</string>
-    <string name="btn_choose_video_dest">Choose dest</string>
+    
+    <string name="lbl_choose_video_destination">Select video destination</string>
+    <string name="img_view_choose_video_destination">Folder</string>
+    <string name="lbl_empty_choose_video_destination">Please select a destination</string>
+    <string name="btn_choose_video_destination">Choose Destination</string>
+    
+    <string name="lbl_choose_content_to_hide">Select content to hide</string>
+    <string name="btn_text_content_to_hide">Text content</string>
+    <string name="btn_file_content_to_hide">File content</string>
+    <string name="lbl_empty_choose_file_to_hide">Please select a file</string>
+    <string name="btn_choose_file_to_hide">Choose file</string>
+  
+    
+    <string name="btn_process">Process</string>
+
+    <string name="err_file_manager">No file manager found</string>
+    
+<!--    
     <string name="bt_record_video">Record a video</string>
     <string name="toast_video_selected">Video selected</string>
     <string name="toast_video_recorded">Video recorded</string>
-    <string name="lbl_select_video_container">Select video container</string>
-    <string name="lbl_select_video_dest">Select video destination</string>
-    <string name="err_file_manager">No file manager found</string>
-    <string name="btn_process">Process</string>
-	<string name="lbl_select">Select</string>
-    <string name="empty_choose_video_container">Please select a video</string>
-    <string name="empty_choose_video_dest">Please select a destination</string>
-    	
+  -->   	
     <!-- String resources for SettingsActivity -->
 	
     <string name="title_activity_settings">OptionActivity</string>
-	<string name="tabhost_settings_tab_title">Settings</string>
+	<string name="title_tabhost_settings_tab">Settings</string>
+    
     <string name="lbl_select_channel">Select channels and algorithms</string>
     <string name="chkbox_audio_channel">Audio channel</string>
     <string name="chkbox_video_channel">Video channel</string>
@@ -38,7 +51,7 @@
     <!-- String resources for SocialNetworkActivity -->
 
 	<string name="title_activity_social_network">SocialNetworkActivity</string>
-	<string name="tabhost_socialnetwork_tab_title">Social Network</string>
+	<string name="title_tabhost_socialnetwork_tab">Social Network</string>
     
     
 </resources>

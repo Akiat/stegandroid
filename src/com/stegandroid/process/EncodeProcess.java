@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 import com.stegandroid.algorithms.AlgorithmFactory;
 import com.stegandroid.algorithms.IAlgorithm;
