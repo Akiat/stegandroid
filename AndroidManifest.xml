@@ -44,16 +44,7 @@
             android:label="@string/decode_video_string"
             android:theme="@android:style/Theme.Light.NoTitleBar">
     </activity>
-    
-    <activity
-            android:name="com.stegandroid.activities.GeneralActivity"
-            android:label="@string/title_activity_general" >
-    </activity>    
-
-    <activity
-            android:name="com.stegandroid.activities.SocialNetworkActivity"
-            android:label="@string/title_activity_social_network" >
-    </activity>
+   
  </application>
 
 </manifest>

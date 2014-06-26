@@ -67,7 +67,7 @@
 		        android:id="@+id/chk_box_audio_channel"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:button="@drawable/test"
+		        android:button="@drawable/checkbox_selector"
 				android:layout_alignParentRight="true"/>
 	        	        
 		</RelativeLayout>    	    	    	    
@@ -78,7 +78,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_marginLeft="5dp"
 	        android:layout_marginRight="5dp"
-	        android:prompt="@string/chkbox_audio_channel"/>	    
+	        android:prompt="@string/audio_channel_string"/>	    
       	
        	<!-- Video settings -->
 		
@@ -108,7 +108,7 @@
 		        android:id="@+id/chk_box_video_channel"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:button="@drawable/test"
+		        android:button="@drawable/checkbox_selector"
 				android:layout_alignParentRight="true"/>
 	        	        
 		</RelativeLayout>    	    	    	    
@@ -119,7 +119,7 @@
 	        android:layout_height="wrap_content" 
 	        android:layout_marginLeft="5dp"
 	        android:layout_marginRight="5dp"
-	        android:prompt="@string/chkbox_video_channel"/>
+	        android:prompt="@string/video_channel_string"/>
        
 		<!-- Metadata settings -->
        
@@ -149,7 +149,7 @@
 		        android:id="@+id/chk_box_metadata_channel"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:button="@drawable/test"
+		        android:button="@drawable/checkbox_selector"
 				android:layout_alignParentRight="true"/>
 	        	        
 		</RelativeLayout>    	    	    	    
@@ -160,7 +160,7 @@
 	        android:layout_height="wrap_content"
    	        android:layout_marginLeft="5dp"
 	        android:layout_marginRight="5dp"
-	        android:prompt="@string/chkbox_metadata_channel"/>
+	        android:prompt="@string/metadata_channel_string"/>
 
 		<!-- AES Settings (INVISIBLE !!!) -->
 		
@@ -189,7 +189,7 @@
 	        <CheckBox
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:button="@drawable/test"
+		        android:button="@drawable/checkbox_selector"
 				android:layout_alignParentRight="true"/>
 	        	        
 		</RelativeLayout>    	    	    	    

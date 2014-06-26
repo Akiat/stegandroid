@@ -107,9 +107,9 @@ public class EncodeActivity extends Activity{
 	    }
 
 	    try {
-	        startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.lbl_choose_video_container)), code);
+	        startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.destination_string)), code);
 	    } catch (android.content.ActivityNotFoundException ex) {
-	        Toast.makeText(this, getResources().getString(R.string.err_file_manager), Toast.LENGTH_SHORT).show();
+	        Toast.makeText(this, getResources().getString(R.string.file_manager_error_string), Toast.LENGTH_SHORT).show();
 	    }
 	}
 

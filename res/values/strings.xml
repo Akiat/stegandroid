@@ -6,81 +6,34 @@
     <string name="app_name">stegandroid</string>
     <string name="action_settings">Settings</string>
     
-    <string name="empty_string"></string>
-    <string name="err_unknown">An unknown error occurred</string>
-    
-    <string name="hello_world">Hello world!</string>
-    
-	    
-    
-    <string name="title_activity_general">GeneralActivity</string>
-    <string name="title_tabhost_general_tab">General</string>
-   
-    <string name="lbl_choose_video_container">Select video container</string>
-    <string name="lbl_empty_choose_video_container">Please select a video</string>
-    <string name="btn_choose_video_container">Choose video</string>
-    
-    <string name="lbl_choose_video_destination">Select video destination</string>
-    <string name="img_view_choose_video_destination">Folder</string>
-    <string name="lbl_empty_choose_video_destination">Please select a destination</string>
-    <string name="btn_choose_video_destination">Choose Destination</string>
-    
-    <string name="lbl_choose_content_to_hide">Select content to hide</string>
-    <string name="btn_text_content_to_hide">Text content</string>
-    <string name="btn_file_content_to_hide">File content</string>
-    <string name="lbl_empty_choose_file_to_hide">Please select a file</string>
-    <string name="btn_choose_file_to_hide">Choose file</string>
-  
-    
-    <string name="btn_process">Process</string>
-
-    <string name="err_file_manager">No file manager found</string>
-    
-<!--    
-    <string name="bt_record_video">Record a video</string>
-    <string name="toast_video_selected">Video selected</string>
-    <string name="toast_video_recorded">Video recorded</string>
-  -->   	
-    <!-- String resources for SettingsActivity -->
-	
-	<string name="title_tabhost_settings_tab">Settings</string>
-    
-    <string name="lbl_select_channel">Select channels and algorithms</string>
-    <string name="chkbox_audio_channel">Audio channel</string>
-    <string name="chkbox_video_channel">Video channel</string>
-    <string name="chkbox_metadata_channel">Metadata channel</string>
-    	
-    <!-- String resources for SocialNetworkActivity -->
-
-	<string name="title_activity_social_network">SocialNetworkActivity</string>
-	<string name="title_tabhost_socialnetwork_tab">Social Network</string>
-    
-	<!-- ########################################################################### -->
-	
-    <!-- String resources for GeneralActivity -->
     <string name="about_string">About</string>
-	<string name="aes_string">AES</string>
+    <string name="aes_string">AES</string>
     <string name="audio_string">Audio</string>
-	
+	<string name="audio_channel_string">Audio channel</string>
+   
 	<string name="back_string">Back</string>
 
-	<string name="click_select_destination_string">Click here to select destination</string>
+    <string name="click_select_destination_string">Click here to select destination</string>
 	<string name="click_select_file_hide_string">Click here to select file to hide</string>
 	<string name="click_select_video_string">Click here to select video</string>
 	<string name="content_hide_string">Content to hide</string>	
 	
+	<string name="decode_content_string">Decode content</string>
 	<string name="decode_video_string">Decode a video</string>
     <string name="destination_string">Destination</string>	
 
+	<string name="empty_string"></string>
 	<string name="encode_video_string">Encode a video</string>
 	<string name="enter_text_hide_string">Enter here the text to hide</string>
-		
+    		
 	<string name="file_hide_string">File to hide</string>
+	<string name="file_manager_error_string">No file manager found</string>	
 	
 	<string name="hide_content_string">Hide content !</string>
 		
 	<string name="metadata_string">Metadata</string>
-    
+    <string name="metadata_channel_string">Metadata channel</string>
+	
 	<string name="settings_string">Settings</string>
     <string name="select_destination_string">Select a destination</string>
 	<string name="select_video_string">Select a video</string>
@@ -93,8 +46,7 @@
 	<string name="use_video_channel_string">Use video channel</string>
 	
 	<string name="video_string">Video</string>
+    <string name="video_channel_string">Video channel</string>
     <string name="video_source_string">Video source</string>
-		
-	<!-- ########################################################################### -->
-		
+			
 </resources>
