@@ -1,14 +1,13 @@
 package com.stegandroid.process;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 
 import com.stegandroid.algorithms.AlgorithmFactory;
 import com.stegandroid.algorithms.IAlgorithm;
 import com.stegandroid.configuration.Configuration;
+import com.stegandroid.mp4.MP4Exctracter;
+import com.stegandroid.parameters.EncodeParameters;
+import com.stegandroid.tools.Utils;
 
 public class EncodeProcess {
 
@@ -16,85 +15,120 @@ public class EncodeProcess {
 		
 	}
 	
-	public void encode(String pathToVideo, String destinationPath) {
-		IAlgorithm audioAlgorithm;
+	public void encode(EncodeParameters parameters) {
+//		byte[] videoBytes;
+//		byte[] audioBytes;
+//		byte[] metadaBytes;
+		byte[] contentToHide;
+		ByteArrayInputStream test;
+				
+		if (parameters.isUsingHideText()) {
+			contentToHide = parameters.getTextToHide().getBytes();
+		} else {
+			contentToHide = Utils.getContentOfFileAsByteArray(parameters.getFileToHidePath());
+		}
+		
+		processVideoSignal(parameters, contentToHide);
+		// videoBytes = 
+		// audioBytes = processAudioSignal(parameters, contentToHide);
+		// metadataBytes = processMetadataSignal(parameteres, contentToHide);
+	}
+	
+	private void processVideoSignal(EncodeParameters parameters, byte[] contentToHide) {
 		IAlgorithm videoAlgorithm;
-		IAlgorithm metadataAlgorithm;
+		MP4Exctracter extracter;
+		byte[] videoArray;
 		
-		// TODO: Open the video and extract the channels
-		
-		if (Configuration.getInstance().getUseAudioChannel()) {
-			audioAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getAudioAlgorithm());
-			audioAlgorithm.encode();
+		extracter = new MP4Exctracter();
+		videoArray = extracter.extractH264(parameters.getSrcVideoPath());
+		if (videoArray == null) {
+			videoArray = new byte[0];
+		}
+		if (contentToHide == null || contentToHide.length == 0) {
+			return;
 		}
 		
 		if (Configuration.getInstance().getUseVideoChannel()) {
 			videoAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getVideoAlgorithm());
-			videoAlgorithm.encode();
-			
+			videoAlgorithm.encode(videoArray, contentToHide);
 		}
-		
-		if (Configuration.getInstance().getUseMetadataChannel()) {
-			metadataAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getMetadataAlgorithm());
-			metadataAlgorithm.encode();			
-		}
-		
-		// TODO: Save the new video
-		copyContent(pathToVideo, destinationPath);
-
 	}
 	
-	public void decode(String pathToVideo, String destinationPath) {
-		IAlgorithm audioAlgorithm;
-		IAlgorithm videoAlgorithm;
-		IAlgorithm metadataAlgorithm;
-		
-		// TO DO: Open the video and extract the channels
-		
-		if (Configuration.getInstance().getUseAudioChannel()) {
-			audioAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getAudioAlgorithm());
-			audioAlgorithm.decode();
-		}
-		
-		if (Configuration.getInstance().getUseVideoChannel()) {
-			videoAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getVideoAlgorithm());
-			videoAlgorithm.decode();
-			
-		}
-		
-		if (Configuration.getInstance().getUseMetadataChannel()) {
-			metadataAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getMetadataAlgorithm());
-			metadataAlgorithm.decode();			
-		}
-
-		// TO DO: Save the new video
-		
+	private void processAudioSignal(EncodeParameters parameters, byte[] contentToHide) {
 	}
 	
-	private void copyContent(String original, String dest) {
-		FileInputStream fileInputStream;
-		FileOutputStream fileOutputStream;
-		byte [] tmp = new byte[256];
-		int readed;
-		
-		try {
-			fileInputStream = new FileInputStream(new File(original));
-			fileOutputStream = new FileOutputStream(new File(dest + "/lalala.mp4"));
-			
-			while ((readed = fileInputStream.read(tmp)) >= 0) {
-				fileOutputStream.write(tmp, 0, readed);
-			}
-			
-			fileInputStream.close();
-			fileOutputStream.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+	private void processMetadataSignal(EncodeParameters parameters, byte[] contentToHide) {
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//		IAlgorithm audioAlgorithm;
+//	IAlgorithm videoAlgorithm;
+//	IAlgorithm metadataAlgorithm;
+//	
+//	// TODO: Open the video and extract the channels
+//	
+//	if (Configuration.getInstance().getUseAudioChannel()) {
+//		audioAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getAudioAlgorithm());
+//		audioAlgorithm.encode();
+//	}
+//	
+//	if (Configuration.getInstance().getUseVideoChannel()) {
+//		videoAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getVideoAlgorithm());
+//		videoAlgorithm.encode();
+//		
+//	}
+//	
+//	if (Configuration.getInstance().getUseMetadataChannel()) {
+//		metadataAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getMetadataAlgorithm());
+//		metadataAlgorithm.encode();			
+//	}
+	
+	// TODO: Save the new video
+	//copyContent(pathToVideo, destinationPath);
+
+	
+//	private void copyContent(String original, String dest) {
+//		FileInputStream fileInputStream;
+//		FileOutputStream fileOutputStream;
+//		byte [] tmp = new byte[256];
+//		int readed;
+//		
+//		try {
+//			fileInputStream = new FileInputStream(new File(original));
+//			fileOutputStream = new FileOutputStream(new File(dest + "/lalala.mp4"));
+//			
+//			while ((readed = fileInputStream.read(tmp)) >= 0) {
+//				fileOutputStream.write(tmp, 0, readed);
+//			}
+//			
+//			fileInputStream.close();
+//			fileOutputStream.close();
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//	}
 	
 }

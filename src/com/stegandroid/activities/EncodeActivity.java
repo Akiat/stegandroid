@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -19,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.stegandroid.R;
+import com.stegandroid.controller.EncodeParametersController;
 import com.stegandroid.directorydialog.ChoosenDirectoryListener;
 import com.stegandroid.directorydialog.DirectoryDialog;
 import com.stegandroid.parameters.EncodeParameters;
@@ -68,6 +71,8 @@ public class EncodeActivity extends Activity{
 		_checkBoxTextToHide.setChecked(true);
 		_checkBoxFileToHide.setOnCheckedChangeListener(onCheckedChangeListener);
 		_checkBoxTextToHide.setOnCheckedChangeListener(onCheckedChangeListener);
+		_editTextContentToHide.addTextChangedListener(onTextChangedListener);
+		
 		_encodeParameters = new EncodeParameters();
 	}
 
@@ -112,7 +117,7 @@ public class EncodeActivity extends Activity{
 	    try {
 	        startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.destination_string)), code);
 	    } catch (android.content.ActivityNotFoundException ex) {
-	        Toast.makeText(this, getResources().getString(R.string.file_manager_error_string), Toast.LENGTH_SHORT).show();
+	        Toast.makeText(this, getResources().getString(R.string.error_file_manager_string), Toast.LENGTH_SHORT).show();
 	    }
 	}
 
@@ -156,6 +161,18 @@ public class EncodeActivity extends Activity{
 		}
 	}
 	
+	private void process() {
+		EncodeParametersController controller;
+		
+		_encodeParameters.setTextToHide(_editTextContentToHide.getText().toString());
+		controller = new EncodeParametersController(this);
+		if (controller.controlAllData(_encodeParameters)){
+			
+		} else {
+			Log.d("DEBUG", controller.getErrorMessage());
+		}
+	}
+	
 	
 	private ChoosenDirectoryListener onChoosenDirectoryListener = new ChoosenDirectoryListener() {
 
@@ -173,19 +190,19 @@ public class EncodeActivity extends Activity{
 			if (arg0.getId() == R.id.chk_box_file_to_hide && arg1) {
 				_editTextContentToHide.setVisibility(View.GONE);
 				_checkBoxTextToHide.setChecked(false);
-				_encodeParameters.setHideText(false);
+				_encodeParameters.setUseHideText(false);
 			} else if (arg0.getId() == R.id.chk_box_file_to_hide) {
 				_editTextContentToHide.setVisibility(View.VISIBLE);
 				_checkBoxTextToHide.setChecked(true);
-				_encodeParameters.setHideText(true);
+				_encodeParameters.setUseHideText(true);
 			} else if (arg0.getId() == R.id.chk_box_text_to_hide && arg1) {
 				((RelativeLayout) findViewById(R.id.relative_layout_content_hide_file)).setVisibility(View.GONE);
 				_checkBoxFileToHide.setChecked(false);
-				_encodeParameters.setHideText(false);
+				_encodeParameters.setUseHideText(false);
 			} else {
 				((RelativeLayout) findViewById(R.id.relative_layout_content_hide_file)).setVisibility(View.VISIBLE);
 				_checkBoxFileToHide.setChecked(true);
-				_encodeParameters.setHideText(true);
+				_encodeParameters.setUseHideText(true);
 			}
 		}
 	};
@@ -211,9 +228,31 @@ public class EncodeActivity extends Activity{
 				case R.id.btn_select_file_to_hide:
 					showFileChooser(CHOOSE_FILE_CONTENT);
 					break;
+				case R.id.btn_encode:	
+					process();
+					break;
 				default:
 					Log.d("DEBUG", "There is a big problem there!");
 			}
+		}
+	};
+	
+	// TODO: Trouver un utilité à ça sinon le supprimer...
+	// Par exemple disable le bouton hide content si pas de texte
+	private TextWatcher onTextChangedListener = new TextWatcher() {
+	
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+			
+		}
+		
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+		}
+		
+		@Override
+		public void afterTextChanged(Editable s) {
+			
 		}
 	};
 	

@@ -5,15 +5,15 @@ import com.stegandroid.algorithms.IAlgorithm;
 public class LastSignificantBit implements IAlgorithm{
 
 	@Override
-	public void encode() {
+	public byte[] encode(byte[] signal, byte[] content) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public void decode() {
+	public byte[] decode(byte[] signal) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 }

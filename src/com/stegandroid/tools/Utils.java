@@ -1,6 +1,8 @@
 package com.stegandroid.tools;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -134,5 +136,24 @@ public class Utils {
 			ret = file.getName();
 		}
 		return (ret);
+	}
+	
+	public static byte[] getContentOfFileAsByteArray(String path) {
+		FileInputStream inputStream;
+		File file;
+		byte [] ret = null;
+		
+		file = new File(path);
+		try {
+			inputStream = new FileInputStream(new File(path));
+			ret = new byte[(int) file.length()];
+			inputStream.read(ret);
+			inputStream.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		return ret;
 	}
 }

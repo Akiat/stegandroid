@@ -6,14 +6,14 @@ public class EncodeParameters {
 	private String _destVideoPath;
 	private String _textToHide;
 	private String _fileToHidePath;
-	private Boolean _hideText;
+	private Boolean _useHideText;
 	
 	public EncodeParameters() {
 		_srcVideoPath = "";
 		_destVideoPath = "";
 		_textToHide = "";
 		_fileToHidePath = "";
-		_hideText = false;
+		_useHideText = true;
 	}
 	
 	public String getSrcVideoPath() {
@@ -48,11 +48,11 @@ public class EncodeParameters {
 		_fileToHidePath = path;
 	}
 	
-	public boolean isHideText() {
-		return _hideText;
+	public boolean isUsingHideText() {
+		return _useHideText;
 	}
 	
-	public void setHideText(Boolean hideText) {
-		_hideText = hideText;
+	public void setUseHideText(Boolean useHideText) {
+		_useHideText = useHideText;
 	}
 }
