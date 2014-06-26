@@ -17,4 +17,21 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    <!-- Button Style -->
+    <style name="CustomButton">
+        <item name="android:layout_width">200dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:background">@drawable/btn_custom_state_list</item>
+    </style>
+
+    <style name="CustomCheckBox">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:background">@drawable/btn_custom_state_list</item>
+    </style>
+    
+    
 </resources>

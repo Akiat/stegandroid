@@ -18,20 +18,33 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.stegandroid.MainActivity"
+            
+            android:name="com.stegandroid.main.MainActivity"
             android:label="@string/app_name" 
             android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     <activity
             android:name="com.stegandroid.activities.SettingsActivity"
-            android:label="@string/title_activity_settings" >
-     </activity>
-        
+            android:label="@string/settings_string"
+            android:theme="@android:style/Theme.Light.NoTitleBar">
+    </activity>
+    
+    <activity
+            android:name="com.stegandroid.activities.EncodeActivity"
+            android:label="@string/encode_video_string"
+            android:theme="@android:style/Theme.Light.NoTitleBar">
+    </activity>
+    
+    <activity
+            android:name="com.stegandroid.activities.DecodeActivity"
+            android:label="@string/decode_video_string"
+            android:theme="@android:style/Theme.Light.NoTitleBar">
+    </activity>
+    
     <activity
             android:name="com.stegandroid.activities.GeneralActivity"
             android:label="@string/title_activity_general" >

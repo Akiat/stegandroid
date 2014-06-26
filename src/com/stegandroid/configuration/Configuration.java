@@ -9,11 +9,14 @@ import android.util.Log;
 public class Configuration {
 
 	private final String KEY_USE_AUDIO_CHANNEL = "com.stegandroid.USE_AUDIO_CHANNEL_KEY";
-	private final String KEY_USE_VIDEO_CHANNEL = "com.stegandroid.USE_VIDEO_CHANNEL_KEY";
-	private final String KEY_USE_METADATA_CHANNEL = "com.stegandroid.USE_METADATA_CHANNEL_KEY";
 	private final String KEY_AUDIO_ALGORITHM = "com.stegandroid.AUDIO_ALGORITHM_KEY";
+
+	private final String KEY_USE_VIDEO_CHANNEL = "com.stegandroid.USE_VIDEO_CHANNEL_KEY";
 	private final String KEY_VIDEO_ALGORITHM = "com.stegandroid.VIDEO_ALGORITHM_KEY";
+	
+	private final String KEY_USE_METADATA_CHANNEL = "com.stegandroid.USE_METADATA_CHANNEL_KEY";
 	private final String KEY_METADATA_ALGORITHM = "com.stegandroid.METADATA_ALGORITHM_KEY";
+	
 	private final String FILE_PREFERENCE = "com.stegandroid.preferences";
 	
 	private Activity _mainActivity;
@@ -23,7 +26,7 @@ public class Configuration {
 	private String _audioAlgorithm;
 	private String _videoAlgorithm;
 	private String _metadataAlgorithm;
-	// TO DO: Complete the list of attributes
+	// TODO: Complete the list of attributes
 
 	private static Configuration s_configuration;
 	

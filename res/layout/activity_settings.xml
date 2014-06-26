@@ -1,64 +1,199 @@
-<ScrollView 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context=".SettingsActivity">
-    
-    <LinearLayout
+    tools:context=".SettingsActivity" >
+     
+   <LinearLayout
 	    android:layout_width="fill_parent"
     	android:layout_height="wrap_content" 
     	android:orientation="vertical">
 
-        <TextView
-	        android:id="@+id/labelSelectChannel"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:textSize="20sp"
-	        android:paddingTop="10dp"
-	        android:paddingBottom="10dp"
-	        android:layout_gravity="center_horizontal"
-	        android:text="@string/lbl_select_channel" />
-	
-	    <CheckBox
-	        android:id="@+id/audioChannelCheckBox"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:textSize="14sp"
-	        android:text="@string/chkbox_audio_channel" />
-	    
-	    <Spinner
-	        android:id="@+id/audioAlgorithmSpinner"
+       <!-- Title bar -->
+       
+       <LinearLayout 
+       	    android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+    		android:background="#222222"
+    		android:orientation="horizontal">
+	       
+  		    <ImageButton
+		        android:id="@+id/btn_back"
+				android:layout_width="wrap_content"
+		        android:layout_height="match_parent"
+		        android:layout_marginLeft="7dp"
+		        android:contentDescription="@string/back_string"
+		        android:background="@android:color/transparent"
+		        android:src="@drawable/ic_ab_back_holo_dark_am" />
+       	    
+	        <TextView
+		        android:layout_width="wrap_content"
+		        android:layout_height="match_parent"
+		        android:textSize="22sp"
+		        android:paddingTop="10dp"
+		        android:paddingLeft="5dp"
+		        android:paddingBottom="10dp"
+		        android:textColor="#FFFFFF"
+		        android:text="@string/settings_string" />
+
+		</LinearLayout>
+        	       
+       <!-- Content -->
+       
+       <!-- Audio settings -->
+       <TextView
+	    	android:layout_height="wrap_content"
+    		android:layout_width="match_parent"
+    		android:paddingLeft="10dp"
+    		android:text="@string/audio_string"
+    		android:textSize="20sp"
+    		android:textColor="#000000"
+   	 		style="?android:attr/listSeparatorTextViewStyle" />
+
+       	<RelativeLayout 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+        
+	        <TextView
+	    		android:layout_width="wrap_content"
+		    	android:layout_height="match_parent"
+		    	android:paddingLeft="10dp"
+				android:layout_alignParentLeft="true"
+				android:layout_centerInParent="true"
+	    		android:textSize="17sp"				    		
+				android:text="@string/use_audio_channel_string"/>
+	           
+	        <CheckBox
+		        android:id="@+id/chk_box_audio_channel"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:button="@drawable/test"
+				android:layout_alignParentRight="true"/>
+	        	        
+		</RelativeLayout>    	    	    	    
+       	
+		<Spinner
+			android:id="@+id/spinner_audio_algorithm"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:textSize="2pt" 
+	        android:layout_marginLeft="5dp"
+	        android:layout_marginRight="5dp"
 	        android:prompt="@string/chkbox_audio_channel"/>	    
-	    	    	    	    
-	    <CheckBox
-	        android:id="@+id/vidoChannelCheckBox"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:textSize="14sp"
-	        android:text="@string/chkbox_video_channel" />
-	    	
+      	
+       	<!-- Video settings -->
+		
+		<TextView
+	    	android:layout_height="wrap_content"
+    		android:layout_width="match_parent"
+    		android:paddingLeft="10dp"
+    		android:text="@string/video_string"
+    		android:textSize="20sp"
+    		android:textColor="#000000"
+   	 		style="?android:attr/listSeparatorTextViewStyle" />
+
+       <RelativeLayout 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+        
+	        <TextView
+	    		android:layout_width="wrap_content"
+		    	android:layout_height="match_parent"
+		    	android:paddingLeft="10dp"
+				android:layout_alignParentLeft="true"
+				android:layout_centerInParent="true"	    		
+	    		android:textSize="17sp"				    		
+				android:text="@string/use_video_channel_string"/>
+	           
+	        <CheckBox
+		        android:id="@+id/chk_box_video_channel"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:button="@drawable/test"
+				android:layout_alignParentRight="true"/>
+	        	        
+		</RelativeLayout>    	    	    	    
+		
 	    <Spinner
-	        android:id="@+id/videoAlgorithmSpinner"
+	        android:id="@+id/spinner_video_algorithm"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content" 
+	        android:layout_marginLeft="5dp"
+	        android:layout_marginRight="5dp"
 	        android:prompt="@string/chkbox_video_channel"/>
-	    
-	    <CheckBox
-	        android:id="@+id/metadataChannelCheckBox"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:textSize="14sp"
-	        android:text="@string/chkbox_metadata_channel" />
+       
+		<!-- Metadata settings -->
+       
+		<TextView
+	    	android:layout_height="wrap_content"
+    		android:layout_width="match_parent"
+    		android:paddingLeft="10dp"
+    		android:textSize="20sp"
+    		android:text="@string/metadata_string"
+    		android:textColor="#000000"
+   	 		style="?android:attr/listSeparatorTextViewStyle" />
+		
+       <RelativeLayout 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+        
+	        <TextView
+	    		android:layout_width="wrap_content"
+		    	android:layout_height="match_parent"
+		    	android:paddingLeft="10dp"
+				android:layout_alignParentLeft="true"
+				android:layout_centerInParent="true"	    		
+	    		android:textSize="17sp"				    		
+				android:text="@string/use_metadata_channel_string"/>
+	           
+	        <CheckBox
+		        android:id="@+id/chk_box_metadata_channel"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:button="@drawable/test"
+				android:layout_alignParentRight="true"/>
+	        	        
+		</RelativeLayout>    	    	    	    
 		
 		<Spinner
-	        android:id="@+id/metadataAlgorithmSpinner"
+	        android:id="@+id/spinner_metadata_algorithm"
 	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content" 
+	        android:layout_height="wrap_content"
+   	        android:layout_marginLeft="5dp"
+	        android:layout_marginRight="5dp"
 	        android:prompt="@string/chkbox_metadata_channel"/>
+
+		<!-- AES Settings (INVISIBLE !!!) -->
+		
+		<TextView
+	    	android:layout_height="wrap_content"
+    		android:layout_width="match_parent"
+    		android:paddingLeft="10dp"
+    		android:visibility="invisible"
+    		android:text="@string/aes_string"
+    		android:textColor="#000000"
+   	 		style="?android:attr/listSeparatorTextViewStyle" />
+		
+       <RelativeLayout 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:visibility="invisible">
+        
+	        <TextView
+	    		android:layout_width="wrap_content"
+		    	android:layout_height="match_parent"
+		    	android:paddingLeft="10dp"
+				android:layout_alignParentLeft="true"
+				android:layout_centerInParent="true"	    		
+				android:text="@string/use_aes_string"/>
+	           
+	        <CheckBox
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:button="@drawable/test"
+				android:layout_alignParentRight="true"/>
+	        	        
+		</RelativeLayout>    	    	    	    
 		
 	</LinearLayout>
+
 </ScrollView>

@@ -3,13 +3,16 @@
 
     <!-- General string resources -->
 
-    <string name="action_settings">Settings</string>
     <string name="app_name">stegandroid</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    
+    <string name="empty_string"></string>
     <string name="err_unknown">An unknown error occurred</string>
-        
-    <!-- String resources for GeneralActivity -->
-
+    
+    <string name="hello_world">Hello world!</string>
+    
+	    
+    
     <string name="title_activity_general">GeneralActivity</string>
     <string name="title_tabhost_general_tab">General</string>
    
@@ -40,7 +43,6 @@
   -->   	
     <!-- String resources for SettingsActivity -->
 	
-    <string name="title_activity_settings">OptionActivity</string>
 	<string name="title_tabhost_settings_tab">Settings</string>
     
     <string name="lbl_select_channel">Select channels and algorithms</string>
@@ -53,5 +55,46 @@
 	<string name="title_activity_social_network">SocialNetworkActivity</string>
 	<string name="title_tabhost_socialnetwork_tab">Social Network</string>
     
+	<!-- ########################################################################### -->
+	
+    <!-- String resources for GeneralActivity -->
+    <string name="about_string">About</string>
+	<string name="aes_string">AES</string>
+    <string name="audio_string">Audio</string>
+	
+	<string name="back_string">Back</string>
+
+	<string name="click_select_destination_string">Click here to select destination</string>
+	<string name="click_select_file_hide_string">Click here to select file to hide</string>
+	<string name="click_select_video_string">Click here to select video</string>
+	<string name="content_hide_string">Content to hide</string>	
+	
+	<string name="decode_video_string">Decode a video</string>
+    <string name="destination_string">Destination</string>	
+
+	<string name="encode_video_string">Encode a video</string>
+	<string name="enter_text_hide_string">Enter here the text to hide</string>
+		
+	<string name="file_hide_string">File to hide</string>
+	
+	<string name="hide_content_string">Hide content !</string>
+		
+	<string name="metadata_string">Metadata</string>
     
+	<string name="settings_string">Settings</string>
+    <string name="select_destination_string">Select a destination</string>
+	<string name="select_video_string">Select a video</string>
+	
+	<string name="text_hide_string">Text to hide</string>
+	
+	<string name="use_aes_string">Use AES encryption/decryption</string>
+	<string name="use_audio_channel_string">Use audio channel</string>
+	<string name="use_metadata_channel_string">Use metadata channel</string>
+	<string name="use_video_channel_string">Use video channel</string>
+	
+	<string name="video_string">Video</string>
+    <string name="video_source_string">Video source</string>
+		
+	<!-- ########################################################################### -->
+		
 </resources>

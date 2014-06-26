@@ -10,11 +10,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
 
@@ -24,16 +26,20 @@ import com.stegandroid.tools.Utils;
 
 public class SettingsActivity extends Activity {
 	
-	final String AUDIO_PACKAGE_NAME = "com.stegandroid.algorithms.audio";
-	final String VIDEO_PACKAGE_NAME = "com.stegandroid.algorithms.video";
-	final String METADATA_PACKAGE_NAME = "com.stegandroid.algorithms.metadata";
+	private final String AUDIO_PACKAGE_NAME = "com.stegandroid.algorithms.audio";
+	private final String VIDEO_PACKAGE_NAME = "com.stegandroid.algorithms.video";
+	private final String METADATA_PACKAGE_NAME = "com.stegandroid.algorithms.metadata";
 	
+	// Graphical components
 	private Spinner		_spinAudioAlrogithm;
 	private Spinner		_spinVideoAlrogithm;
 	private Spinner		_spinMetadataAlrogithm;
 	private CheckBox	_chkboxAudioChannel;
 	private CheckBox	_chkboxVideoChannel;
 	private CheckBox	_chkboxMetadataChannel;
+	private ImageButton _btnBack;
+	
+	// Private attributes
 	private Map<String, String>	_mapClasses;
 	
 	@Override
@@ -41,13 +47,16 @@ public class SettingsActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
 	
-		_chkboxAudioChannel = (CheckBox) findViewById(R.id.audioChannelCheckBox);
-		_chkboxVideoChannel = (CheckBox) findViewById(R.id.vidoChannelCheckBox);
-		_chkboxMetadataChannel = (CheckBox) findViewById(R.id.metadataChannelCheckBox);
+		_chkboxAudioChannel = (CheckBox) findViewById(R.id.chk_box_audio_channel);
+		_chkboxVideoChannel = (CheckBox) findViewById(R.id.chk_box_video_channel);
+		_chkboxMetadataChannel = (CheckBox) findViewById(R.id.chk_box_metadata_channel);
 
-		_spinAudioAlrogithm = (Spinner) findViewById(R.id.audioAlgorithmSpinner);
-		_spinVideoAlrogithm = (Spinner) findViewById(R.id.videoAlgorithmSpinner);
-		_spinMetadataAlrogithm = (Spinner) findViewById(R.id.metadataAlgorithmSpinner);
+		_spinAudioAlrogithm = (Spinner) findViewById(R.id.spinner_audio_algorithm);
+		_spinVideoAlrogithm = (Spinner) findViewById(R.id.spinner_video_algorithm);
+		_spinMetadataAlrogithm = (Spinner) findViewById(R.id.spinner_metadata_algorithm);
+
+		_btnBack = (ImageButton) findViewById(R.id.btn_back);
+		_btnBack.setOnClickListener(onClickListener);
 		
 		_mapClasses = new HashMap<String, String>();
 		
@@ -100,20 +109,27 @@ public class SettingsActivity extends Activity {
 	private void actualizeSpinners() {
 		if (!_chkboxAudioChannel.isChecked() && _spinAudioAlrogithm.isEnabled()) {
 			_spinAudioAlrogithm.setEnabled(false);
+			_spinAudioAlrogithm.setVisibility(View.GONE);
 		} else if (_chkboxAudioChannel.isChecked() && !_spinAudioAlrogithm.isEnabled()) {
 			_spinAudioAlrogithm.setEnabled(true);
+			_spinAudioAlrogithm.setVisibility(View.VISIBLE);
 		}
 		
 		if (!_chkboxVideoChannel.isChecked() && _spinVideoAlrogithm.isEnabled()) {
 			_spinVideoAlrogithm.setEnabled(false);
+			_spinVideoAlrogithm.setVisibility(View.GONE);
+			
 		} else if (_chkboxVideoChannel.isChecked() && !_spinVideoAlrogithm.isEnabled()) {
 			_spinVideoAlrogithm.setEnabled(true);
+			_spinVideoAlrogithm.setVisibility(View.VISIBLE);
 		}
 		
 		if (!_chkboxMetadataChannel.isChecked() && _spinMetadataAlrogithm.isEnabled()) {
 			_spinMetadataAlrogithm.setEnabled(false);
+			_spinMetadataAlrogithm.setVisibility(View.GONE);
 		} else if (_chkboxMetadataChannel.isChecked() && !_spinMetadataAlrogithm.isEnabled()) {
 			_spinMetadataAlrogithm.setEnabled(true);
+			_spinMetadataAlrogithm.setVisibility(View.VISIBLE);
 		}
 	}
 	
@@ -129,13 +145,13 @@ public class SettingsActivity extends Activity {
 		@Override
 		public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
 			switch (arg0.getId()) {
-				case R.id.audioChannelCheckBox:
+				case R.id.chk_box_audio_channel:
 					Configuration.getInstance().setUseAudioChannel(arg1);
 					break;
-				case R.id.vidoChannelCheckBox:
+				case R.id.chk_box_video_channel:
 					Configuration.getInstance().setUseVideoChannel(arg1);
 					break;
-				case R.id.metadataChannelCheckBox:
+				case R.id.chk_box_metadata_channel:
 					Configuration.getInstance().setUseMetadataChannel(arg1);
 					break;
 				default:
@@ -152,21 +168,21 @@ public class SettingsActivity extends Activity {
 			String key;
 			
 			switch (arg0.getId()) {
-				case R.id.audioAlgorithmSpinner:
+				case R.id.spinner_audio_algorithm:
 					key = (String) _spinAudioAlrogithm.getSelectedItem();
 					if (_mapClasses.containsKey(key))
 						Configuration.getInstance().setAudioAlgorithm(_mapClasses.get(key));
 					else
 						Configuration.getInstance().setAudioAlgorithm(null);
 					break;
-				case R.id.videoAlgorithmSpinner:
+				case R.id.spinner_video_algorithm:
 					key = (String) _spinVideoAlrogithm.getSelectedItem();
 					if (_mapClasses.containsKey(key))
 						Configuration.getInstance().setVideoAlgorithm(_mapClasses.get(key));
 					else
 						Configuration.getInstance().setVideoAlgorithm(null);
 					break;
-				case R.id.metadataAlgorithmSpinner:
+				case R.id.spinner_metadata_algorithm:
 					key = (String) _spinMetadataAlrogithm.getSelectedItem();
 					if (_mapClasses.containsKey(key))
 						Configuration.getInstance().setMetadataAlgorithm(_mapClasses.get(key));
@@ -181,6 +197,20 @@ public class SettingsActivity extends Activity {
 		@Override
 		public void onNothingSelected(AdapterView<?> arg0) {
 			return;
+		}
+	};
+	
+	private OnClickListener onClickListener = new OnClickListener() {
+
+		@Override
+		public void onClick(View arg0) {
+			switch (arg0.getId()) {
+				case R.id.btn_back:
+					finish();
+					break;
+				default:
+					Log.d("DEBUG", "There is a big problem there!");
+			}
 		}
 	};
 

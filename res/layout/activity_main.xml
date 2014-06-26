@@ -1,25 +1,79 @@
-<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@android:id/tabhost"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    tools:context=".MainActivity" >
-
-    <LinearLayout 
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+	tools:context=".MainActivity" >
+    	
+	<LinearLayout
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_gravity="center_horizontal"
+    	android:padding="10dp"
+    	android:orientation="vertical">
+		
+	    <ImageView
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:contentDescription="@string/empty_string"
+		    android:src="@drawable/stegandroidtitle_orangetransparent" />
    	
-	   	<TabWidget
-	    	android:layout_width="fill_parent"
-	    	android:layout_height="wrap_content"
-	    	android:id="@android:id/tabs" />
-	
-	   	<FrameLayout
-	    	android:layout_width="fill_parent"
+	    <LinearLayout
+		    android:layout_width="wrap_content"
 	    	android:layout_height="fill_parent"
-	    	android:id="@android:id/tabcontent"/>
-	     
-    </LinearLayout>
+	    	android:gravity="center"
+	    	android:orientation="vertical">
+	    	        		    
+		    <Button
+		        android:id="@+id/btn_main_choose_encode"
+				android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="20dp"
+		        android:layout_marginRight="20dp"
+		        android:layout_marginTop="5dp"
+		        android:layout_marginBottom="5dp"
+		        style="@style/CustomButton"
+   	    		android:textSize="22sp"				    		
+		        android:text="@string/encode_video_string" />
+			
+		   	<Button
+		        android:id="@+id/btn_main_choose_decode"
+				android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="20dp"
+		        android:layout_marginRight="20dp"
+		        android:layout_marginTop="5dp"
+		        android:layout_marginBottom="5dp"
+	       		style="@style/CustomButton"
+   	    		android:textSize="22sp"				    		
+		        android:text="@string/decode_video_string" />
+		   	
+		   	<Button
+		        android:id="@+id/btn_main_choose_settings"
+				android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="20dp"
+		        android:layout_marginRight="20dp"
+		        android:layout_marginTop="5dp"
+		        android:layout_marginBottom="5dp"
+	       		style="@style/CustomButton"
+   	    		android:textSize="22sp"				    		
+		        android:text="@string/settings_string" />
 
-</TabHost>
+		   	<Button
+		        android:id="@+id/btn_main_choose_about"
+				android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="20dp"
+		        android:layout_marginRight="20dp"
+		        android:layout_marginTop="5dp"
+		        android:layout_marginBottom="5dp"
+	       		style="@style/CustomButton"
+   	    		android:textSize="22sp"				    		
+		        android:text="@string/about_string" />
+		   			   	
+		</LinearLayout>  
+		 
+   	</LinearLayout> 
+   	
+</ScrollView>

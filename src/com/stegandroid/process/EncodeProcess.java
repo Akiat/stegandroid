@@ -21,7 +21,7 @@ public class EncodeProcess {
 		IAlgorithm videoAlgorithm;
 		IAlgorithm metadataAlgorithm;
 		
-		// TO DO: Open the video and extract the channels
+		// TODO: Open the video and extract the channels
 		
 		if (Configuration.getInstance().getUseAudioChannel()) {
 			audioAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getAudioAlgorithm());
@@ -39,7 +39,7 @@ public class EncodeProcess {
 			metadataAlgorithm.encode();			
 		}
 		
-		// TO DO: Save the new video
+		// TODO: Save the new video
 		copyContent(pathToVideo, destinationPath);
 
 	}

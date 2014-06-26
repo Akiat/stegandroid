@@ -1,0 +1,58 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context=".DecodeActivity" >
+    
+    <LinearLayout
+	    android:layout_width="fill_parent"
+    	android:layout_height="wrap_content" 
+    	android:orientation="vertical">
+
+       <!-- Title bar -->
+       
+       <RelativeLayout 
+       	    android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+    		android:background="#222222">
+	       
+  		    <ImageButton
+		        android:id="@+id/btn_back"
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="7dp"
+		        android:layout_alignParentLeft="true"
+		        android:layout_centerInParent="true"
+		        android:contentDescription="@string/back_string"
+		        android:background="@android:color/transparent"
+		        android:src="@drawable/ic_ab_back_holo_dark_am" />
+       	    
+	        <TextView
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:paddingTop="10dp"
+		        android:paddingLeft="5dp"
+		        android:paddingBottom="10dp"
+   		        android:layout_toRightOf="@id/btn_back"
+		        android:layout_centerInParent="true"
+				android:textSize="22sp"				    		
+				android:textColor="#FFFFFF"
+		        android:text="@string/decode_video_string" />
+
+	         <ImageButton
+		        android:id="@+id/btn_settings"
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginRight="7dp"
+     		    android:layout_alignParentRight="true"
+		        android:layout_centerInParent="true"
+		        android:contentDescription="@string/back_string"
+		        android:background="@android:color/transparent"
+		        android:src="@drawable/black_settings" />
+	        
+		</RelativeLayout>
+		
+
+	</LinearLayout>
+		
+</ScrollView>
