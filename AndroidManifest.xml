@@ -44,6 +44,12 @@
             android:label="@string/decode_video_string"
             android:theme="@android:style/Theme.Light.NoTitleBar">
     </activity>
+    
+    <activity
+            android:name="com.stegandroid.activities.AboutActivity"
+            android:label="@string/about_string"
+            android:theme="@android:style/Theme.Light.NoTitleBar">
+    </activity>
    
  </application>
 

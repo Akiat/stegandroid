@@ -60,7 +60,7 @@
 		    	android:paddingLeft="10dp"
 				android:layout_alignParentLeft="true"
 				android:layout_centerInParent="true"
-	    		android:textSize="17sp"				    		
+	    		android:textSize="18sp"				    		
 				android:text="@string/use_audio_channel_string"/>
 	           
 	        <CheckBox
@@ -101,7 +101,7 @@
 		    	android:paddingLeft="10dp"
 				android:layout_alignParentLeft="true"
 				android:layout_centerInParent="true"	    		
-	    		android:textSize="17sp"				    		
+	    		android:textSize="18sp"				    		
 				android:text="@string/use_video_channel_string"/>
 	           
 	        <CheckBox
@@ -142,7 +142,7 @@
 		    	android:paddingLeft="10dp"
 				android:layout_alignParentLeft="true"
 				android:layout_centerInParent="true"	    		
-	    		android:textSize="17sp"				    		
+	    		android:textSize="18sp"				    		
 				android:text="@string/use_metadata_channel_string"/>
 	           
 	        <CheckBox

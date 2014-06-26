@@ -35,6 +35,7 @@ public class EncodeActivity extends Activity{
 	private Button _btnSelectSourceVideo;
 	private Button _btnSelectVideoDestination;
 	private Button _btnSelectFileToHide;
+	private Button _btnEncode;
 	private CheckBox _checkBoxFileToHide;
 	private CheckBox _checkBoxTextToHide;
 	private EditText _editTextContentToHide;
@@ -52,6 +53,7 @@ public class EncodeActivity extends Activity{
 		_btnSelectSourceVideo = (Button) findViewById(R.id.btn_select_video_source);
 		_btnSelectVideoDestination = (Button) findViewById(R.id.btn_select_video_destination);
 		_btnSelectFileToHide = (Button) findViewById(R.id.btn_select_file_to_hide);
+		_btnEncode = (Button) findViewById(R.id.btn_encode);
 		_checkBoxFileToHide = (CheckBox) findViewById(R.id.chk_box_file_to_hide);
 		_checkBoxTextToHide = (CheckBox) findViewById(R.id.chk_box_text_to_hide);
 		_editTextContentToHide = (EditText) findViewById(R.id.edit_text_content_to_hide);
@@ -61,6 +63,7 @@ public class EncodeActivity extends Activity{
 		_btnSelectSourceVideo.setOnClickListener(onClickListener);
 		_btnSelectVideoDestination.setOnClickListener(onClickListener);
 		_btnSelectFileToHide.setOnClickListener(onClickListener);
+		_btnEncode.setOnClickListener(onClickListener);
 		_checkBoxFileToHide.setChecked(false);
 		_checkBoxTextToHide.setChecked(true);
 		_checkBoxFileToHide.setOnCheckedChangeListener(onCheckedChangeListener);

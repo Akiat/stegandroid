@@ -20,6 +20,7 @@
 	
 	<string name="decode_content_string">Decode content</string>
 	<string name="decode_video_string">Decode a video</string>
+	<string name="description_about_string">This project is created in the context of a MSc Computer Security at the University of Kent in United Kingdom</string>
     <string name="destination_string">Destination</string>	
 
 	<string name="empty_string"></string>

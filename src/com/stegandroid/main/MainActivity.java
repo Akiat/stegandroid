@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.stegandroid.R;
+import com.stegandroid.activities.AboutActivity;
 import com.stegandroid.activities.DecodeActivity;
 import com.stegandroid.activities.EncodeActivity;
 import com.stegandroid.activities.SettingsActivity;
@@ -73,6 +74,7 @@ public class MainActivity extends Activity {
 					createActivities(SettingsActivity.class);
 					break;
 				case R.id.btn_main_choose_about:
+					createActivities(AboutActivity.class);
 					break;
 				default:
 					Log.d("DEBUG", "There is a big problem there!");
