@@ -17,15 +17,20 @@ public class Configuration {
 	private final String KEY_USE_METADATA_CHANNEL = "com.stegandroid.USE_METADATA_CHANNEL_KEY";
 	private final String KEY_METADATA_ALGORITHM = "com.stegandroid.METADATA_ALGORITHM_KEY";
 	
+	private final String KEY_USE_CRYPTOGRAPHY = "com.stegandroid.USE_CRYPTOGRAPHY_KEY";
+	private final String KEY_CRYPTOGRAPHY_ALGORITHM = "com.stegandroid.CRYPTOGRAPHY_ALGORITHM_KEY";
+	
 	private final String FILE_PREFERENCE = "com.stegandroid.preferences";
 	
 	private Activity _mainActivity;
 	private boolean _useAudioChannel;
 	private boolean _useVideoChannel;
 	private boolean _useMetadataChannel;
+	private boolean _useCryptography;
 	private String _audioAlgorithm;
 	private String _videoAlgorithm;
 	private String _metadataAlgorithm;
+	private String _cryptographyAlgorithm;
 	// TODO: Complete the list of attributes
 
 	private static Configuration s_configuration;
@@ -53,10 +58,12 @@ public class Configuration {
 	private void init(Activity activity) {
 		this._useAudioChannel = false;
 		this._useVideoChannel = false;
-		this._useMetadataChannel = true;
+		this._useMetadataChannel = false;
+		this._useCryptography = false;
 		this._audioAlgorithm = "";
 		this._videoAlgorithm = "";
 		this._metadataAlgorithm = "";
+		this._cryptographyAlgorithm = "";
 		this._mainActivity = activity;
 	}
 	
@@ -84,6 +91,15 @@ public class Configuration {
 
 	public void setUseMetadataChannel(boolean useMetadataChannel) {
 		this._useMetadataChannel = useMetadataChannel;
+		saveData();
+	}
+	
+	public boolean getUseCryptography() {
+		return _useCryptography;
+	}
+
+	public void setUseCryptography(boolean useCryptography) {
+		this._useCryptography = useCryptography;
 		saveData();
 	}
 
@@ -114,6 +130,15 @@ public class Configuration {
 		saveData();
 	}
 
+	public String getCryptographyAlgorithm() {
+		return _cryptographyAlgorithm;
+	}
+
+	public void setCryptographyAlgorithm(String cryptographyAlgorithm) {
+		this._cryptographyAlgorithm = cryptographyAlgorithm;
+		saveData();
+	}
+	
 	public void saveData() {
 		SharedPreferences sharedPref;
 		SharedPreferences.Editor editor;
@@ -129,10 +154,12 @@ public class Configuration {
 		editor.putBoolean(KEY_USE_AUDIO_CHANNEL, _useAudioChannel);
 		editor.putBoolean(KEY_USE_VIDEO_CHANNEL, _useVideoChannel);
 		editor.putBoolean(KEY_USE_METADATA_CHANNEL, _useMetadataChannel);
+		editor.putBoolean(KEY_USE_CRYPTOGRAPHY, _useCryptography);
 		
 		editor.putString(KEY_AUDIO_ALGORITHM, _audioAlgorithm);
 		editor.putString(KEY_VIDEO_ALGORITHM, _videoAlgorithm);
 		editor.putString(KEY_METADATA_ALGORITHM, _metadataAlgorithm);
+		editor.putString(KEY_CRYPTOGRAPHY_ALGORITHM, _cryptographyAlgorithm);
 		
 		if (!editor.commit()) {
 			Log.d("DEBUG", "Error while commiting preferences");
@@ -152,10 +179,12 @@ public class Configuration {
 		_useAudioChannel = sharedPref.getBoolean(KEY_USE_AUDIO_CHANNEL, false);
 		_useVideoChannel = sharedPref.getBoolean(KEY_USE_VIDEO_CHANNEL, false);
 		_useMetadataChannel = sharedPref.getBoolean(KEY_USE_METADATA_CHANNEL, false);
-
+		_useCryptography = sharedPref.getBoolean(KEY_USE_CRYPTOGRAPHY, false);
+		
 		_audioAlgorithm = sharedPref.getString(KEY_AUDIO_ALGORITHM, "");
 		_videoAlgorithm = sharedPref.getString(KEY_VIDEO_ALGORITHM, "");
 		_metadataAlgorithm = sharedPref.getString(KEY_METADATA_ALGORITHM, "");
+		_cryptographyAlgorithm = sharedPref.getString(KEY_CRYPTOGRAPHY_ALGORITHM, "");
 	}
 	
 }

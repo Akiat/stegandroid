@@ -3,7 +3,7 @@ package com.stegandroid.process;
 import java.io.ByteArrayInputStream;
 
 import com.stegandroid.algorithms.AlgorithmFactory;
-import com.stegandroid.algorithms.IAlgorithm;
+import com.stegandroid.algorithms.ISteganographyAlgorithm;
 import com.stegandroid.configuration.Configuration;
 import com.stegandroid.mp4.MP4Exctracter;
 import com.stegandroid.parameters.EncodeParameters;
@@ -35,7 +35,7 @@ public class EncodeProcess {
 	}
 	
 	private void processVideoSignal(EncodeParameters parameters, byte[] contentToHide) {
-		IAlgorithm videoAlgorithm;
+		ISteganographyAlgorithm videoAlgorithm;
 		MP4Exctracter extracter;
 		byte[] videoArray;
 		

@@ -1,8 +1,8 @@
-package com.stegandroid.algorithms.metadata;
+package com.stegandroid.algorithms.steganography.audio;
 
-import com.stegandroid.algorithms.IAlgorithm;
+import com.stegandroid.algorithms.ISteganographyAlgorithm;
 
-public class MetadataAlgorithm2 implements IAlgorithm{
+public class AudioAlgorithm1 implements ISteganographyAlgorithm{
 
 	@Override
 	public byte[] encode(byte[] signal, byte[] content) {

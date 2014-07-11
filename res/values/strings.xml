@@ -25,6 +25,7 @@
 
 	<string name="empty_string"></string>
 	<string name="encode_video_string">Encode a video</string>
+	<string name="cryptography_string">Cryptography</string>
 	<string name="enter_text_hide_string">Enter here the text to hide</string>
     		
 	<string name="file_hide_string">File to hide</string>
@@ -40,8 +41,8 @@
 	
 	<string name="text_hide_string">Text to hide</string>
 	
-	<string name="use_aes_string">Use AES encryption/decryption</string>
 	<string name="use_audio_channel_string">Use audio channel</string>
+	<string name="use_cryptography_string">Use cryptography</string>
 	<string name="use_metadata_channel_string">Use metadata channel</string>
 	<string name="use_video_channel_string">Use video channel</string>
 	

@@ -1,8 +1,8 @@
-package com.stegandroid.algorithms.audio;
+package com.stegandroid.algorithms.steganography.video;
 
-import com.stegandroid.algorithms.IAlgorithm;
+import com.stegandroid.algorithms.ISteganographyAlgorithm;
 
-public class AudioAlgorithm1 implements IAlgorithm{
+public class LeastSignificantBit implements ISteganographyAlgorithm{
 
 	@Override
 	public byte[] encode(byte[] signal, byte[] content) {

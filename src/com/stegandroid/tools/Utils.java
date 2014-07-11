@@ -55,7 +55,7 @@ public class Utils {
 		     enumClasses = dex.entries();
 		     while (enumClasses.hasMoreElements()) {
 		    	 tmp = enumClasses.nextElement();
-		    	 if (tmp.substring(0, tmp.lastIndexOf(".")).equals(packName)) {
+		    	 if (tmp.substring(0, tmp.lastIndexOf(".")).equals(packName) && !tmp.contains("$")) {
 		    		 classes.add(tmp);
 		    	 }
 		     }

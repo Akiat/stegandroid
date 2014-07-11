@@ -4,13 +4,13 @@ import android.util.Log;
 
 public class AlgorithmFactory {
 
-	public static IAlgorithm getInstanceFromName(String name) {
-		IAlgorithm algorithm = null;
+	public static ISteganographyAlgorithm getInstanceFromName(String name) {
+		ISteganographyAlgorithm algorithm = null;
 		Class<?> algorithmClass;
 		
 		try {
 		    algorithmClass = Class.forName(name); 
-		    algorithm = (IAlgorithm) algorithmClass.newInstance();
+		    algorithm = (ISteganographyAlgorithm) algorithmClass.newInstance();
 		} catch (ClassNotFoundException e) {
 			Log.d("DEBUG", "AlgorithmFactory: Unable to find class " + name);
 		} catch (InstantiationException e) {

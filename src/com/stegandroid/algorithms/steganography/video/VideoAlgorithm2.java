@@ -1,8 +1,8 @@
-package com.stegandroid.algorithms.video;
+package com.stegandroid.algorithms.steganography.video;
 
-import com.stegandroid.algorithms.IAlgorithm;
+import com.stegandroid.algorithms.ISteganographyAlgorithm;
 
-public class LastSignificantBit implements IAlgorithm{
+public class VideoAlgorithm2 implements ISteganographyAlgorithm{
 
 	@Override
 	public byte[] encode(byte[] signal, byte[] content) {

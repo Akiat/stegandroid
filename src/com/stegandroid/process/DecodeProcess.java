@@ -1,7 +1,7 @@
 package com.stegandroid.process;
 
 import com.stegandroid.algorithms.AlgorithmFactory;
-import com.stegandroid.algorithms.IAlgorithm;
+import com.stegandroid.algorithms.ISteganographyAlgorithm;
 import com.stegandroid.configuration.Configuration;
 
 public class DecodeProcess {

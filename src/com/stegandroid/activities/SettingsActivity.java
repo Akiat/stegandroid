@@ -26,17 +26,20 @@ import com.stegandroid.tools.Utils;
 
 public class SettingsActivity extends Activity {
 	
-	private final String AUDIO_PACKAGE_NAME = "com.stegandroid.algorithms.audio";
-	private final String VIDEO_PACKAGE_NAME = "com.stegandroid.algorithms.video";
-	private final String METADATA_PACKAGE_NAME = "com.stegandroid.algorithms.metadata";
+	private final String AUDIO_PACKAGE_NAME = "com.stegandroid.algorithms.steganography.audio";
+	private final String VIDEO_PACKAGE_NAME = "com.stegandroid.algorithms.steganography.video";
+	private final String METADATA_PACKAGE_NAME = "com.stegandroid.algorithms.steganography.metadata";
+	private final String CRYPTOGRAPHY_PACKAGE_NAME = "com.stegandroid.algorithms.cryptography";
 	
 	// Graphical components
 	private Spinner		_spinAudioAlrogithm;
 	private Spinner		_spinVideoAlrogithm;
 	private Spinner		_spinMetadataAlrogithm;
+	private Spinner		_spinCryptographyAlgorithm;
 	private CheckBox	_chkboxAudioChannel;
 	private CheckBox	_chkboxVideoChannel;
 	private CheckBox	_chkboxMetadataChannel;
+	private CheckBox	_chkboxCryptography;
 	private ImageButton _btnBack;
 	
 	// Private attributes
@@ -50,11 +53,13 @@ public class SettingsActivity extends Activity {
 		_chkboxAudioChannel = (CheckBox) findViewById(R.id.chk_box_audio_channel);
 		_chkboxVideoChannel = (CheckBox) findViewById(R.id.chk_box_video_channel);
 		_chkboxMetadataChannel = (CheckBox) findViewById(R.id.chk_box_metadata_channel);
-
+		_chkboxCryptography = (CheckBox) findViewById(R.id.chk_box_cryptography);
+		
 		_spinAudioAlrogithm = (Spinner) findViewById(R.id.spinner_audio_algorithm);
 		_spinVideoAlrogithm = (Spinner) findViewById(R.id.spinner_video_algorithm);
 		_spinMetadataAlrogithm = (Spinner) findViewById(R.id.spinner_metadata_algorithm);
-
+		_spinCryptographyAlgorithm = (Spinner) findViewById(R.id.spinner_cryptography_algorithm);
+		
 		_btnBack = (ImageButton) findViewById(R.id.btn_back);
 		_btnBack.setOnClickListener(onClickListener);
 		
@@ -64,6 +69,7 @@ public class SettingsActivity extends Activity {
 		this.initSpinnerContentFromPackageName(this._spinAudioAlrogithm, AUDIO_PACKAGE_NAME, Configuration.getInstance().getAudioAlgorithm());
 		this.initSpinnerContentFromPackageName(this._spinVideoAlrogithm, VIDEO_PACKAGE_NAME, Configuration.getInstance().getVideoAlgorithm());
 		this.initSpinnerContentFromPackageName(this._spinMetadataAlrogithm, METADATA_PACKAGE_NAME, Configuration.getInstance().getMetadataAlgorithm());
+		this.initSpinnerContentFromPackageName(this._spinCryptographyAlgorithm, CRYPTOGRAPHY_PACKAGE_NAME, Configuration.getInstance().getCryptographyAlgorithm());
 		this.actualizeSpinners();
 	}
 	
@@ -76,6 +82,9 @@ public class SettingsActivity extends Activity {
 		
 		_chkboxMetadataChannel.setChecked(Configuration.getInstance().getUseMetadataChannel());
 		_chkboxMetadataChannel.setOnCheckedChangeListener(onCheckedChangeListener);		
+
+		_chkboxCryptography.setChecked(Configuration.getInstance().getUseCryptography());
+		_chkboxCryptography.setOnCheckedChangeListener(onCheckedChangeListener);		
 	}
 	
 	private void initSpinnerContentFromPackageName(Spinner spinner, String packageName, String defaultValue) {
@@ -131,6 +140,14 @@ public class SettingsActivity extends Activity {
 			_spinMetadataAlrogithm.setEnabled(true);
 			_spinMetadataAlrogithm.setVisibility(View.VISIBLE);
 		}
+		
+		if (!_chkboxCryptography.isChecked() && _spinCryptographyAlgorithm.isEnabled()) {
+			_spinCryptographyAlgorithm.setEnabled(false);
+			_spinCryptographyAlgorithm.setVisibility(View.GONE);
+		} else if (_chkboxCryptography.isChecked() && !_spinCryptographyAlgorithm.isEnabled()) {
+			_spinCryptographyAlgorithm.setEnabled(true);
+			_spinCryptographyAlgorithm.setVisibility(View.VISIBLE);
+		}
 	}
 	
 	@Override
@@ -153,6 +170,9 @@ public class SettingsActivity extends Activity {
 					break;
 				case R.id.chk_box_metadata_channel:
 					Configuration.getInstance().setUseMetadataChannel(arg1);
+					break;
+				case R.id.chk_box_cryptography:
+					Configuration.getInstance().setUseCryptography(arg1);
 					break;
 				default:
 					Log.d("DEBUG", "There is a big problem there!");
@@ -188,6 +208,13 @@ public class SettingsActivity extends Activity {
 						Configuration.getInstance().setMetadataAlgorithm(_mapClasses.get(key));
 					else
 						Configuration.getInstance().setMetadataAlgorithm(null);
+					break;
+				case R.id.spinner_cryptography_algorithm:
+					key = (String) _spinCryptographyAlgorithm.getSelectedItem();
+					if (_mapClasses.containsKey(key))
+						Configuration.getInstance().setCryptographyAlgorithm(_mapClasses.get(key));
+					else
+						Configuration.getInstance().setCryptographyAlgorithm(null);
 					break;
 				default:
 					Log.d("DEBUG", "There is a big problem there!");

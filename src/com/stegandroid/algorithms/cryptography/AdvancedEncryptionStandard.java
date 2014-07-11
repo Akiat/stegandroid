@@ -1,6 +1,8 @@
-package com.stegandroid.cryptography;
+package com.stegandroid.algorithms.cryptography;
 
-public class AdvancedEncryptionStandard {
+import com.stegandroid.algorithms.ICryptographyAlgorithm;
+
+public class AdvancedEncryptionStandard implements ICryptographyAlgorithm {
 
 	private enum AESType {
 		AES_128(10, 4),
@@ -76,6 +78,7 @@ public class AdvancedEncryptionStandard {
 	public AdvancedEncryptionStandard() {
 	}
 	
+	@Override
 	public byte[] encrypt(byte[] message, byte[] key) {
 		byte[][] cipher;
 		byte[][][] roundKeys;
@@ -106,6 +109,7 @@ public class AdvancedEncryptionStandard {
 		return unmapData(cipher);
 	}
 	
+	@Override
 	public byte[] decrypt(byte[] cipher, byte[] key) {
 		byte[][] message;
 		byte[][][] roundKeys;
