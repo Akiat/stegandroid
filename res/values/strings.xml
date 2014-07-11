@@ -4,7 +4,6 @@
     <!-- General string resources -->
 
     <string name="app_name">stegandroid</string>
-    <string name="action_settings">Settings</string>
     
     <string name="about_string">About</string>
     <string name="aes_string">AES</string>
@@ -57,5 +56,13 @@
 	<string name="error_file_to_hide_empty_string">The path of the file to hide is empty</string>
 	<string name="error_src_video_path_empty_string">The path of the source video is missing</string>
 	<string name="error_text_to_hide_empty_string">The text to hide is empty</string>
+	
+	<!-- Menu directory strings -->
+	<string name="menu_about_string">About</string>
+	<string name="menu_decode_string">Decode</string>
+	<string name="menu_encode_string">Encode</string>
+	<string name="menu_main_string">Main</string>
+	<string name="menu_settings_string">Settings</string>
+	<string name="menu_social_network_string">Social network</string>
 					
 </resources>

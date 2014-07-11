@@ -16,11 +16,6 @@ import com.stegandroid.activities.EncodeActivity;
 import com.stegandroid.activities.SettingsActivity;
 import com.stegandroid.configuration.Configuration;
 
-/* To do (or not): 
- * Find a way to create tab without using TabActivity
- * since it is deprecated
- */
-//@SuppressWarnings("deprecation")
 public class MainActivity extends Activity {
 
 	private Button _btnEncode;
