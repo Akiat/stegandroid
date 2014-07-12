@@ -24,6 +24,7 @@ import com.stegandroid.R;
 import com.stegandroid.controller.EncodeParametersController;
 import com.stegandroid.directorydialog.ChoosenDirectoryListener;
 import com.stegandroid.directorydialog.DirectoryDialog;
+import com.stegandroid.error.ErrorManager;
 import com.stegandroid.parameters.EncodeParameters;
 import com.stegandroid.tools.Utils;
 
@@ -169,7 +170,7 @@ public class EncodeActivity extends Activity{
 		if (controller.controlAllData(_encodeParameters)){
 			
 		} else {
-			Log.d("DEBUG", controller.getErrorMessage());
+			ErrorManager.getInstance().displayErrorMessages(this);
 		}
 	}
 	

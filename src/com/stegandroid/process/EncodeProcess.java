@@ -1,7 +1,5 @@
 package com.stegandroid.process;
 
-import java.io.ByteArrayInputStream;
-
 import com.stegandroid.algorithms.AlgorithmFactory;
 import com.stegandroid.algorithms.ISteganographyAlgorithm;
 import com.stegandroid.configuration.Configuration;
@@ -16,48 +14,83 @@ public class EncodeProcess {
 	}
 	
 	public void encode(EncodeParameters parameters) {
-//		byte[] videoBytes;
-//		byte[] audioBytes;
-//		byte[] metadaBytes;
 		byte[] contentToHide;
-		ByteArrayInputStream test;
-				
+		byte[] videoSignal;
+		byte[] audioSignal;
+		byte[] metadataSignal;
+		
 		if (parameters.isUsingHideText()) {
 			contentToHide = parameters.getTextToHide().getBytes();
 		} else {
 			contentToHide = Utils.getContentOfFileAsByteArray(parameters.getFileToHidePath());
 		}
 		
-		processVideoSignal(parameters, contentToHide);
-		// videoBytes = 
-		// audioBytes = processAudioSignal(parameters, contentToHide);
-		// metadataBytes = processMetadataSignal(parameteres, contentToHide);
+		videoSignal = processVideoSignal(parameters, contentToHide);
+		audioSignal = processAudioSignal(parameters, contentToHide);
+		metadataSignal = processMetadataSignal(parameters, contentToHide);
 	}
 	
-	private void processVideoSignal(EncodeParameters parameters, byte[] contentToHide) {
+	private byte[] processVideoSignal(EncodeParameters parameters, byte[] contentToHide) {
 		ISteganographyAlgorithm videoAlgorithm;
 		MP4Exctracter extracter;
-		byte[] videoArray;
+		byte[] videoSignal;
 		
+		if (!Configuration.getInstance().getUseVideoChannel() || contentToHide == null
+				|| contentToHide.length == 0) {
+			return null;
+		}
+
 		extracter = new MP4Exctracter();
-		videoArray = extracter.extractH264(parameters.getSrcVideoPath());
-		if (videoArray == null) {
-			videoArray = new byte[0];
-		}
-		if (contentToHide == null || contentToHide.length == 0) {
-			return;
+		videoSignal = extracter.extractH264(parameters.getSrcVideoPath());
+		// TODO: Correct this part (Error management)
+		if (videoSignal == null) {
+			videoSignal = new byte[0];
 		}
 		
-		if (Configuration.getInstance().getUseVideoChannel()) {
-			videoAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getVideoAlgorithm());
-			videoAlgorithm.encode(videoArray, contentToHide);
+		videoAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getVideoAlgorithm());
+		return videoAlgorithm.encode(videoSignal, contentToHide);
+	}
+	
+	private byte[] processAudioSignal(EncodeParameters parameters, byte[] contentToHide) {
+		ISteganographyAlgorithm audioAlgorithm;
+		MP4Exctracter extracter;
+		byte[] videoSignal;
+		
+		if (!Configuration.getInstance().getUseAudioChannel() || contentToHide == null
+				|| contentToHide.length == 0) {
+			return null;
 		}
+
+		extracter = new MP4Exctracter();
+		videoSignal = extracter.extractH264(parameters.getSrcVideoPath());
+		// TODO: Correct this part (Error management)
+		if (videoSignal == null) {
+			videoSignal = new byte[0];
+		}
+		
+		audioAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getAudioAlgorithm());
+		return audioAlgorithm.encode(videoSignal, contentToHide);
 	}
 	
-	private void processAudioSignal(EncodeParameters parameters, byte[] contentToHide) {
-	}
-	
-	private void processMetadataSignal(EncodeParameters parameters, byte[] contentToHide) {
+	private byte[] processMetadataSignal(EncodeParameters parameters, byte[] contentToHide) {
+		ISteganographyAlgorithm metadataAlgorithm;
+		MP4Exctracter extracter;
+		byte[] videoSignal;
+		
+		if (!Configuration.getInstance().getUseMetadataChannel() || contentToHide == null
+				|| contentToHide.length == 0) {
+			return null;
+		}
+
+		extracter = new MP4Exctracter();
+		videoSignal = extracter.extractH264(parameters.getSrcVideoPath());
+		// TODO: Correct this part (Error management)
+		if (videoSignal == null) {
+			videoSignal = new byte[0];
+		}
+		
+		metadataAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getMetadataAlgorithm());
+		return metadataAlgorithm.encode(videoSignal, contentToHide);
 	}
 	
 	
