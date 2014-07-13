@@ -1,4 +1,4 @@
-package com.stegandroid.mp4;
+package com.stegandroid.mp4.video;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,26 +12,12 @@ import com.coremedia.iso.boxes.mdat.SampleList;
 import com.googlecode.mp4parser.authoring.Sample;
 import com.googlecode.mp4parser.util.Path;
 
-public class MP4Exctracter {
+public class MP4VideoExtracter {
 
-	private final String VIDEO_TRACKBOX_PATH = "/moov/trak/mdia/minf/stbl/stsd/avc1/../../../../../";
-	private final String VIDEO_CONFIGURATION_BOX_PATH = "mdia/minf/stbl/stsd/avc1/avcC";
+	private static final String VIDEO_TRACKBOX_PATH = "/moov/trak/mdia/minf/stbl/stsd/avc1/../../../../../";
+	private static final String VIDEO_CONFIGURATION_BOX_PATH = "mdia/minf/stbl/stsd/avc1/avcC";
 	
-	public MP4Exctracter() {
-		
-	}
-
-	//TODO: Manage errors
-	public byte[] extractH264(String videoPath) {
-		try {
-			return getVideoAsByteArray(videoPath);
-		} catch (IOException ex) {
-			System.out.println(ex.getMessage());
-		}
-		return null;
-	}
-	
-	private byte[] getVideoAsByteArray(String videoPath) throws IOException {
+	public static byte[] getH264VideoAsByteArray(String videoPath) throws IOException {
 		IsoFile isoFile;
         TrackBox trackBox; 
         SampleList sampleList;
@@ -71,5 +57,6 @@ public class MP4Exctracter {
             }
         }
         return outputStream.toByteArray();
-	}
+	}	
+	
 }

@@ -3,7 +3,7 @@ package com.stegandroid.process;
 import com.stegandroid.algorithms.AlgorithmFactory;
 import com.stegandroid.algorithms.ISteganographyAlgorithm;
 import com.stegandroid.configuration.Configuration;
-import com.stegandroid.mp4.MP4Exctracter;
+import com.stegandroid.mp4.Mp4ChannelExtracter;
 import com.stegandroid.parameters.EncodeParameters;
 import com.stegandroid.tools.Utils;
 
@@ -32,65 +32,53 @@ public class EncodeProcess {
 	
 	private byte[] processVideoSignal(EncodeParameters parameters, byte[] contentToHide) {
 		ISteganographyAlgorithm videoAlgorithm;
-		MP4Exctracter extracter;
+		Mp4ChannelExtracter extracter;
 		byte[] videoSignal;
 		
-		if (!Configuration.getInstance().getUseVideoChannel() || contentToHide == null
-				|| contentToHide.length == 0) {
-			return null;
-		}
-
-		extracter = new MP4Exctracter();
+		extracter = new Mp4ChannelExtracter();
 		videoSignal = extracter.extractH264(parameters.getSrcVideoPath());
-		// TODO: Correct this part (Error management)
-		if (videoSignal == null) {
-			videoSignal = new byte[0];
-		}
 		
-		videoAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getVideoAlgorithm());
-		return videoAlgorithm.encode(videoSignal, contentToHide);
+		if (contentToHide != null && contentToHide.length > 0 && Configuration.getInstance().getUseVideoChannel()) {
+			videoAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getVideoAlgorithm());
+			if (videoAlgorithm != null) {
+				videoSignal = videoAlgorithm.encode(videoSignal, contentToHide);
+			}
+		}
+		return videoSignal;
 	}
 	
 	private byte[] processAudioSignal(EncodeParameters parameters, byte[] contentToHide) {
 		ISteganographyAlgorithm audioAlgorithm;
-		MP4Exctracter extracter;
-		byte[] videoSignal;
+		Mp4ChannelExtracter extracter;
+		byte[] audioSignal;
 		
-		if (!Configuration.getInstance().getUseAudioChannel() || contentToHide == null
-				|| contentToHide.length == 0) {
-			return null;
-		}
-
-		extracter = new MP4Exctracter();
-		videoSignal = extracter.extractH264(parameters.getSrcVideoPath());
-		// TODO: Correct this part (Error management)
-		if (videoSignal == null) {
-			videoSignal = new byte[0];
-		}
+		extracter = new Mp4ChannelExtracter();
+		audioSignal = extracter.extractH264(parameters.getSrcVideoPath());
 		
-		audioAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getAudioAlgorithm());
-		return audioAlgorithm.encode(videoSignal, contentToHide);
+		if (contentToHide != null && contentToHide.length > 0 && Configuration.getInstance().getUseAudioChannel()) {
+			audioAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getAudioAlgorithm());
+			if (audioAlgorithm != null) {
+				audioSignal = audioAlgorithm.encode(audioSignal, contentToHide);
+			}
+		}
+		return audioSignal;
 	}
 	
 	private byte[] processMetadataSignal(EncodeParameters parameters, byte[] contentToHide) {
 		ISteganographyAlgorithm metadataAlgorithm;
-		MP4Exctracter extracter;
-		byte[] videoSignal;
+		Mp4ChannelExtracter extracter;
+		byte[] metadataSignal;
 		
-		if (!Configuration.getInstance().getUseMetadataChannel() || contentToHide == null
-				|| contentToHide.length == 0) {
-			return null;
-		}
-
-		extracter = new MP4Exctracter();
-		videoSignal = extracter.extractH264(parameters.getSrcVideoPath());
-		// TODO: Correct this part (Error management)
-		if (videoSignal == null) {
-			videoSignal = new byte[0];
-		}
+		extracter = new Mp4ChannelExtracter();
+		metadataSignal = extracter.extractH264(parameters.getSrcVideoPath());
 		
-		metadataAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getMetadataAlgorithm());
-		return metadataAlgorithm.encode(videoSignal, contentToHide);
+		if (contentToHide != null && contentToHide.length > 0 && Configuration.getInstance().getUseMetadataChannel()) {
+			metadataAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getMetadataAlgorithm());
+			if (metadataAlgorithm != null) {
+				metadataSignal = metadataAlgorithm.encode(metadataSignal, contentToHide);
+			}
+		}
+		return metadataSignal;
 	}
 	
 	
