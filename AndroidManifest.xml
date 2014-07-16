@@ -50,7 +50,14 @@
             android:label="@string/about_string"
             android:theme="@android:style/Theme.Light.NoTitleBar">
     </activity>
-   
+
+    <activity
+            android:name="com.stegandroid.activities.SocialNetworkActivity"
+            android:label="@string/social_network_string"
+            android:theme="@android:style/Theme.Light.NoTitleBar">
+    </activity>
+    
+    
  </application>
 
 </manifest>

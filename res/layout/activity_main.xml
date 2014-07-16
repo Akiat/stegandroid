@@ -61,6 +61,18 @@
 		        android:text="@string/settings_string" />
 
 		   	<Button
+		        android:id="@+id/btn_main_choose_social_network"
+				android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="20dp"
+		        android:layout_marginRight="20dp"
+		        android:layout_marginTop="5dp"
+		        android:layout_marginBottom="5dp"
+	       		style="@style/CustomButton"
+   	    		android:textSize="22sp"				    		
+		        android:text="@string/social_network_string" />
+		   	
+		   	<Button
 		        android:id="@+id/btn_main_choose_about"
 				android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
@@ -71,7 +83,7 @@
 	       		style="@style/CustomButton"
    	    		android:textSize="22sp"				    		
 		        android:text="@string/about_string" />
-		   			   	
+		   			   			   	
 		</LinearLayout>  
 		 
    	</LinearLayout> 

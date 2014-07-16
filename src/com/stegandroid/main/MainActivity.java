@@ -3,7 +3,6 @@ package com.stegandroid.main;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,13 +13,16 @@ import com.stegandroid.activities.AboutActivity;
 import com.stegandroid.activities.DecodeActivity;
 import com.stegandroid.activities.EncodeActivity;
 import com.stegandroid.activities.SettingsActivity;
+import com.stegandroid.activities.SocialNetworkActivity;
 import com.stegandroid.configuration.Configuration;
+import com.stegandroid.error.ErrorManager;
 
 public class MainActivity extends Activity {
 
 	private Button _btnEncode;
 	private Button _btnDecode;
 	private Button _btnSettings;
+	private Button _btnSocialNetwork;
 	private Button _btnAbout;
 	
 	@Override
@@ -33,11 +35,13 @@ public class MainActivity extends Activity {
         _btnEncode = (Button) findViewById(R.id.btn_main_choose_encode);
         _btnDecode = (Button) findViewById(R.id.btn_main_choose_decode);
         _btnSettings = (Button) findViewById(R.id.btn_main_choose_settings);
+        _btnSocialNetwork = (Button) findViewById(R.id.btn_main_choose_social_network);
         _btnAbout = (Button) findViewById(R.id.btn_main_choose_about);
         
         _btnEncode.setOnClickListener(onClickListener);
         _btnDecode.setOnClickListener(onClickListener);
         _btnSettings.setOnClickListener(onClickListener);
+        _btnSocialNetwork.setOnClickListener(onClickListener);
         _btnAbout.setOnClickListener(onClickListener);
 	}
 
@@ -68,11 +72,16 @@ public class MainActivity extends Activity {
 				case R.id.btn_main_choose_settings:
 					createActivities(SettingsActivity.class);
 					break;
+				case R.id.btn_main_choose_social_network:
+					createActivities(SocialNetworkActivity.class);
+					break;
 				case R.id.btn_main_choose_about:
 					createActivities(AboutActivity.class);
 					break;
 				default:
-					Log.d("DEBUG", "There is a big problem there!");
+					ErrorManager.getInstance().addErrorMessage("[Main Activity] Activity requested not known");
+					ErrorManager.getInstance().displayErrorMessages(arg0.getContext());
+					break;
 			}
 		}
 	};
