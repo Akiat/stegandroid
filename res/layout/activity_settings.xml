@@ -11,13 +11,15 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:background="#222222"
-		android:layout_gravity="top"
+        android:minHeight="45dip"
 		android:orientation="horizontal">
 	  
 		<ImageButton
 			android:id="@+id/btn_back"
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
+	        android:minHeight="45dip"
+      		android:minWidth="25dip"
 			android:layout_marginLeft="7dp"
 			android:contentDescription="@string/back_string"
 			android:background="@android:color/transparent"
