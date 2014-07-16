@@ -1,46 +1,58 @@
 package com.stegandroid.mp4.audio;
 
-import java.io.RandomAccessFile;
-import java.util.List;
+import java.nio.ByteBuffer;
 
-import net.sourceforge.jaad.aac.Decoder;
-import net.sourceforge.jaad.aac.SampleBuffer;
-import net.sourceforge.jaad.mp4.MP4Container;
-import net.sourceforge.jaad.mp4.api.AudioTrack;
-import net.sourceforge.jaad.mp4.api.Frame;
+import com.coremedia.iso.IsoFile;
+import com.coremedia.iso.boxes.TrackBox;
+import com.coremedia.iso.boxes.mdat.SampleList;
+import com.googlecode.mp4parser.authoring.Sample;
+import com.googlecode.mp4parser.boxes.mp4.ESDescriptorBox;
+import com.googlecode.mp4parser.boxes.mp4.objectdescriptors.ESDescriptor;
+import com.googlecode.mp4parser.util.Path;
 
 public class MP4AudioExtracter {
 
+	private static final String AUDIO_TRACKBOX_PATH = "/moov/trak/mdia/minf/stbl/stsd/mp4a/../../../../../";
+	private static final String AUDIO_CONFIGURATION_BOX_PATH = "mdia/minf/stbl/stsd/mp4a/esds";
+	
 	public static byte[] getAacAudioAsByteArray(String videoPath) throws Exception {
-		RandomAccessFile inputStream;
-		MP4Container container; 
-		List<net.sourceforge.jaad.mp4.api.Track> tracks;
-		net.sourceforge.jaad.mp4.api.Track track;
-		AacByteArrayWriter aacByteArrayWriter = null;
-		Decoder dec;
-		SampleBuffer buf;
+		IsoFile isoFile;
+        TrackBox trackBox; 
+        SampleList sampleList;
+		ESDescriptorBox esDescriptorBox;
+		ESDescriptor descriptor;
+		AacByteArrayWriter aacByteArrayWriter = null;	
+		int channelConfiguration = -1;
+		int frequency = -1;
 		
-		inputStream = new RandomAccessFile(videoPath, "r");
-		container = new MP4Container(inputStream);
-		tracks = container.getMovie().getTracks(AudioTrack.AudioCodec.AAC);
-		
-		if (tracks.isEmpty()) {
-			throw new Exception("Track is empty... FUCK");
+        if (videoPath == null || videoPath.isEmpty()) {
+			return null;
 		}
+                
+        isoFile = new IsoFile(videoPath);
+		trackBox = (TrackBox) Path.getPath(isoFile, AUDIO_TRACKBOX_PATH);
+		sampleList = new SampleList(trackBox, new IsoFile[0]);
+		esDescriptorBox = (ESDescriptorBox) Path.getPath(trackBox, AUDIO_CONFIGURATION_BOX_PATH);
+
+		if (esDescriptorBox == null || esDescriptorBox.getDescriptor() == null) {
+			throw new Exception("Unable to load ESDescriptor boxes");
+		}
+		descriptor = (ESDescriptor) esDescriptorBox.getDescriptor();
+		if (descriptor.getDecoderConfigDescriptor() == null || descriptor.getDecoderConfigDescriptor().getAudioSpecificInfo() == null) {
+			throw new Exception("Unable to load config for audio");			
+		}
+		frequency = descriptor.getDecoderConfigDescriptor().getAudioSpecificInfo().getSamplingFrequency(); 
+		channelConfiguration = descriptor.getDecoderConfigDescriptor().getAudioSpecificInfo().getChannelConfiguration();
 		
-		track = tracks.get(0);
-		dec = new Decoder(track.getDecoderSpecificInfo());
-		buf = new SampleBuffer();
-		while(track.hasMoreFrames()) {
-			Frame frame = track.readNextFrame();
-			dec.decodeFrame(frame.getData(), buf);
- 				
+        for (Sample sample : sampleList) {
+            ByteBuffer buffer = sample.asByteBuffer();
+            
 			if (aacByteArrayWriter == null) {
-				aacByteArrayWriter = new AacByteArrayWriter(buf.getSampleRate(), buf.getChannels());
+				aacByteArrayWriter = new AacByteArrayWriter(frequency, channelConfiguration);
 			}
-			aacByteArrayWriter.write(frame.getData(), 0, frame.getData().length);
-		}
-		return aacByteArrayWriter.getAudioAsByteArray();
+			aacByteArrayWriter.write(buffer.array(), 0, buffer.capacity());
+        }
+        return aacByteArrayWriter.getAudioAsByteArray();
 	}
 	
 }
