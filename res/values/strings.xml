@@ -34,7 +34,9 @@
 	<string name="metadata_string">Metadata</string>
     <string name="metadata_channel_string">Metadata channel</string>
     
-    <string name="ok_string">Ok</string>
+    <string name="ok_string">OK</string>
+	
+	<string name="record_video_string">Record a video</string>
     	
 	<string name="settings_string">Settings</string>
     <string name="select_destination_string">Select a destination</string>

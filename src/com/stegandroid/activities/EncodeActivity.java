@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -32,9 +33,11 @@ public class EncodeActivity extends Activity{
 
 	private final int CHOOSE_FILE_CONTENT = 0;
 	private final int CHOOSE_VIDEO_CONTAINER = 1;
+	private final int RECORD_VIDEO = 2;
 
 	// Graphical components
 	private ImageButton _btnBack;
+	private ImageButton _btnCamera;
 	private ImageButton _btnSettings;
 	private Button _btnSelectSourceVideo;
 	private Button _btnSelectVideoDestination;
@@ -53,6 +56,7 @@ public class EncodeActivity extends Activity{
         setContentView(R.layout.activity_encode);
         
 		_btnBack = (ImageButton) findViewById(R.id.btn_back);
+		_btnCamera = (ImageButton) findViewById(R.id.btn_camera);
 		_btnSettings = (ImageButton) findViewById(R.id.btn_settings);
 		_btnSelectSourceVideo = (Button) findViewById(R.id.btn_select_video_source);
 		_btnSelectVideoDestination = (Button) findViewById(R.id.btn_select_video_destination);
@@ -63,6 +67,7 @@ public class EncodeActivity extends Activity{
 		_editTextContentToHide = (EditText) findViewById(R.id.edit_text_content_to_hide);
 		
 		_btnBack.setOnClickListener(onClickListener);
+		_btnCamera.setOnClickListener(onClickListener);
 		_btnSettings.setOnClickListener(onClickListener);
 		_btnSelectSourceVideo.setOnClickListener(onClickListener);
 		_btnSelectVideoDestination.setOnClickListener(onClickListener);
@@ -97,6 +102,14 @@ public class EncodeActivity extends Activity{
 			((ImageView) findViewById(R.id.img_view_valid_file_to_hide)).setImageResource(R.drawable.btn_check_buttonless_on);
 		}
 		
+	}
+	
+	private void recordVideo() {
+		Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+		
+	    if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+	        startActivityForResult(takeVideoIntent, RECORD_VIDEO); 
+	    }
 	}
 	
 	private void showDirectoryChooser() {
@@ -216,10 +229,13 @@ public class EncodeActivity extends Activity{
 				case R.id.btn_back:
 					finish();
 					break;
+				case R.id.btn_camera:
+					recordVideo();
+					break;
 				case R.id.btn_settings:
 					Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
 					startActivity(intent);
-					break;
+					break;					
 				case R.id.btn_select_video_source:
 					showFileChooser(CHOOSE_VIDEO_CONTAINER);
 					break;
@@ -234,6 +250,7 @@ public class EncodeActivity extends Activity{
 					break;
 				default:
 					Log.d("DEBUG", "There is a big problem there!");
+					break;
 			}
 		}
 	};

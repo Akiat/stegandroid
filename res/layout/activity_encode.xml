@@ -39,13 +39,28 @@
 	        android:text="@string/encode_video_string" />
 	
 	    <ImageButton
+	        android:id="@+id/btn_camera"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+   	        android:minHeight="45dip"
+   	        android:minWidth="25dip"
+	        android:layout_marginRight="7dip"
+	        android:layout_toLeftOf="@+id/btn_settings"
+	        android:layout_centerInParent="true"
+	        android:contentDescription="@string/back_string"
+	        android:background="@android:color/transparent"
+	        android:src="@drawable/video_camera" />
+
+   	    <ImageButton
 	        android:id="@+id/btn_settings"
 			android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_marginRight="7dp"
+   	        android:minHeight="45dip"
+   	        android:minWidth="25dip"
+	        android:layout_marginRight="7dip"
 	   	    android:layout_alignParentRight="true"
 	        android:layout_centerInParent="true"
-	        android:contentDescription="@string/back_string"
+	        android:contentDescription="@string/record_video_string"
 	        android:background="@android:color/transparent"
 	        android:src="@drawable/black_settings" />
 	       
