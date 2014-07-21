@@ -6,6 +6,7 @@ public class EncodeParameters {
 	private String _destVideoPath;
 	private String _textToHide;
 	private String _fileToHidePath;
+	private String _cryptographyKey;
 	private Boolean _useHideText;
 	
 	public EncodeParameters() {
@@ -46,6 +47,14 @@ public class EncodeParameters {
 	
 	public void setFileToHidePath(String path) {
 		_fileToHidePath = path;
+	}
+
+	public String getCryptographyKey() {
+		return _cryptographyKey;
+	}
+	
+	public void setCryptographyKey(String cryptographyKey) {
+		_cryptographyKey = cryptographyKey;
 	}
 	
 	public boolean isUsingHideText() {

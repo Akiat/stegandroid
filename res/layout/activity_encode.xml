@@ -157,6 +157,51 @@
 		        
 			</RelativeLayout>    	    	    	    
 
+	       	<!-- Cryptography key selection -->
+		        
+			<LinearLayout 
+			    android:id="@+id/linear_layout_cryptography_key"
+			    android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical">
+
+   				<TextView
+			    	android:layout_height="wrap_content"
+		    		android:layout_width="match_parent"
+		    		android:paddingLeft="10dp"
+		    		android:textSize="20sp"
+		    		android:text="@string/cryptography_string"
+		    		android:textColor="#000000"
+		   	 		style="?android:attr/listSeparatorTextViewStyle" />    	    	    	    
+				    
+				<RelativeLayout 
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:minHeight="45dip">
+
+					<EditText
+					    android:id="@+id/edit_text_cryptography_key"
+					    android:layout_width="fill_parent"
+					    android:layout_height="wrap_content"
+					    android:layout_marginLeft="10dp"
+					    android:layout_marginRight="10dp"
+					    android:layout_toLeftOf="@+id/img_view_valid_key_length"
+					    android:background="@android:color/transparent"
+					    android:hint="@string/enter_key_string"
+					    android:minHeight="45dip" />
+					
+					<ImageView
+			    		android:id="@+id/img_view_valid_key_length"
+					    android:layout_width="wrap_content"
+					    android:layout_height="wrap_content"
+						android:layout_centerInParent="true"
+						android:layout_alignParentRight="true"
+					    android:layout_marginRight="10dp"
+					    android:contentDescription="@string/empty_string"
+					    android:src="@drawable/ic_delete" />
+       	        </RelativeLayout>
+			</LinearLayout>
+			
 	       	<!-- Content selection -->
 	       	
 	       	<TextView
@@ -219,24 +264,36 @@
 	       	<RelativeLayout
 				android:id="@+id/relative_layout_content_hide_file"
 				android:layout_width="fill_parent"
-				android:layout_height="45dip"
-				android:visibility="gone">
+				android:layout_height="wrap_content"
+				android:minHeight="45dip">
 	       	    
-		        <Button
+	       	    <EditText
+		       	    android:id="@+id/edit_text_content_to_hide"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+				    android:minHeight="45dip"
+				    android:layout_marginLeft="10dp"
+				    android:layout_marginRight="10dp"
+				    android:layout_toLeftOf="@+id/img_view_valid_content_to_hide"
+				    android:background="@android:color/transparent"
+				    android:hint="@string/enter_text_hide_string"/>
+	       	    
+ 		        <Button
 		    		android:id="@+id/btn_select_file_to_hide"
 			        android:layout_width="fill_parent"
 			    	android:layout_height="wrap_content"
 			    	android:layout_marginLeft="10dp"
 			    	android:layout_marginRight="10dp"
 					android:gravity="left|center_vertical"
-					android:layout_alignParentLeft="true"
+				    android:layout_toLeftOf="@+id/img_view_valid_content_to_hide"
 					android:layout_centerInParent="true"
 					android:background="@android:color/transparent"
-					android:textSize="18sp"				    		
+					android:textSize="18sp"
+					android:visibility="gone"				    		
 					android:text="@string/click_select_file_hide_string"/>
 		        
 	  		    <ImageView
-		    		android:id="@+id/img_view_valid_file_to_hide"
+		    		android:id="@+id/img_view_valid_content_to_hide"
 				    android:layout_width="wrap_content"
 				    android:layout_height="wrap_content"
 				    android:layout_alignParentRight="true"
@@ -247,21 +304,13 @@
 		        
 			</RelativeLayout> 
        	
-	       	<EditText
-	       	    android:id="@+id/edit_text_content_to_hide"
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
-			    android:minHeight="45dip"
-			    android:layout_marginLeft="10dp"
-			    android:layout_marginRight="10dp"
-			    android:background="@android:color/transparent"
-			    android:hint="@string/enter_text_hide_string"/>
+	       	
 	       				
 	  		<!-- Process button -->
 	  	
 	      	<View 
 				android:layout_width="fill_parent"
-				android:layout_height="45dip"/>
+				android:layout_height="25dip"/>
 	  		
 	 	    <Button
 		        android:id="@+id/btn_encode"

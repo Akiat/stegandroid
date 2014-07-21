@@ -144,4 +144,16 @@ public class Configuration {
 		}
 		return new ArrayList<IDataAlgorithm>(_cryptographyAlgorithms);
 	}
+	
+	public CryptographyAlgorithmData getCryptographyAlgorithmDataByPath(String path) {
+		if (_cryptographyAlgorithms == null || path == null) {
+			return null;
+		}
+		for (CryptographyAlgorithmData tmp : _cryptographyAlgorithms) {
+			if (tmp.getPath().equals(path)) {
+				return tmp;
+			}
+		}
+		return null;
+	}
 }

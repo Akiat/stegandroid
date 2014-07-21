@@ -18,10 +18,11 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.stegandroid.R;
+import com.stegandroid.configuration.Preferences;
 import com.stegandroid.controller.EncodeParametersController;
 import com.stegandroid.directorydialog.ChoosenDirectoryListener;
 import com.stegandroid.directorydialog.DirectoryDialog;
@@ -34,6 +35,7 @@ public class EncodeActivity extends Activity{
 	private final int CHOOSE_FILE_CONTENT = 0;
 	private final int CHOOSE_VIDEO_CONTAINER = 1;
 	private final int RECORD_VIDEO = 2;
+	private final int SETTINGS_ACCESS = 3;
 
 	// Graphical components
 	private ImageButton _btnBack;
@@ -46,6 +48,8 @@ public class EncodeActivity extends Activity{
 	private CheckBox _checkBoxFileToHide;
 	private CheckBox _checkBoxTextToHide;
 	private EditText _editTextContentToHide;
+	private EditText _editTextCryptographyKey;
+	private LinearLayout _linearLayoutCryptographyKey;
 	
 	// Private attributes
 	private EncodeParameters _encodeParameters;
@@ -65,6 +69,8 @@ public class EncodeActivity extends Activity{
 		_checkBoxFileToHide = (CheckBox) findViewById(R.id.chk_box_file_to_hide);
 		_checkBoxTextToHide = (CheckBox) findViewById(R.id.chk_box_text_to_hide);
 		_editTextContentToHide = (EditText) findViewById(R.id.edit_text_content_to_hide);
+		_editTextCryptographyKey = (EditText) findViewById(R.id.edit_text_cryptography_key);
+		_linearLayoutCryptographyKey = (LinearLayout) findViewById(R.id.linear_layout_cryptography_key);
 		
 		_btnBack.setOnClickListener(onClickListener);
 		_btnCamera.setOnClickListener(onClickListener);
@@ -77,9 +83,13 @@ public class EncodeActivity extends Activity{
 		_checkBoxTextToHide.setChecked(true);
 		_checkBoxFileToHide.setOnCheckedChangeListener(onCheckedChangeListener);
 		_checkBoxTextToHide.setOnCheckedChangeListener(onCheckedChangeListener);
-		_editTextContentToHide.addTextChangedListener(onTextChangedListener);
+		_editTextCryptographyKey.addTextChangedListener(onTextChangedListenerCryptographyKey);
+		_editTextContentToHide.addTextChangedListener(onTextChangedListenerTextToHide);
 		
 		_encodeParameters = new EncodeParameters();
+		
+		updateImageViews();
+		updateLinearLayoutCryptographyVisibility();
 	}
 
 	@Override
@@ -88,20 +98,41 @@ public class EncodeActivity extends Activity{
 		getMenuInflater().inflate(R.menu.encode, menu);
 		return true;
 	}
+		
+	private void updateLinearLayoutCryptographyVisibility() {
+		if (Preferences.getInstance().getUseCryptography()) {
+			_linearLayoutCryptographyKey.setVisibility(View.VISIBLE);
+		} else {
+			_linearLayoutCryptographyKey.setVisibility(View.GONE);
+		}
+	}
 	
 	private void updateImageViews() {
-		if (_encodeParameters.getSrcVideoPath() != null && !_encodeParameters.getSrcVideoPath().isEmpty()) {
+		EncodeParametersController controller = new EncodeParametersController(true);
+		
+		if (controller.controlSrcVideoPath(_encodeParameters)) {
 			((ImageView) findViewById(R.id.img_view_valid_video_source)).setImageResource(R.drawable.btn_check_buttonless_on);
+		} else {
+			((ImageView) findViewById(R.id.img_view_valid_video_source)).setImageResource(R.drawable.ic_delete);
 		}
 
-		if (_encodeParameters.getDestVideoPath() != null && !_encodeParameters.getDestVideoPath().isEmpty()) {
+		if (controller.controlDestVideoPath(_encodeParameters)) {
 			((ImageView) findViewById(R.id.img_view_valid_video_destination)).setImageResource(R.drawable.btn_check_buttonless_on);
+		} else {
+			((ImageView) findViewById(R.id.img_view_valid_video_destination)).setImageResource(R.drawable.ic_delete);
 		}
 
-		if (_encodeParameters.getFileToHidePath() != null && !_encodeParameters.getFileToHidePath().isEmpty()) {
-			((ImageView) findViewById(R.id.img_view_valid_file_to_hide)).setImageResource(R.drawable.btn_check_buttonless_on);
+		if (controller.controlContentToHide(_encodeParameters)) {
+			((ImageView) findViewById(R.id.img_view_valid_content_to_hide)).setImageResource(R.drawable.btn_check_buttonless_on);
+		} else {
+			((ImageView) findViewById(R.id.img_view_valid_content_to_hide)).setImageResource(R.drawable.ic_delete);
 		}
 		
+		if (controller.controlCryptographyKey(_encodeParameters)) {
+			((ImageView) findViewById(R.id.img_view_valid_key_length)).setImageResource(R.drawable.btn_check_buttonless_on);
+		} else {
+			((ImageView) findViewById(R.id.img_view_valid_key_length)).setImageResource(R.drawable.ic_delete);
+		}
 	}
 	
 	private void recordVideo() {
@@ -146,6 +177,10 @@ public class EncodeActivity extends Activity{
 			case CHOOSE_FILE_CONTENT:
 				callbackFileChooserFileToHide(requestCode, resultCode, data);
 				break;
+			case SETTINGS_ACCESS:
+				updateLinearLayoutCryptographyVisibility();
+				updateImageViews();
+				break;
 			default:
 				Log.d("DEBUG", "There is a big problem there!");
 		}
@@ -179,7 +214,7 @@ public class EncodeActivity extends Activity{
 		EncodeParametersController controller;
 		
 		_encodeParameters.setTextToHide(_editTextContentToHide.getText().toString());
-		controller = new EncodeParametersController(this);
+		controller = new EncodeParametersController(false);
 		if (controller.controlAllData(_encodeParameters)){
 			
 		} else {
@@ -203,21 +238,26 @@ public class EncodeActivity extends Activity{
 		public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
 			if (arg0.getId() == R.id.chk_box_file_to_hide && arg1) {
 				_editTextContentToHide.setVisibility(View.GONE);
+				_btnSelectFileToHide.setVisibility(View.VISIBLE);
 				_checkBoxTextToHide.setChecked(false);
 				_encodeParameters.setUseHideText(false);
 			} else if (arg0.getId() == R.id.chk_box_file_to_hide) {
 				_editTextContentToHide.setVisibility(View.VISIBLE);
+				_btnSelectFileToHide.setVisibility(View.GONE);
 				_checkBoxTextToHide.setChecked(true);
 				_encodeParameters.setUseHideText(true);
 			} else if (arg0.getId() == R.id.chk_box_text_to_hide && arg1) {
-				((RelativeLayout) findViewById(R.id.relative_layout_content_hide_file)).setVisibility(View.GONE);
+				_btnSelectFileToHide.setVisibility(View.GONE);
+				_editTextContentToHide.setVisibility(View.VISIBLE);
 				_checkBoxFileToHide.setChecked(false);
-				_encodeParameters.setUseHideText(false);
-			} else {
-				((RelativeLayout) findViewById(R.id.relative_layout_content_hide_file)).setVisibility(View.VISIBLE);
-				_checkBoxFileToHide.setChecked(true);
 				_encodeParameters.setUseHideText(true);
+			} else {
+				_btnSelectFileToHide.setVisibility(View.VISIBLE);
+				_editTextContentToHide.setVisibility(View.GONE);
+				_checkBoxFileToHide.setChecked(true);
+				_encodeParameters.setUseHideText(false);
 			}
+			updateImageViews();
 		}
 	};
 	
@@ -234,7 +274,7 @@ public class EncodeActivity extends Activity{
 					break;
 				case R.id.btn_settings:
 					Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-					startActivity(intent);
+					startActivityForResult(intent, SETTINGS_ACCESS);
 					break;					
 				case R.id.btn_select_video_source:
 					showFileChooser(CHOOSE_VIDEO_CONTAINER);
@@ -255,13 +295,10 @@ public class EncodeActivity extends Activity{
 		}
 	};
 	
-	// TODO: Trouver un utilité à ça sinon le supprimer...
-	// Par exemple disable le bouton hide content si pas de texte
-	private TextWatcher onTextChangedListener = new TextWatcher() {
+	private TextWatcher onTextChangedListenerCryptographyKey = new TextWatcher() {
 	
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
-			
 		}
 		
 		@Override
@@ -270,7 +307,25 @@ public class EncodeActivity extends Activity{
 		
 		@Override
 		public void afterTextChanged(Editable s) {
-			
+			_encodeParameters.setCryptographyKey(s.toString());
+			updateImageViews();
+		}
+	};
+
+	private TextWatcher onTextChangedListenerTextToHide = new TextWatcher() {
+		
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+		}
+		
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+		}
+		
+		@Override
+		public void afterTextChanged(Editable s) {
+			_encodeParameters.setTextToHide(s.toString());
+			updateImageViews();
 		}
 	};
 	
