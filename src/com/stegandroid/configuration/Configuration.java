@@ -1,190 +1,147 @@
 package com.stegandroid.configuration;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+
+import android.content.Context;
+
+import com.stegandroid.algorithms.IDataAlgorithm;
+import com.stegandroid.algorithms.data.CryptographyAlgorithmData;
+import com.stegandroid.algorithms.data.SteganographyAlgorithmData;
+import com.stegandroid.algorithms.data.SteganographyAlgorithmData.SteganographyChannelType;
 
 public class Configuration {
 
-	private final String KEY_USE_AUDIO_CHANNEL = "com.stegandroid.USE_AUDIO_CHANNEL_KEY";
-	private final String KEY_AUDIO_ALGORITHM = "com.stegandroid.AUDIO_ALGORITHM_KEY";
-
-	private final String KEY_USE_VIDEO_CHANNEL = "com.stegandroid.USE_VIDEO_CHANNEL_KEY";
-	private final String KEY_VIDEO_ALGORITHM = "com.stegandroid.VIDEO_ALGORITHM_KEY";
+	private static Configuration s_instance = null;
 	
-	private final String KEY_USE_METADATA_CHANNEL = "com.stegandroid.USE_METADATA_CHANNEL_KEY";
-	private final String KEY_METADATA_ALGORITHM = "com.stegandroid.METADATA_ALGORITHM_KEY";
-	
-	private final String KEY_USE_CRYPTOGRAPHY = "com.stegandroid.USE_CRYPTOGRAPHY_KEY";
-	private final String KEY_CRYPTOGRAPHY_ALGORITHM = "com.stegandroid.CRYPTOGRAPHY_ALGORITHM_KEY";
-	
-	private final String FILE_PREFERENCE = "com.stegandroid.preferences";
-	
-	private Activity _mainActivity;
-	private boolean _useAudioChannel;
-	private boolean _useVideoChannel;
-	private boolean _useMetadataChannel;
-	private boolean _useCryptography;
-	private String _audioAlgorithm;
-	private String _videoAlgorithm;
-	private String _metadataAlgorithm;
-	private String _cryptographyAlgorithm;
-	// TODO: Complete the list of attributes
-
-	private static Configuration s_configuration;
-	
-	public static Configuration	getInstance() {
-		if (s_configuration == null) {
-			s_configuration = new Configuration();
-			s_configuration.init(null);
+	public static Configuration getInstance() {
+		if (s_instance == null) {
+			s_instance = new Configuration();
 		}
-		return (s_configuration);
+		return s_instance;
 	}
+
+	private final String RAW_PATH = "raw";
+	private final String AUDIO_XML_PATH = "audio";
+	private final String VIDEO_XML_PATH = "video";
+	private final String CRYPTO_XML_PATH = "crypto";
+	private final String METADATA_XML_PATH = "metadata";
+	private final String CHILD_STEGANOGRAPHY_ALGORITHM = "algorithm";
+	private final String CHILD_CRYPTOGRAPHY_ALGORITHM = "algorithm";
 	
-	public static Configuration	getInstance(Activity mainActivity) {
-		if (s_configuration == null) {
-			s_configuration = new Configuration();
-			s_configuration.init(mainActivity);
-		}
-		return (s_configuration);
-	}
+	private List<SteganographyAlgorithmData> _steganographyAlgorithms;
+	private List<CryptographyAlgorithmData> _cryptographyAlgorithms;
 	
 	private Configuration() {
+		_steganographyAlgorithms = new ArrayList<SteganographyAlgorithmData>();
+		_cryptographyAlgorithms = new ArrayList<CryptographyAlgorithmData>();
+	}
+	
+	public boolean loadData(Context context){
+		boolean ret = true;
 		
-	}
-	
-	private void init(Activity activity) {
-		this._useAudioChannel = false;
-		this._useVideoChannel = false;
-		this._useMetadataChannel = false;
-		this._useCryptography = false;
-		this._audioAlgorithm = "";
-		this._videoAlgorithm = "";
-		this._metadataAlgorithm = "";
-		this._cryptographyAlgorithm = "";
-		this._mainActivity = activity;
-	}
-	
-	public boolean getUseAudioChannel() {
-		return _useAudioChannel;
-	}
-
-	public void setUseAudioChannel(boolean useAudioChannel) {
-		this._useAudioChannel = useAudioChannel;
-		saveData();
-	}
-
-	public boolean getUseVideoChannel() {
-		return _useVideoChannel;
-	}
-
-	public void setUseVideoChannel(boolean useVideoChannel) {
-		this._useVideoChannel = useVideoChannel;
-		saveData();
-	}
-
-	public boolean getUseMetadataChannel() {
-		return _useMetadataChannel;
-	}
-
-	public void setUseMetadataChannel(boolean useMetadataChannel) {
-		this._useMetadataChannel = useMetadataChannel;
-		saveData();
-	}
-	
-	public boolean getUseCryptography() {
-		return _useCryptography;
-	}
-
-	public void setUseCryptography(boolean useCryptography) {
-		this._useCryptography = useCryptography;
-		saveData();
-	}
-
-	public String getAudioAlgorithm() {
-		return _audioAlgorithm;
-	}
-
-	public void setAudioAlgorithm(String audioAlgorithm) {
-		this._audioAlgorithm = audioAlgorithm;
-		saveData();
-	}
-
-	public String getVideoAlgorithm() {
-		return _videoAlgorithm;
-	}
-
-	public void setVideoAlgorithm(String videoAlgorithm) {
-		this._videoAlgorithm = videoAlgorithm;
-		saveData();
-	}
-
-	public String getMetadataAlgorithm() {
-		return _metadataAlgorithm;
-	}
-
-	public void setMetadataAlgorithm(String metadataAlgorithm) {
-		this._metadataAlgorithm = metadataAlgorithm;
-		saveData();
-	}
-
-	public String getCryptographyAlgorithm() {
-		return _cryptographyAlgorithm;
-	}
-
-	public void setCryptographyAlgorithm(String cryptographyAlgorithm) {
-		this._cryptographyAlgorithm = cryptographyAlgorithm;
-		saveData();
-	}
-	
-	public void saveData() {
-		SharedPreferences sharedPref;
-		SharedPreferences.Editor editor;
-
-		if (_mainActivity == null) {
-			Log.d("DEBUG", "Configuration: Unable to save data...");
-			return;
+		if (context == null) {
+			return false;
 		}
-		
-		sharedPref = _mainActivity.getSharedPreferences(FILE_PREFERENCE, Context.MODE_PRIVATE);
-		editor = sharedPref.edit();
-
-		editor.putBoolean(KEY_USE_AUDIO_CHANNEL, _useAudioChannel);
-		editor.putBoolean(KEY_USE_VIDEO_CHANNEL, _useVideoChannel);
-		editor.putBoolean(KEY_USE_METADATA_CHANNEL, _useMetadataChannel);
-		editor.putBoolean(KEY_USE_CRYPTOGRAPHY, _useCryptography);
-		
-		editor.putString(KEY_AUDIO_ALGORITHM, _audioAlgorithm);
-		editor.putString(KEY_VIDEO_ALGORITHM, _videoAlgorithm);
-		editor.putString(KEY_METADATA_ALGORITHM, _metadataAlgorithm);
-		editor.putString(KEY_CRYPTOGRAPHY_ALGORITHM, _cryptographyAlgorithm);
-		
-		if (!editor.commit()) {
-			Log.d("DEBUG", "Error while commiting preferences");
-		}
+		ret &= loadSteganographyAlgorithmData(context, AUDIO_XML_PATH, SteganographyChannelType.AUDIO);
+		ret &= loadSteganographyAlgorithmData(context, VIDEO_XML_PATH, SteganographyChannelType.VIDEO);
+		ret &= loadSteganographyAlgorithmData(context, METADATA_XML_PATH, SteganographyChannelType.METADATA);
+		ret &= loadCryptographyAlgorithmData(context, CRYPTO_XML_PATH);
+		return ret;
 	}
 	
-	public void loadData() {
-		SharedPreferences sharedPref;
+	private boolean loadSteganographyAlgorithmData(Context context, String path, SteganographyChannelType type) {
+		SAXBuilder builder = new SAXBuilder();
+		int identifier;
+		InputStream input;
+		boolean ret = false;
 		
-		if (_mainActivity == null) {
-			Log.d("DEBUG", "Configuration: Unable to load data...");
-			return;
+		identifier = context.getResources().getIdentifier(RAW_PATH + '/' + path, RAW_PATH, context.getPackageName());
+		input = context.getResources().openRawResource(identifier);
+	
+		try {
+			Document document = (Document) builder.build(input);
+			Element rootNode = document.getRootElement();
+			List<Element> list = rootNode.getChildren(CHILD_STEGANOGRAPHY_ALGORITHM);
+	 
+			for (int i = 0; i < list.size(); i++) {
+			   Element node = (Element) list.get(i);
+			   SteganographyAlgorithmData data = new SteganographyAlgorithmData();
+			   data.setDisplayName(node.getChildText("display"));
+			   data.setPath(node.getChildText("path"));
+			   data.setSteganographyChannelType(type);
+			   if (_steganographyAlgorithms != null) {
+				   _steganographyAlgorithms.add(data);
+			   }
+			}
+		   input.close();
+		   ret = true;
+		} catch (JDOMException jdomex) {
+			System.out.println(jdomex.getMessage());
+		} catch (IOException io) {
+			System.out.println(io.getMessage());
 		}
-		
-		sharedPref = _mainActivity.getSharedPreferences(FILE_PREFERENCE, Context.MODE_PRIVATE);
-
-		_useAudioChannel = sharedPref.getBoolean(KEY_USE_AUDIO_CHANNEL, false);
-		_useVideoChannel = sharedPref.getBoolean(KEY_USE_VIDEO_CHANNEL, false);
-		_useMetadataChannel = sharedPref.getBoolean(KEY_USE_METADATA_CHANNEL, false);
-		_useCryptography = sharedPref.getBoolean(KEY_USE_CRYPTOGRAPHY, false);
-		
-		_audioAlgorithm = sharedPref.getString(KEY_AUDIO_ALGORITHM, "");
-		_videoAlgorithm = sharedPref.getString(KEY_VIDEO_ALGORITHM, "");
-		_metadataAlgorithm = sharedPref.getString(KEY_METADATA_ALGORITHM, "");
-		_cryptographyAlgorithm = sharedPref.getString(KEY_CRYPTOGRAPHY_ALGORITHM, "");
+		return ret;
 	}
 	
+	private boolean loadCryptographyAlgorithmData(Context context, String path) {
+		SAXBuilder builder = new SAXBuilder();
+		int identifier;
+		InputStream input;
+		boolean ret = false;
+		
+		identifier = context.getResources().getIdentifier(RAW_PATH + '/' + path, RAW_PATH, context.getPackageName());
+		input = context.getResources().openRawResource(identifier);
+	
+		try {
+			Document document = (Document) builder.build(input);
+			Element rootNode = document.getRootElement();
+			List<Element> list = rootNode.getChildren(CHILD_CRYPTOGRAPHY_ALGORITHM);
+	 
+			for (int i = 0; i < list.size(); i++) {
+			   Element node = (Element) list.get(i);
+			   CryptographyAlgorithmData data = new CryptographyAlgorithmData();
+			   data.setDisplayName(node.getChildText("display"));
+			   data.setKeyLength(Integer.parseInt(node.getChildText("keylength")));
+			   data.setPath(node.getChildText("path"));
+			   if (_cryptographyAlgorithms != null) {
+				   _cryptographyAlgorithms.add(data);
+			   }
+			}
+		   input.close();
+		   ret = true;
+		} catch (JDOMException jdomex) {
+			System.out.println(jdomex.getMessage());
+		} catch (IOException io) {
+			System.out.println(io.getMessage());
+		}
+		return ret;
+	}
+		
+	public List<IDataAlgorithm> getSteganographyAlgorithmByType(SteganographyChannelType type) {
+		List<IDataAlgorithm> ret = new ArrayList<IDataAlgorithm>();
+		
+		if (_steganographyAlgorithms != null) {
+			for (SteganographyAlgorithmData tmp : _steganographyAlgorithms) {
+				if (tmp.getSteganographyChannelType() == type) {
+					ret.add(tmp);
+				}
+			}
+		}
+		return ret;
+	}
+	
+	public List<IDataAlgorithm> getCryptographyAlgorithms() {
+		if (_cryptographyAlgorithms == null) {
+			return new ArrayList<IDataAlgorithm>();
+		}
+		return new ArrayList<IDataAlgorithm>(_cryptographyAlgorithms);
+	}
 }

@@ -2,7 +2,7 @@ package com.stegandroid.process;
 
 import com.stegandroid.algorithms.AlgorithmFactory;
 import com.stegandroid.algorithms.ISteganographyAlgorithm;
-import com.stegandroid.configuration.Configuration;
+import com.stegandroid.configuration.Preferences;
 import com.stegandroid.mp4.Mp4ChannelExtracter;
 import com.stegandroid.parameters.EncodeParameters;
 import com.stegandroid.tools.Utils;
@@ -38,8 +38,8 @@ public class EncodeProcess {
 		extracter = new Mp4ChannelExtracter();
 		videoSignal = extracter.extractH264(parameters.getSrcVideoPath());
 		
-		if (contentToHide != null && contentToHide.length > 0 && Configuration.getInstance().getUseVideoChannel()) {
-			videoAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getVideoAlgorithm());
+		if (contentToHide != null && contentToHide.length > 0 && Preferences.getInstance().getUseVideoChannel()) {
+			videoAlgorithm = AlgorithmFactory.getSteganographyAlgorithmInstanceFromName(Preferences.getInstance().getVideoAlgorithm());
 			if (videoAlgorithm != null) {
 				videoSignal = videoAlgorithm.encode(videoSignal, contentToHide);
 			}
@@ -55,8 +55,8 @@ public class EncodeProcess {
 		extracter = new Mp4ChannelExtracter();
 		audioSignal = extracter.extractH264(parameters.getSrcVideoPath());
 		
-		if (contentToHide != null && contentToHide.length > 0 && Configuration.getInstance().getUseAudioChannel()) {
-			audioAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getAudioAlgorithm());
+		if (contentToHide != null && contentToHide.length > 0 && Preferences.getInstance().getUseAudioChannel()) {
+			audioAlgorithm = AlgorithmFactory.getSteganographyAlgorithmInstanceFromName(Preferences.getInstance().getAudioAlgorithm());
 			if (audioAlgorithm != null) {
 				audioSignal = audioAlgorithm.encode(audioSignal, contentToHide);
 			}
@@ -72,8 +72,8 @@ public class EncodeProcess {
 		extracter = new Mp4ChannelExtracter();
 		metadataSignal = extracter.extractH264(parameters.getSrcVideoPath());
 		
-		if (contentToHide != null && contentToHide.length > 0 && Configuration.getInstance().getUseMetadataChannel()) {
-			metadataAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getMetadataAlgorithm());
+		if (contentToHide != null && contentToHide.length > 0 && Preferences.getInstance().getUseMetadataChannel()) {
+			metadataAlgorithm = AlgorithmFactory.getSteganographyAlgorithmInstanceFromName(Preferences.getInstance().getMetadataAlgorithm());
 			if (metadataAlgorithm != null) {
 				metadataSignal = metadataAlgorithm.encode(metadataSignal, contentToHide);
 			}

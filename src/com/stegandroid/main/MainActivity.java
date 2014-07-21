@@ -15,6 +15,7 @@ import com.stegandroid.activities.EncodeActivity;
 import com.stegandroid.activities.SettingsActivity;
 import com.stegandroid.activities.SocialNetworkActivity;
 import com.stegandroid.configuration.Configuration;
+import com.stegandroid.configuration.Preferences;
 import com.stegandroid.error.ErrorManager;
 
 public class MainActivity extends Activity {
@@ -30,7 +31,8 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Configuration.getInstance(this).loadData();
+        Configuration.getInstance().loadData(this);
+        Preferences.getInstance(this).loadData();
         
         _btnEncode = (Button) findViewById(R.id.btn_main_choose_encode);
         _btnDecode = (Button) findViewById(R.id.btn_main_choose_decode);

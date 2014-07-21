@@ -16,21 +16,18 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 
 import com.stegandroid.R;
+import com.stegandroid.algorithms.IDataAlgorithm;
+import com.stegandroid.algorithms.data.SteganographyAlgorithmData.SteganographyChannelType;
 import com.stegandroid.configuration.Configuration;
-import com.stegandroid.tools.Utils;
+import com.stegandroid.configuration.Preferences;
 
 public class SettingsActivity extends Activity {
-	
-	private final String AUDIO_PACKAGE_NAME = "com.stegandroid.algorithms.steganography.audio";
-	private final String VIDEO_PACKAGE_NAME = "com.stegandroid.algorithms.steganography.video";
-	private final String METADATA_PACKAGE_NAME = "com.stegandroid.algorithms.steganography.metadata";
-	private final String CRYPTOGRAPHY_PACKAGE_NAME = "com.stegandroid.algorithms.cryptography";
-	
+		
 	// Graphical components
 	private Spinner		_spinAudioAlrogithm;
 	private Spinner		_spinVideoAlrogithm;
@@ -66,32 +63,37 @@ public class SettingsActivity extends Activity {
 		_mapClasses = new HashMap<String, String>();
 		
 		this.initCheckboxes();
-		this.initSpinnerContentFromPackageName(this._spinAudioAlrogithm, AUDIO_PACKAGE_NAME, Configuration.getInstance().getAudioAlgorithm());
-		this.initSpinnerContentFromPackageName(this._spinVideoAlrogithm, VIDEO_PACKAGE_NAME, Configuration.getInstance().getVideoAlgorithm());
-		this.initSpinnerContentFromPackageName(this._spinMetadataAlrogithm, METADATA_PACKAGE_NAME, Configuration.getInstance().getMetadataAlgorithm());
-		this.initSpinnerContentFromPackageName(this._spinCryptographyAlgorithm, CRYPTOGRAPHY_PACKAGE_NAME, Configuration.getInstance().getCryptographyAlgorithm());
+		this.initSpinnerContentFromList(this._spinAudioAlrogithm, 
+				Configuration.getInstance().getSteganographyAlgorithmByType(SteganographyChannelType.AUDIO), 
+				Preferences.getInstance().getAudioAlgorithm());
+		this.initSpinnerContentFromList(this._spinVideoAlrogithm, 
+				Configuration.getInstance().getSteganographyAlgorithmByType(SteganographyChannelType.VIDEO),
+				Preferences.getInstance().getVideoAlgorithm());
+		this.initSpinnerContentFromList(this._spinMetadataAlrogithm,
+				Configuration.getInstance().getSteganographyAlgorithmByType(SteganographyChannelType.METADATA), 
+				Preferences.getInstance().getMetadataAlgorithm());
+		this.initSpinnerContentFromList(this._spinCryptographyAlgorithm, 
+				Configuration.getInstance().getCryptographyAlgorithms(), 
+				Preferences.getInstance().getCryptographyAlgorithm());
 		this.actualizeSpinners();
 	}
 	
 	private void initCheckboxes() {
-		_chkboxAudioChannel.setChecked(Configuration.getInstance().getUseAudioChannel());
+		_chkboxAudioChannel.setChecked(Preferences.getInstance().getUseAudioChannel());
 		_chkboxAudioChannel.setOnCheckedChangeListener(onCheckedChangeListener);
 		
-		_chkboxVideoChannel.setChecked(Configuration.getInstance().getUseVideoChannel());
+		_chkboxVideoChannel.setChecked(Preferences.getInstance().getUseVideoChannel());
 		_chkboxVideoChannel.setOnCheckedChangeListener(onCheckedChangeListener);
 		
-		_chkboxMetadataChannel.setChecked(Configuration.getInstance().getUseMetadataChannel());
+		_chkboxMetadataChannel.setChecked(Preferences.getInstance().getUseMetadataChannel());
 		_chkboxMetadataChannel.setOnCheckedChangeListener(onCheckedChangeListener);		
 
-		_chkboxCryptography.setChecked(Configuration.getInstance().getUseCryptography());
+		_chkboxCryptography.setChecked(Preferences.getInstance().getUseCryptography());
 		_chkboxCryptography.setOnCheckedChangeListener(onCheckedChangeListener);		
 	}
 	
-	private void initSpinnerContentFromPackageName(Spinner spinner, String packageName, String defaultValue) {
-		List<String> classes;
+	private void initSpinnerContentFromList(Spinner spinner, List<IDataAlgorithm> list, String defaultValue) {
 		ArrayAdapter<String> adaptater;
-		String readable;
-		String fullpath;
 		int idx = 0;
 		
 		if (_mapClasses == null)
@@ -99,14 +101,11 @@ public class SettingsActivity extends Activity {
 		
 		adaptater = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new ArrayList<String>());
 		adaptater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		classes = Utils.getClassesPathFromPackage(this, packageName);
-		for (int i = 0; i < classes.size(); ++i) 
-		{		
-			fullpath = classes.get(i);
-			readable = Utils.convertClassNameToReadableName(fullpath);
-			_mapClasses.put(readable, fullpath);
-			adaptater.add(readable);
-			if (fullpath.equals(defaultValue)) {
+		for (int i = 0; i < list.size(); ++i) {
+			IDataAlgorithm algorithm = list.get(i);
+			_mapClasses.put(algorithm.getDisplayName(), algorithm.getPath());
+			adaptater.add(algorithm.getDisplayName());
+			if (algorithm.getPath().equals(defaultValue)) {
 				idx = i;
 			}
 		}
@@ -163,16 +162,16 @@ public class SettingsActivity extends Activity {
 		public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
 			switch (arg0.getId()) {
 				case R.id.chk_box_audio_channel:
-					Configuration.getInstance().setUseAudioChannel(arg1);
+					Preferences.getInstance().setUseAudioChannel(arg1);
 					break;
 				case R.id.chk_box_video_channel:
-					Configuration.getInstance().setUseVideoChannel(arg1);
+					Preferences.getInstance().setUseVideoChannel(arg1);
 					break;
 				case R.id.chk_box_metadata_channel:
-					Configuration.getInstance().setUseMetadataChannel(arg1);
+					Preferences.getInstance().setUseMetadataChannel(arg1);
 					break;
 				case R.id.chk_box_cryptography:
-					Configuration.getInstance().setUseCryptography(arg1);
+					Preferences.getInstance().setUseCryptography(arg1);
 					break;
 				default:
 					Log.d("DEBUG", "There is a big problem there!");
@@ -191,30 +190,32 @@ public class SettingsActivity extends Activity {
 				case R.id.spinner_audio_algorithm:
 					key = (String) _spinAudioAlrogithm.getSelectedItem();
 					if (_mapClasses.containsKey(key))
-						Configuration.getInstance().setAudioAlgorithm(_mapClasses.get(key));
+						Preferences.getInstance().setAudioAlgorithm(_mapClasses.get(key));
 					else
-						Configuration.getInstance().setAudioAlgorithm(null);
+						Preferences.getInstance().setAudioAlgorithm(null);
 					break;
 				case R.id.spinner_video_algorithm:
 					key = (String) _spinVideoAlrogithm.getSelectedItem();
 					if (_mapClasses.containsKey(key))
-						Configuration.getInstance().setVideoAlgorithm(_mapClasses.get(key));
+						Preferences.getInstance().setVideoAlgorithm(_mapClasses.get(key));
 					else
-						Configuration.getInstance().setVideoAlgorithm(null);
+						Preferences.getInstance().setVideoAlgorithm(null);
 					break;
 				case R.id.spinner_metadata_algorithm:
 					key = (String) _spinMetadataAlrogithm.getSelectedItem();
 					if (_mapClasses.containsKey(key))
-						Configuration.getInstance().setMetadataAlgorithm(_mapClasses.get(key));
+						Preferences.getInstance().setMetadataAlgorithm(_mapClasses.get(key));
 					else
-						Configuration.getInstance().setMetadataAlgorithm(null);
+						Preferences.getInstance().setMetadataAlgorithm(null);
 					break;
 				case R.id.spinner_cryptography_algorithm:
 					key = (String) _spinCryptographyAlgorithm.getSelectedItem();
-					if (_mapClasses.containsKey(key))
-						Configuration.getInstance().setCryptographyAlgorithm(_mapClasses.get(key));
+					if (_mapClasses.containsKey(key)) {
+						System.out.println("Save de crypto: " + _mapClasses.get(key));
+						Preferences.getInstance().setCryptographyAlgorithm(_mapClasses.get(key));
+					}
 					else
-						Configuration.getInstance().setCryptographyAlgorithm(null);
+						Preferences.getInstance().setCryptographyAlgorithm(null);
 					break;
 				default:
 					Log.d("DEBUG", "There is a big problem there!");
