@@ -2,9 +2,9 @@ package com.stegandroid.algorithms.cryptography;
 
 import com.stegandroid.algorithms.ICryptographyAlgorithm;
 
-public class AdvancedEncryptionStandard implements ICryptographyAlgorithm {
+abstract class AdvancedEncryptionStandard implements ICryptographyAlgorithm {
 
-	private enum AESType {
+	protected enum AESType {
 		AES_128(10, 4),
 		AES_192(12, 6),
 		AES_256(14, 8),
@@ -78,18 +78,12 @@ public class AdvancedEncryptionStandard implements ICryptographyAlgorithm {
 	public AdvancedEncryptionStandard() {
 	}
 	
-	@Override
-	public byte[] encrypt(byte[] message, byte[] key) {
+	protected byte[] encryptionProcess(AESType type, byte[] message, byte[] key) {
 		byte[][] cipher;
 		byte[][][] roundKeys;
 		AESType aesType;
 		
-		aesType = getAesType(key);
-		if (aesType == AESType.AES_NONE) {
-			System.out.println("Invalid Key Lenght");
-			return null;
-		}
-		
+		aesType = type;		
 		cipher = mapInputData(message);
 		roundKeys = constructRoundKeys(key, aesType);
 		
@@ -109,18 +103,12 @@ public class AdvancedEncryptionStandard implements ICryptographyAlgorithm {
 		return unmapData(cipher);
 	}
 	
-	@Override
-	public byte[] decrypt(byte[] cipher, byte[] key) {
+	protected byte[] decryptionProcess(AESType type, byte[] cipher, byte[] key) {
 		byte[][] message;
 		byte[][][] roundKeys;
 		AESType aesType;
 		
-		aesType = getAesType(key);
-		if (aesType == AESType.AES_NONE) {
-			System.out.println("Invalid Key Lenght");
-			return null;
-		}
-		
+		aesType = type;
 		message = mapInputData(cipher);
 		roundKeys = constructRoundKeys(key, aesType);
 		
@@ -191,26 +179,6 @@ public class AdvancedEncryptionStandard implements ICryptographyAlgorithm {
 			}
 		}
 		return result;
-	}
-	
-	private AESType getAesType(byte[] key) {
-		AESType res;
-		
-		switch (key.length) {
-			case 16:
-				res = AESType.AES_128;
-				break;
-			case 24:
-				res = AESType.AES_192;
-				break;
-			case 32:
-				res = AESType.AES_256;
-				break;
-			default:
-				res = AESType.AES_NONE;
-				break;
-		}
-		return res;
 	}
 		
 	// Encryption Process functions
