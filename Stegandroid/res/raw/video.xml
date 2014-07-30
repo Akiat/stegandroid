@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<algorithms>
+
+   	<algorithm>
+	    <display>Video Algorithm 1</display>
+	    <path>com.stegandroid.algorithms.steganography.video.VideoAlgorithm1</path>
+	</algorithm>
+	
+	<algorithm>
+	    <display>Video Algorithm 2</display>
+	    <path>com.stegandroid.algorithms.steganography.video.VideoAlgorithm2</path>
+	</algorithm>    
+
+</algorithms>

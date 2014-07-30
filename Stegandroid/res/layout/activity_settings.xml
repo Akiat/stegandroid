@@ -1,0 +1,219 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:context=".SettingsActivity" >
+     
+	<!-- Title bar -->
+      
+	<LinearLayout 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:background="#222222"
+        android:minHeight="45dip"
+		android:orientation="horizontal">
+	  
+		<ImageButton
+			android:id="@+id/btn_back"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+	        android:minHeight="45dip"
+      		android:minWidth="25dip"
+			android:layout_marginLeft="7dp"
+			android:contentDescription="@string/back_string"
+			android:background="@android:color/transparent"
+			android:src="@drawable/ic_ab_back_holo_dark_am" />
+		 	    
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:textSize="22sp"
+			android:paddingTop="10dp"
+			android:paddingLeft="5dp"
+			android:paddingBottom="10dp"
+			android:textColor="#FFFFFF"
+			android:text="@string/settings_string" />
+	 
+	</LinearLayout>
+
+    <!-- Content -->
+      
+	<ScrollView
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+	        
+		<LinearLayout 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
+       
+			<!-- Audio settings -->
+			<TextView
+				android:layout_height="wrap_content"
+				android:layout_width="match_parent"
+				android:paddingLeft="10dp"
+				android:text="@string/audio_string"
+				android:textSize="20sp"
+				android:textColor="#000000"
+				style="?android:attr/listSeparatorTextViewStyle" />
+			
+			<RelativeLayout 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content">
+			      
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:paddingLeft="10dp"
+					android:layout_alignParentLeft="true"
+					android:layout_centerInParent="true"
+					android:textSize="18sp"				    		
+					android:text="@string/use_audio_channel_string"/>
+				        
+				<CheckBox
+					android:id="@+id/chk_box_audio_channel"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:button="@drawable/checkbox_selector"
+					android:layout_alignParentRight="true"/>
+			       	        
+			</RelativeLayout>    	    	    	    
+			     	
+			<Spinner
+				android:id="@+id/spinner_audio_algorithm"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="5dp"
+				android:layout_marginRight="5dp"
+				android:prompt="@string/audio_channel_string"/>	    
+	
+	       	<!-- Video settings -->
+			
+			<TextView
+		    	android:layout_height="wrap_content"
+	    		android:layout_width="match_parent"
+	    		android:paddingLeft="10dp"
+	    		android:text="@string/video_string"
+	    		android:textSize="20sp"
+	    		android:textColor="#000000"
+	   	 		style="?android:attr/listSeparatorTextViewStyle" />
+
+	       <RelativeLayout 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content">
+        
+		        <TextView
+		    		android:layout_width="wrap_content"
+			    	android:layout_height="match_parent"
+			    	android:paddingLeft="10dp"
+					android:layout_alignParentLeft="true"
+					android:layout_centerInParent="true"	    		
+		    		android:textSize="18sp"				    		
+					android:text="@string/use_video_channel_string"/>
+		           
+		        <CheckBox
+			        android:id="@+id/chk_box_video_channel"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:button="@drawable/checkbox_selector"
+					android:layout_alignParentRight="true"/>
+	        	        
+			</RelativeLayout>    	    	    	    
+		
+		    <Spinner
+		        android:id="@+id/spinner_video_algorithm"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content" 
+		        android:layout_marginLeft="5dp"
+		        android:layout_marginRight="5dp"
+		        android:prompt="@string/video_channel_string"/>
+       
+			<!-- Metadata settings -->
+       
+			<TextView
+		    	android:layout_height="wrap_content"
+	    		android:layout_width="match_parent"
+	    		android:paddingLeft="10dp"
+	    		android:textSize="20sp"
+	    		android:text="@string/metadata_string"
+	    		android:textColor="#000000"
+	   	 		style="?android:attr/listSeparatorTextViewStyle" />
+		
+	       <RelativeLayout 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content">
+        
+		        <TextView
+		    		android:layout_width="wrap_content"
+			    	android:layout_height="match_parent"
+			    	android:paddingLeft="10dp"
+					android:layout_alignParentLeft="true"
+					android:layout_centerInParent="true"	    		
+		    		android:textSize="18sp"				    		
+					android:text="@string/use_metadata_channel_string"/>
+		           
+		        <CheckBox
+			        android:id="@+id/chk_box_metadata_channel"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:button="@drawable/checkbox_selector"
+					android:layout_alignParentRight="true"/>
+	        	        
+			</RelativeLayout>    	    	    	    
+		
+			<Spinner
+		        android:id="@+id/spinner_metadata_algorithm"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+	   	        android:layout_marginLeft="5dp"
+		        android:layout_marginRight="5dp"
+		        android:prompt="@string/metadata_channel_string"/>
+
+			<!-- Cryptography settings -->
+       
+			<TextView
+		    	android:layout_height="wrap_content"
+	    		android:layout_width="match_parent"
+	    		android:paddingLeft="10dp"
+	    		android:textSize="20sp"
+	    		android:text="@string/cryptography_string"
+	    		android:textColor="#000000"
+	   	 		style="?android:attr/listSeparatorTextViewStyle" />    	    	    	    
+		
+			<RelativeLayout 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content">
+        
+		        <TextView
+		    		android:layout_width="wrap_content"
+			    	android:layout_height="match_parent"
+			    	android:paddingLeft="10dp"
+					android:layout_alignParentLeft="true"
+					android:layout_centerInParent="true"	    		
+		    		android:textSize="18sp"				    		
+					android:text="@string/use_cryptography_string"/>
+		           
+		        <CheckBox
+			        android:id="@+id/chk_box_cryptography"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:button="@drawable/checkbox_selector"
+					android:layout_alignParentRight="true"/>
+	        	        
+			</RelativeLayout>
+		
+			<Spinner
+		        android:id="@+id/spinner_cryptography_algorithm"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+	   	        android:layout_marginLeft="5dp"
+		        android:layout_marginRight="5dp"
+		        android:prompt="@string/metadata_channel_string"/>
+		
+		</LinearLayout>
+		
+	</ScrollView>
+	
+</LinearLayout>
+

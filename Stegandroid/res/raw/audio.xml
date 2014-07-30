@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<algorithms>
+    
+	<algorithm>
+	    <display>Audio Algorithm 1</display>
+	    <path>com.stegandroid.algorithms.steganography.audio.AudioAlgorithm1</path>
+	</algorithm>
+	
+	<algorithm>
+	    <display>Audio Algorithm 2</display>
+	    <path>com.stegandroid.algorithms.steganography.audio.AudioAlgorithm2</path>
+	</algorithm>    
+	
+</algorithms>
