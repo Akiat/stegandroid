@@ -1,6 +1,7 @@
 package com.stegandroidtest.main;
 
 import com.stegandroid.configuration.Preferences;
+import com.stegandroid.mp4.MP4MediaReader;
 import com.stegandroid.parameters.EncodeParameters;
 import com.stegandroid.process.DecodeProcess;
 import com.stegandroid.process.EncodeProcess;
@@ -9,7 +10,16 @@ public class Main {
 
 	public static void main(String[] args) {
 		testEncode();
-		System.out.println("Finished");
+	}
+	
+	public static void testFps() {
+		MP4MediaReader reader = new MP4MediaReader();
+		reader.loadData("sample\\Evanescence_-_Bring_Me_To_Life.mp4");
+//		reader.loadData("sample\\20140328_001137.mp4");
+			
+		System.out.println(reader.getFramePerSeconds());
+		System.out.println(reader.getTimescale() / reader.getDurationPerSample());
+		reader.close();
 	}
 	
 	public static void testEncode() {
@@ -18,9 +28,10 @@ public class Main {
 		parameters.setCryptographyKey("This is a key!!!");
 		parameters.setDestinationVideoDirectory("sample\\");
 		parameters.setSourceVideoPath("sample\\Evanescence_-_Bring_Me_To_Life.mp4");
-		for (int i = 0; i < 500; ++i) {
+		for (int i = 0; i < 10000; ++i) {
 			parameters.setTextToHide(parameters.getTextToHide() + "This is a text to hide");
 		}
+//		parameters.setTextToHide("A");
 		parameters.setHidingText(true);
 		
 		// Preferences

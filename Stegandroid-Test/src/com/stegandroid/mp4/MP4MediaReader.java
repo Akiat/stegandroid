@@ -20,6 +20,7 @@ public class MP4MediaReader {
 
 	private final String VIDEO_TRACKBOX_PATH = "/moov/trak/mdia/minf/stbl/stsd/avc1/../../../../../";
 	private final String VIDEO_CONFIGURATION_BOX_PATH = "mdia/minf/stbl/stsd/avc1/avcC";
+	private final String VIDEO_MP4_HANDLER = "vide";
 	
 	private final String AUDIO_TRACKBOX_PATH = "/moov/trak/mdia/minf/stbl/stsd/mp4a/../../../../../";
 	private final String AUDIO_CONFIGURATION_BOX_PATH = "mdia/minf/stbl/stsd/mp4a/esds";
@@ -110,10 +111,13 @@ public class MP4MediaReader {
         for (TrackBox trackBox : trackBoxes) {
             movie.addTrack(new Mp4TrackImpl(trackBox));
         }
-        track = movie.getTracks().get(0);
+    	track = movie.getTracks().get(0);
+        if (movie.getTracks().get(1).getHandler().equals(VIDEO_MP4_HANDLER)) {
+        	track = movie.getTracks().get(1);
+        }
 		duration = track.getDuration();
 		durationPerSample = duration / track.getSamples().size();
-        fps = (double) track.getTrackMetaData().getTimescale() / durationPerSample;
+        fps = (double)  track.getTrackMetaData().getTimescale() / durationPerSample;
 		return fps;
 	}
 	
@@ -131,7 +135,10 @@ public class MP4MediaReader {
         for (TrackBox trackBox : trackBoxes) {
             movie.addTrack(new Mp4TrackImpl(trackBox));
         }
-        track = movie.getTracks().get(0);
+    	track = movie.getTracks().get(0);
+        if (movie.getTracks().get(1).getHandler().equals(VIDEO_MP4_HANDLER)) {
+        	track = movie.getTracks().get(1);
+        }
 		return track.getTrackMetaData().getTimescale();
 	}
 	
@@ -149,7 +156,10 @@ public class MP4MediaReader {
         for (TrackBox trackBox : trackBoxes) {
             movie.addTrack(new Mp4TrackImpl(trackBox));
         }
-        track = movie.getTracks().get(0);
+    	track = movie.getTracks().get(0);
+        if (movie.getTracks().get(1).getHandler().equals(VIDEO_MP4_HANDLER)) {
+        	track = movie.getTracks().get(1);
+        }
         return track.getDuration() / track.getSamples().size();
 	}
 	

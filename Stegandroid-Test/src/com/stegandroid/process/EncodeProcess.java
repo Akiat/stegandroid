@@ -122,7 +122,7 @@ public class EncodeProcess {
 		}
 		try {
 			// TODO: Replace this horrible fucking crap
-			processVideo(ByteBuffer.allocate(4).putInt(_contentToHideStream.available()).array());
+			//processVideo(ByteBuffer.allocate(4).putInt(_contentToHideStream.available()).array());
 			
 			while ((readedContent += _contentToHideStream.read(data, readedContent, _blockSize - readedContent)) != -1) {
 				if (readedContent < _blockSize) {
