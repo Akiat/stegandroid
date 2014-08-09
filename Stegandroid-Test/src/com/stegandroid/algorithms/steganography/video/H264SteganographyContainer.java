@@ -80,42 +80,58 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 		this.addData(null);
 	}
 	
-	
 	public void writeRemainingSamples() {
-		Sample sample;
-		ByteBuffer buffer;
-        ByteBuffer byteBuffer;
+		Sample currentSample;
+		ByteBuffer currentSampleBuffer;
+		int currentSampleLength = -1;
+		byte[] dataToWrite;
 		
-		if (_sampleList == null) {
+		if (_sampleList == null || _sampleListPosition >= _sampleList.size()) {
 			return;
 		}
+		currentSample = _sampleList.get(_sampleListPosition);
+		currentSampleBuffer = currentSample.asByteBuffer().slice();
 		
-		for (; _sampleListPosition < _sampleList.size(); ++_sampleListPosition) {
-			sample = _sampleList.get(_sampleListPosition);
-			buffer = sample.asByteBuffer();
-			if (_subSampleIdx > 0) {
-				for (int i = _subSampleIdx; i > 0; --i) {
-					int samplelength = (int) IsoTypeReaderVariable.read(buffer, _sampleLengthSize);
-					buffer.position(buffer.position() + samplelength);
-	            }
+		if (_subSampleIdx > 0) {
+			// We move the buffer to the position of the current sub index
+			for (int i = 0; i < _subSampleIdx; ++i) {
+				currentSampleLength = (int) IsoTypeReaderVariable.read(currentSampleBuffer, _sampleLengthSize);
+				currentSampleBuffer.position(currentSampleBuffer.position() + currentSampleLength);
+				currentSampleLength = -1;
 			}
-			while (buffer.remaining() > 0) {
-                int readlength = (int) IsoTypeReaderVariable.read(buffer, _sampleLengthSize);
-                if (_subSampleOffset > 0) {
-                    byteBuffer = (ByteBuffer) buffer.slice().position(_subSampleOffset).limit(readlength);	
-                    _subSampleOffset = 0;
-                } else {
-                    byteBuffer = (ByteBuffer) buffer.slice().limit(readlength);	
-                    this.addData(new byte[]{0, 0, 0, 1});
-                }
-                byte [] tmp = new byte[byteBuffer.remaining()];
-                byteBuffer.get(tmp);
-                this.addData(tmp);
-                buffer.position(buffer.position() + readlength);
-            }
+		}
+		
+		while (_sampleListPosition < _sampleList.size()) {			
+			
+			if (!currentSampleBuffer.hasRemaining()) {
+				// We reset the parameter and change the frame if there is no data to read in the current sample buffer
+				_subSampleIdx = 0;
+				_subSampleOffset = 0;
+				_sampleListPosition++;
+				if (_sampleListPosition < _sampleList.size()) {
+					currentSample = _sampleList.get(_sampleListPosition);
+					currentSampleBuffer = currentSample.asByteBuffer().slice();
+				}
+				continue;
+			} 
+
+			currentSampleLength = (int) IsoTypeReaderVariable.read(currentSampleBuffer, _sampleLengthSize);
+
+			// If this is the beginning of the frame, we write the syncrhonisation sequence and NALU
+			if (_subSampleOffset == 0) {
+				addData(new byte[]{0, 0, 0, 1});
+			} else {
+				currentSampleBuffer.position(_subSampleOffset + _sampleLengthSize);
+			}
+			
+			// We write the data
+			dataToWrite = new byte[currentSampleBuffer.remaining()];
+			currentSampleBuffer.get(dataToWrite);
+			this.addData(dataToWrite);
+			currentSampleBuffer.position(currentSampleBuffer.capacity());
 		}
 	}
-	
+		
 	public void cleanUp() {
 		File f;
 		
@@ -131,8 +147,8 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 	}
 	
 	private void switchOutputStreamToFile() {
-		if (_content != null && _content instanceof ByteArrayOutputStream
-				&& ((ByteArrayOutputStream)_content).size() >= MAX_SIZE_BUFFERING) {
+		if (_content != null && _content instanceof ByteArrayOutputStream) {
+//				&& ((ByteArrayOutputStream)_content).size() >= MAX_SIZE_BUFFERING) {
 				FileOutputStream fos;
 				try {
 					fos = new FileOutputStream(new File("h264.tmp"));
@@ -150,6 +166,7 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 		switchOutputStreamToFile();
 		if (_content != null) {
 			try {
+//				System.out.println(content.length);
 				_content.write(content);
 			} catch (IOException e) {
 				e.printStackTrace();

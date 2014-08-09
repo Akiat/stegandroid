@@ -13,91 +13,111 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 	private int _nbBitToHideInOneByte;
 
 	public H264SteganographyContainerLsb() {
-		_nbBitToHideInOneByte = 4;
+		_nbBitToHideInOneByte = 2;
 	}
-	
+
 	@Override
 	public void hideData(byte[] data) {
-		Sample sample;
-		ByteBuffer sampleBuffer;
+		Sample currentSample;
+		ByteBuffer currentSampleBuffer;
 		ByteBuffer dataBuffer;
-		int subSampleLength = 0;
+		int currentSampleLength = -1;
 		int oldSampleIdx = -1;
 				
 		if (_sampleList == null || _sampleListPosition >= _sampleList.size() || data == null) {
 			return;
 		}
-		
-		sample = _sampleList.get(_sampleListPosition);
-		sampleBuffer = sample.asByteBuffer();
+		currentSample = _sampleList.get(_sampleListPosition);
+		currentSampleBuffer = currentSample.asByteBuffer().slice();
 		dataBuffer = ByteBuffer.wrap(data);
-
-		if (_subSampleIdx == 0 && _subSampleOffset == 0 && _sampleListPosition == 0) {
-			addData(new byte[]{0, 0, 0, 1});
-		}
 		
 		if (_subSampleIdx > 0) {
-			for (int i = _subSampleIdx; i > 0; --i) {
-				int samplelength = (int) IsoTypeReaderVariable.read(sampleBuffer, _sampleLengthSize);
-				sampleBuffer.position(sampleBuffer.position() + samplelength);
-            }
+			// We move the buffer to the position of the current sub index
+			for (int i = 0; i < _subSampleIdx; ++i) {
+				currentSampleLength = (int) IsoTypeReaderVariable.read(currentSampleBuffer, _sampleLengthSize);
+				currentSampleBuffer.position(currentSampleBuffer.position() + currentSampleLength);
+				currentSampleLength = -1;
+			}
 		}
-		while (dataBuffer.remaining() > 0) {
-			if (sampleBuffer.remaining() == 0) {
+		
+		while (dataBuffer.remaining() > 0 && _sampleListPosition < _sampleList.size()) {			
+			
+			if (!currentSampleBuffer.hasRemaining()) {
+				// We reset the parameter and change the frame if there is no data to read in the current sample buffer
 				_subSampleIdx = 0;
-				oldSampleIdx = -1;
 				_subSampleOffset = 0;
 				_sampleListPosition++;
-				if (_sampleListPosition >= _sampleList.size()) {
-					return;
+				if (_sampleListPosition < _sampleList.size()) {
+					currentSample = _sampleList.get(_sampleListPosition);
+					currentSampleBuffer = currentSample.asByteBuffer().slice();
+					oldSampleIdx = -1;
 				}
-				sample = _sampleList.get(_sampleListPosition);
-				sampleBuffer = sample.asByteBuffer();
-				addData(new byte[]{0, 0, 0, 1});
-			}
-			if (oldSampleIdx != _subSampleIdx) {
-				subSampleLength = (int) IsoTypeReaderVariable.read(sampleBuffer, _sampleLengthSize);
-			}
+				continue;
+			} 
 
-			// process
-			oldSampleIdx = _subSampleIdx;
-			applyLsb((ByteBuffer) sampleBuffer.slice().position(_subSampleOffset).limit(subSampleLength), dataBuffer);
-			if (_subSampleOffset == subSampleLength) {
-				sampleBuffer.position(sampleBuffer.position() + subSampleLength);
-				_subSampleOffset = 0;
+			if (_subSampleIdx != oldSampleIdx) {
+				currentSampleLength = -1;
+				System.out.println(_subSampleIdx);
 			}
+			
+			if (currentSampleLength == -1) {
+				currentSampleLength = (int) IsoTypeReaderVariable.read(currentSampleBuffer, _sampleLengthSize);
+				// If this is the beginning of the frame, we write the syncrhonisation sequence and NALU
+				if (_subSampleOffset == 0) {
+					addData(new byte[]{0, 0, 0, 1});
+				} else {
+					currentSampleBuffer.position(_subSampleOffset + _sampleLengthSize);
+				}
+			}
+			
+			// We apply the LSB transformation
+			oldSampleIdx = _subSampleIdx;
+			applyLsb((ByteBuffer)currentSampleBuffer.slice().limit(currentSampleLength - _subSampleOffset), dataBuffer);
+			currentSampleBuffer.position(_subSampleOffset + _sampleLengthSize);
 		}
 	}
+		
 	
 	private void applyLsb(ByteBuffer sample, ByteBuffer data) {
-		int sizeToWrite = 0;
-		byte[] dataToHide = null;
+		int requiredSize;
+		int sizeToWrite;
+		boolean encode = true;
+		byte[] sampleArray;
+		byte[] dataArray;
+		
+		requiredSize = data.remaining() * BYTE_SIZE / _nbBitToHideInOneByte;
+		if (requiredSize < sample.remaining()) {
+			_subSampleOffset += requiredSize;
+			sizeToWrite = requiredSize;
+//			System.out.println("Hiding content lower ");
+		} else if (requiredSize == sample.remaining()) {
+			_subSampleOffset += requiredSize;
+			_subSampleIdx++;
+			sizeToWrite = requiredSize;
+//			System.out.println("Hiding content equal ");
+		} else {
+			_subSampleOffset += sample.remaining();
+			_subSampleIdx++;
+			sizeToWrite = sample.capacity();
+			encode = false;
+//			System.out.println("NOT hiding content");
+		}
+	
+		sampleArray = new byte[sizeToWrite];
+		sample.get(sampleArray);
 
-		if (data.remaining() * BYTE_SIZE / _nbBitToHideInOneByte < sample.remaining()) {
-	       	_subSampleOffset += data.remaining() * BYTE_SIZE / _nbBitToHideInOneByte; 
-	       	sizeToWrite = data.remaining() * BYTE_SIZE / _nbBitToHideInOneByte;
-       		dataToHide = new byte[data.remaining()];
-       		data.get(dataToHide);
-	       	data.position(data.capacity());
-        } else if (data.remaining() * BYTE_SIZE / _nbBitToHideInOneByte > sample.remaining()) {
-        	_subSampleOffset += sample.remaining();
-        	_subSampleIdx++;
-        	sizeToWrite = sample.remaining();
-        } else {
-        	_subSampleOffset += sample.remaining();
-        	_subSampleIdx++;
-	       	sizeToWrite = data.remaining() * BYTE_SIZE / _nbBitToHideInOneByte;
-	       	dataToHide = new byte[data.remaining()];
-       		data.get(dataToHide);
-       		data.position(data.capacity());
-        }
-
-    	// Hide data
-	    byte [] tmp = new byte[sizeToWrite];
-        sample.get(tmp);
-        encode(tmp, dataToHide);
-        this.addData(tmp);
+		/* If there is not enough space for data, 
+		** we just write the rest of the frame without encoding data to hide
+		*/ 
+		if (encode) {
+			dataArray = new byte[data.remaining()];
+			data.get(dataArray);
+			encode(sampleArray, dataArray);			
+		}
+		
+		this.addData(sampleArray);
 	}
+	
 	
 	private void encode(byte[] signal, byte[] content) {
 		int i = 0;
