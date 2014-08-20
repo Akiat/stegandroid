@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import dalvik.system.DexFile;
 
+
 public class Utils {
 	
 	/**
@@ -169,7 +170,7 @@ public class Utils {
 
 	public static String getBasenameFromPath(String path) {
 		StringBuilder sb; 
-		String [] chunks;
+		String chunks[];
 		
 		sb = new StringBuilder();
 		if (path == null) {
@@ -191,7 +192,7 @@ public class Utils {
 
 	public static String getRealPathFromUri(Context context, Uri uri) {
 		Cursor cursor;
-		String [] projection = { MediaStore.Video.Media.DATA };
+		String projection[] = { MediaStore.Video.Media.DATA };
 		int idx;
 		String ret = "";
 		
@@ -222,7 +223,7 @@ public class Utils {
 	public static byte[] getContentOfFileAsByteArray(String path) {
 		FileInputStream inputStream;
 		File file;
-		byte [] ret = null;
+		byte ret[] = null;
 		
 		file = new File(path);
 		try {

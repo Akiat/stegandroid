@@ -3,6 +3,7 @@ package com.stegandroid.algorithms.steganography.audio;
 import java.nio.ByteBuffer;
 
 import com.googlecode.mp4parser.authoring.Sample;
+import com.stegandroid.lsb.LSBDecode;
 import com.stegandroid.lsb.LSBEncode;
 
 public class AACSteganographyContainerLsb extends AACSteganographyContainer {
@@ -10,10 +11,26 @@ public class AACSteganographyContainerLsb extends AACSteganographyContainer {
 	private static final int BYTE_SIZE = 8;
 	private int _nbBitToHideInOneByte;
 	private int _dataToHideBitOffset;
-	
+
 	public AACSteganographyContainerLsb() {
-		_nbBitToHideInOneByte = 2;
+		_nbBitToHideInOneByte = 1;
 		_dataToHideBitOffset = 0;
+	}
+	
+	@Override
+	public void unHideData() {
+		LSBDecode decoder = new LSBDecode();
+		for (Sample sample : _sampleList) {
+			ByteBuffer buf = sample.asByteBuffer();
+			buf.clear();
+			byte[] bytes = new byte[buf.capacity()];
+			buf.get(bytes, 0, bytes.length);
+			
+			_unHideData = decoder.decodeFrame(bytes);
+			if (_unHideData != null){
+				break;
+			}
+		}
 	}
 	
 	@Override
@@ -47,7 +64,7 @@ public class AACSteganographyContainerLsb extends AACSteganographyContainer {
 				writeHeader(sampleBuffer.capacity());
 			}
 			applyLsb((ByteBuffer) sampleBuffer.slice().position(_sampleOffset), dataBuffer);
-			System.out.println(sampleBuffer.capacity() + " | " +_sampleOffset);
+
 			if (_sampleOffset == sampleBuffer.capacity()) {
 				sampleBuffer.position(sampleBuffer.position() + _sampleOffset);
 				_sampleOffset = 0;			
@@ -114,4 +131,8 @@ public class AACSteganographyContainerLsb extends AACSteganographyContainer {
 		encode.encodeNextFrame(signal);
 	}
 
+	@Override
+	public byte[] getUnHideData() {
+		return _unHideData;
+	}
 }

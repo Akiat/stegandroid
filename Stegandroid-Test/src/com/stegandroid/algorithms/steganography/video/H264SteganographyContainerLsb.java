@@ -121,7 +121,6 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 				_subSampleIdx++;
 			}
 			currentSampleLength = -1;
-
 		}			
 	}
 	
@@ -129,8 +128,8 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 		int requiredSize;
 		int sizeToWrite;
 		boolean encode = true;
-		byte[] sampleArray;
-		byte[] dataArray;
+		byte sampleArray[];
+		byte dataArray[];
 		
 		requiredSize = data.remaining() * BYTE_SIZE / _nbBitToHideInOneByte;
 		if (requiredSize < sample.remaining()) {

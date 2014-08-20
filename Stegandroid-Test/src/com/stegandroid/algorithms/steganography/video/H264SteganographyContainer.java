@@ -36,6 +36,8 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 	protected SeqParameterSetParser _seqParameterSetParser;
 	protected PictureParameterSetParser _pictureParameterSetParser;
 	
+	protected byte[] _unHideData;
+	
 	public H264SteganographyContainer() {
 		_content = null;
 		_sampleList = null;
@@ -43,6 +45,8 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 		_sampleListPosition = 0;
 		_subSampleIdx = 0;
 		_subSampleOffset = 0;
+		
+		_unHideData = null;
 	}
 	
 	@Override
@@ -220,6 +224,10 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 	public void hideData(byte[] content) {		
 	}
 	
+	@Override
+	public void unHideData() {
+	}
+	
 	protected boolean isPartionningNonidr(ByteBuffer sample) {
 		int type = sample.get(0);
         int nal_unit_type = type & 0x1f;
@@ -259,5 +267,10 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 			return ret;
 		}
 		return null;
+	}
+	
+	@Override
+	public byte[] getUnHideData() {
+		return _unHideData;
 	}
 }
