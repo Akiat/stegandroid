@@ -94,6 +94,14 @@ public class Utils {
 
 		return toHideByteArray;
 	}
+	
+	public static void bArrayDump(byte[] a) {
+		int max = a.length;
+		for (int i = 0; i<max; i++){
+			System.out.print(a[i] + " ");
+		}
+		System.out.println("");
+	}
 
 	public static void compare(byte[] original, byte[] decoded, boolean bitRepr){
 		if (bitRepr)

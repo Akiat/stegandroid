@@ -22,7 +22,7 @@ public class Main {
 	public static void main(String[] args) {
 
 		testEncode();
-		testDecode();
+		//testDecode();
 	}
 
 	public static void create_mp4() {
@@ -74,11 +74,12 @@ public class Main {
 		parameters.setCryptographyKey("This is a key!!!");
 		parameters.setDestinationVideoDirectory("sample\\");
 		parameters.setSourceVideoPath("sample\\Evanescence_-_Bring_Me_To_Life.mp4");
+		parameters.setTextToHide("This is a text to hide");
 //		parameters.setSourceVideoPath("sample\\20140328_001137.mp4");
 //		parameters.setSourceVideoPath("sample\\output.mp4");
-		for (int i = 0; i < 1000; ++i) {
-			parameters.setTextToHide(parameters.getTextToHide() + "This is a text to hide");
-		}
+//		for (int i = 0; i < 1000; ++i) {
+//			parameters.setTextToHide(parameters.getTextToHide() + "This is a text to hide");
+//		}
 		parameters.setHidingText(true);
 
 		// Preferences
@@ -99,9 +100,9 @@ public class Main {
 		DecodeParameters parameters = new DecodeParameters();
 		parameters.setUseAudioChannel(true);
 		parameters.setUseVideoChannel(false);
-		parameters.setDestinationVideoDirectory("sample/");
+		parameters.setDestinationVideoDirectory("sample\\");
 		parameters.setDisplay(false);
-		parameters.setVideoPath("my_output.mp4");
+		parameters.setVideoPath("sample\\Evanescence_-_Bring_Me_To_Life.mp4");
 
 		// Preferences
 		Preferences.getInstance().setUseCryptography(false);

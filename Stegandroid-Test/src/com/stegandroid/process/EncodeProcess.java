@@ -5,11 +5,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+
+import org.apache.commons.io.IOUtils;
 
 import com.stegandroid.algorithms.AlgorithmFactory;
 import com.stegandroid.algorithms.ICryptographyAlgorithm;
 import com.stegandroid.algorithms.ISteganographyContainer;
 import com.stegandroid.configuration.Preferences;
+import com.stegandroid.lsb.LSBEncode;
 import com.stegandroid.mp4.MP4MediaReader;
 import com.stegandroid.mp4.MP4MediaWriter;
 import com.stegandroid.parameters.EncodeParameters;
@@ -27,6 +32,7 @@ public class EncodeProcess {
 	private ICryptographyAlgorithm _cryptographyAlgorithm;
 	
 	private InputStream _contentToHideStream;
+	private byte[]		_encryptedBytes;
 	private int _blockSize;
 	
 	public EncodeProcess() {
@@ -36,6 +42,7 @@ public class EncodeProcess {
 		_cryptographyAlgorithm = null;
 		_contentToHideStream = null;
 		_blockSize = DEFAULT_BLOCK_SIZE;
+		_encryptedBytes = null;
 	}
 
 	private boolean init(EncodeParameters parameters) {
@@ -119,25 +126,103 @@ public class EncodeProcess {
 	}
 	
 	public boolean encode(EncodeParameters parameters) {
-		byte[] data;
 		
 		if (!this.init(parameters)) {
 			return false;
 		}
 	
-		while ((data = getPendingDataToHide(_blockSize)) != null) {
-			data = processCryptography(parameters, data);
-			if (processVideo(data)) continue;
-			if (processAudio(data)) continue;
-			System.err.println("Not enough space to hide data");
-			return false;
-		}
-		finalise(parameters);
 		try {
-			_contentToHideStream.close();
-		} catch (Exception ex) {
+			byte[] bytes = IOUtils.toByteArray(_contentToHideStream);
+
+			int padding = bytes.length % 16;
+			if (padding > 0)
+				bytes = Arrays.copyOf(bytes, bytes.length + (16 - padding));
+			
+			_encryptedBytes = new byte[bytes.length];
+			for (int i = 0; i < bytes.length; i += 16) {
+				byte[] tmp = new byte[16];
+				System.arraycopy(bytes, i, tmp, 0, 16);
+				
+				tmp = processCryptography(parameters, tmp);
+				
+				System.arraycopy(tmp, 0, _encryptedBytes, i, 16);
+			}
+
+			Preferences prefs = Preferences.getInstance();
+			if (prefs.getUseVideoChannel()) {
+				_h264SteganographyContainer.hideData(_encryptedBytes);
+			} else if (prefs.getUseAudioChannel()) {
+				_aacSteganographyContainer.hideData(_encryptedBytes);
+			}
+			
+			finalise(parameters);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+
+		
+		
+		
+		
+//		byte[] toHide = new byte[0];
+//		
+//		
+//		while ((data = getPendingDataToHide(_blockSize)) != null) {
+//			System.out.println("AVANT = ");
+//			bArrayDump(data);
+//			//data = processCryptography(parameters, data);
+//			System.out.println("APRES = ");
+//			bArrayDump(data);
+//			byte[] tmp = new byte[toHide.length + data.length];
+//			
+//			System.arraycopy(toHide, 	0, 		tmp, 	0, 				toHide.length);
+//			System.arraycopy(data, 		0, 		tmp, 	toHide.length, 	data.length);
+//			toHide = tmp;
+//			System.out.println("DUMP TOTAL = ");
+//			bArrayDump(toHide);
+//		}
+//		
 		return true;
+//		Preferences prefs = Preferences.getInstance();
+//		if (prefs.getUseVideoChannel()) {
+//			_h264SteganographyContainer.hideData();
+//			_unHideData = _h264SteganographyContainer.getUnHideData();
+//		} else if (prefs.getUseAudioChannel()) {
+//			_aacSteganographyContainer.unHideData();
+//			_unHideData = _aacSteganographyContainer.getUnHideData();
+//		}
+//
+//		if (_unHideData != null) {
+//			_unHideData = processCryptography(parameters, _unHideData);
+//			this.finalise(parameters);
+//			return true;
+//		}
+//		return false;
+//		
+//		
+//		
+//		fileinputstream.getChannel().size()
+//		
+//		ByteBuffer toHide = ByteBuffer.allocate(arg0);
+//		while ((data = getPendingDataToHide(_blockSize)) != null) {
+//			data = processCryptography(parameters, data);
+//			toHide = new byte[toHide.length + data.length];
+//
+//			System.arraycopy(toHide, 0, combined, 0, one.length);
+//			System.arraycopy(two,0,combined,one.length,two.length);
+//			
+//			if (processVideo(data)) continue;
+//			if (processAudio(data)) continue;
+//			System.err.println("Not enough space to hide data");
+//			return false;
+//		}
+//		finalise(parameters);
+//		try {
+//			_contentToHideStream.close();
+//		} catch (Exception ex) {
+//		}
+//		return true;
 	}
 	
 	private byte[] getPendingDataToHide(int size) {

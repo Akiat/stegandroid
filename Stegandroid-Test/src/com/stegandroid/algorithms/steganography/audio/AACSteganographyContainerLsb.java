@@ -21,12 +21,9 @@ public class AACSteganographyContainerLsb extends AACSteganographyContainer {
 	public void unHideData() {
 		LSBDecode decoder = new LSBDecode();
 		for (Sample sample : _sampleList) {
-			ByteBuffer buf = sample.asByteBuffer();
-			buf.clear();
-			byte[] bytes = new byte[buf.capacity()];
-			buf.get(bytes, 0, bytes.length);
-			
-			_unHideData = decoder.decodeFrame(bytes);
+			byte[] frame = sampleToByteArray(sample);
+
+			_unHideData = decoder.decodeFrame(frame);
 			if (_unHideData != null){
 				break;
 			}
@@ -34,45 +31,60 @@ public class AACSteganographyContainerLsb extends AACSteganographyContainer {
 	}
 	
 	@Override
-	public void hideData(byte[] data) {
-		Sample sample;
-		ByteBuffer dataBuffer;
-		ByteBuffer sampleBuffer;
+	public void hideData(byte[] toHide) {
 		
-		if (_sampleList == null || _sampleListPosition >= _sampleList.size() || data == null) {
+		if (_sampleList == null || toHide == null) {
 			return;
 		}
 	
-		sample = _sampleList.get(_sampleListPosition);
-		sampleBuffer = sample.asByteBuffer();
-		dataBuffer = ByteBuffer.wrap(data);
-
-		if (_sampleOffset == 0) {
-			writeHeader(sampleBuffer.capacity());
+		// TODO : nbBitinOneByte a changer par les preferences
+		LSBEncode encoder = new LSBEncode(toHide, 1);
+		for (Sample sample : _sampleList) {
+			byte[] frame = sampleToByteArray(sample);
+			
+			frame = encoder.encodeNextFrame(frame);
+			writeHeader(frame.length);
+			addData(frame);
 		}
 		
-		while (dataBuffer.remaining() > 0 && _sampleListPosition < _sampleList.size()) {
-			
-			if (sampleBuffer.remaining() == 0) {
-				_sampleOffset = 0;
-				_sampleListPosition++;
-				if (_sampleListPosition >= _sampleList.size()) {
-					continue;
-				}
-				sample = _sampleList.get(_sampleListPosition);
-				sampleBuffer = sample.asByteBuffer();
-				writeHeader(sampleBuffer.capacity());
-			}
-			applyLsb((ByteBuffer) sampleBuffer.slice().position(_sampleOffset), dataBuffer);
-
-			if (_sampleOffset == sampleBuffer.capacity()) {
-				sampleBuffer.position(sampleBuffer.position() + _sampleOffset);
-				_sampleOffset = 0;			
-			}
-		}
-		if (sampleBuffer.remaining() == 0) {
-			_sampleListPosition++;
-		}
+//		sample = _sampleList.get(_sampleListPosition);
+//		sampleBuffer = sample.asByteBuffer();
+//		dataBuffer = ByteBuffer.wrap(data);
+//
+//		if (_sampleOffset == 0) {
+//			writeHeader(sampleBuffer.capacity());
+//		}
+//		
+//		while (dataBuffer.remaining() > 0 && _sampleListPosition < _sampleList.size()) {
+//			
+//			if (sampleBuffer.remaining() == 0) {
+//				_sampleOffset = 0;
+//				_sampleListPosition++;
+//				if (_sampleListPosition >= _sampleList.size()) {
+//					continue;
+//				}
+//				sample = _sampleList.get(_sampleListPosition);
+//				sampleBuffer = sample.asByteBuffer();
+//				writeHeader(sampleBuffer.capacity());
+//			}
+//			applyLsb((ByteBuffer) sampleBuffer.slice().position(_sampleOffset), dataBuffer);
+//
+//			if (_sampleOffset == sampleBuffer.capacity()) {
+//				sampleBuffer.position(sampleBuffer.position() + _sampleOffset);
+//				_sampleOffset = 0;			
+//			}
+//		}
+//		if (sampleBuffer.remaining() == 0) {
+//			_sampleListPosition++;
+//		}
+	}
+	
+	private byte[] sampleToByteArray(Sample sample) {
+		ByteBuffer buf = sample.asByteBuffer();
+		byte[] frame = new byte[buf.capacity()];
+		buf.get(frame);
+		
+		return frame;
 	}
 
 	private void applyLsb(ByteBuffer sample, ByteBuffer data) {
