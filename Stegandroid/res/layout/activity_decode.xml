@@ -78,7 +78,7 @@
 				android:layout_height="45dip">
 	       	    
 		        <Button
-		    		android:id="@+id/btn_select_video_source"
+		    		android:id="@+id/btn_select_video_source_decode"
 			        android:layout_width="fill_parent"
 			    	android:layout_height="wrap_content"
 			    	android:layout_marginLeft="10dp"
@@ -102,11 +102,177 @@
 		        
 			</RelativeLayout>
 
+	       	<!-- Cryptography key selection -->
+		        
+			<LinearLayout 
+			    android:id="@+id/linear_layout_cryptography_key_decode"
+			    android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical">
+
+   				<TextView
+			    	android:layout_height="wrap_content"
+		    		android:layout_width="match_parent"
+		    		android:paddingLeft="10dp"
+		    		android:textSize="20sp"
+		    		android:text="@string/cryptography_string"
+		    		android:textColor="#000000"
+		   	 		style="?android:attr/listSeparatorTextViewStyle" />    	    	    	    
+				    
+				<RelativeLayout 
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:minHeight="45dip">
+
+					<EditText
+					    android:id="@+id/edit_text_cryptography_key_decode"
+					    android:layout_width="fill_parent"
+					    android:layout_height="wrap_content"
+					    android:layout_marginLeft="10dp"
+					    android:layout_marginRight="10dp"
+					    android:layout_toLeftOf="@+id/img_view_valid_key_length_decode"
+					    android:background="@android:color/transparent"
+					    android:hint="@string/enter_key_decrypt_string"
+					    android:minHeight="45dip" />
+					
+					<ImageView
+			    		android:id="@+id/img_view_valid_key_length_decode"
+					    android:layout_width="wrap_content"
+					    android:layout_height="wrap_content"
+						android:layout_centerInParent="true"
+						android:layout_alignParentRight="true"
+					    android:layout_marginRight="10dp"
+					    android:contentDescription="@string/empty_string"
+					    android:src="@drawable/ic_delete" />
+       	        </RelativeLayout>
+			</LinearLayout>
+	       	
+	       	<!-- Save the content found or display it -->
+	       	<TextView
+		    	android:layout_height="wrap_content"
+	    		android:layout_width="match_parent"
+	    		android:paddingLeft="10dp"
+	    		android:textSize="20sp"				    		
+	    		android:text="@string/content_string"
+	    		android:textColor="#000000"
+	   	 		style="?android:attr/listSeparatorTextViewStyle" />
+	       	
+	       	<RelativeLayout 
+	       	    android:layout_width="fill_parent"
+				android:layout_height="wrap_content">
+	        
+		        <CheckBox
+		            android:id="@+id/chk_box_display_content"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_marginLeft="5dp"
+					android:layout_alignParentLeft="true"
+					android:layout_centerInParent="true"
+			        android:button="@drawable/checkbox_selector"/>
+	       	    
+		        <TextView
+		    		android:layout_width="wrap_content"
+			    	android:layout_height="match_parent"
+					android:layout_centerInParent="true"
+					android:layout_toRightOf="@id/chk_box_display_content"				    		
+		    		android:textSize="18sp"
+					android:text="@string/display_content_string"/>
+		        
+		        <CheckBox
+		            android:id="@+id/chk_box_save_into_file"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+					android:layout_centerInParent="true"
+					android:layout_toLeftOf="@+id/text_view_save_into_file"
+			        android:button="@drawable/checkbox_selector"	/>
+	       	    
+		        <TextView
+		            android:id="@+id/text_view_save_into_file"
+		    		android:layout_width="wrap_content"
+			    	android:layout_height="match_parent"
+			        android:layout_marginRight="10dp"
+					android:layout_alignParentRight="true"
+					android:layout_centerInParent="true"
+		    		android:textSize="18sp"
+					android:text="@string/save_into_file_string"/>
+		        	        
+			</RelativeLayout>
+			
+	       	
+	       	<LinearLayout
+				android:id="@+id/linear_layout_save_into_file"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:minHeight="45dip">
+	       	    
+		       	<!-- Destination selection -->
+	       	
+		       	<TextView
+			    	android:layout_height="wrap_content"
+		    		android:layout_width="match_parent"
+		    		android:paddingLeft="10dp"
+		    		android:text="@string/destination_string"
+		    		android:textColor="#000000"
+		    		android:textSize="20sp"				    		
+		   	 		style="?android:attr/listSeparatorTextViewStyle" />
+	       	
+		       	<RelativeLayout 
+					android:layout_width="fill_parent"
+					android:layout_height="45dip">
+		       	    
+			        <Button
+			    		android:id="@+id/btn_select_file_destination_decode"
+				        android:layout_width="fill_parent"
+				    	android:layout_height="match_parent"
+				    	android:layout_marginLeft="10dp"
+				    	android:layout_marginRight="10dp"
+						android:gravity="left|center_vertical"
+						android:layout_alignParentLeft="true"
+						android:layout_centerInParent="true"
+						android:background="@android:color/transparent"
+						android:textSize="18sp"				    		
+						android:text="@string/click_select_destination_string"/>
+			        
+		  		    <ImageView
+			    		android:id="@+id/img_view_valid_video_destination_decode"
+					    android:layout_width="wrap_content"
+					    android:layout_height="wrap_content"
+					    android:layout_alignParentRight="true"
+						android:layout_centerInParent="true"
+					    android:layout_marginRight="10dp"
+					    android:contentDescription="@string/empty_string"
+					    android:src="@drawable/ic_delete" />
+			        
+				</RelativeLayout>
+				
+		       	<TextView
+			    	android:layout_height="wrap_content"
+		    		android:layout_width="match_parent"
+		    		android:paddingLeft="10dp"
+		    		android:text="@string/file_extension_string"
+		    		android:textColor="#000000"
+		    		android:textSize="20sp"				    		
+		   	 		style="?android:attr/listSeparatorTextViewStyle" />
+		       	
+		       	<EditText
+		    		android:id="@+id/edit_text_file_extension"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+				    android:minHeight="45dip"
+				    android:layout_marginLeft="10dp"
+				    android:layout_marginRight="10dp"
+				    android:background="@android:color/transparent"
+				    android:hint="@string/enter_file_extension_string"/>     	    
+		       	
+		        
+			</LinearLayout> 
+	       	
        		<!-- Process button -->
   	
 	      	<View 
 				android:layout_width="fill_parent"
-				android:layout_height="45dip"/>
+				android:layout_height="25dip"/>
 	  		
 	 	    <Button
 		        android:id="@+id/btn_decode"

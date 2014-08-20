@@ -16,18 +16,23 @@
 	<string name="click_select_file_hide_string">Click here to select file to hide</string>
 	<string name="click_select_video_string">Click here to select video</string>
 	<string name="content_hide_string">Content to hide</string>	
+	<string name="content_string">Content</string>
 	<string name="cryptography_string">Cryptography</string>
 		
 	<string name="decode_content_string">Decode content</string>
 	<string name="decode_video_string">Decode a video</string>
 	<string name="description_about_string">This project is created in the context of a MSc Computer Security at the University of Kent in United Kingdom</string>
-    <string name="destination_string">Destination</string>	
+    <string name="destination_string">Destination</string>
+    <string name="display_content_string">Display content</string>	
 
 	<string name="empty_string"></string>
 	<string name="encode_video_string">Encode a video</string>
-	<string name="enter_key_string">Enter key for encrypt data</string>
+	<string name="enter_key_encrypt_string">Enter key for encrypt data</string>
+	<string name="enter_key_decrypt_string">Enter key for decrypt data</string>
+  	<string name="enter_file_extension_string">Enter file extension</string>
 	<string name="enter_text_hide_string">Enter here the text to hide</string>
-    		
+			
+	<string name="file_extension_string">File extension</string>
 	<string name="file_hide_string">File to hide</string>
 	
 	<string name="hide_content_string">Hide content !</string>
@@ -38,7 +43,8 @@
     <string name="ok_string">OK</string>
 	
 	<string name="record_video_string">Record a video</string>
-    	
+
+	<string name="save_into_file_string">Save into file</string>	
 	<string name="settings_string">Settings</string>
     <string name="select_destination_string">Select a destination</string>
 	<string name="select_video_string">Select a video</string>
@@ -57,6 +63,7 @@
     
     <!-- Error string resources -->
 	<string name="error_dest_video_empty_string">The path of the destination video is missing</string>
+	<string name="error_file_extension_empty_string">The file extension is empty</string>
 	<string name="error_file_manager_string">No file manager found</string>	
 	<string name="error_file_to_hide_empty_string">The path of the file to hide is empty</string>
 	<string name="error_src_video_path_empty_string">The path of the source video is missing</string>

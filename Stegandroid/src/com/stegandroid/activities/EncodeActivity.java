@@ -48,8 +48,8 @@ public class EncodeActivity extends Activity{
 	private CheckBox _checkBoxFileToHide;
 	private CheckBox _checkBoxTextToHide;
 	private EditText _editTextContentToHide;
-	private EditText _editTextCryptographyKey;
-	private LinearLayout _linearLayoutCryptographyKey;
+	private EditText _editTextCryptographyKeyEncode;
+	private LinearLayout _linearLayoutCryptographyKeyEncode;
 	
 	// Private attributes
 	private EncodeParameters _encodeParameters;
@@ -62,15 +62,15 @@ public class EncodeActivity extends Activity{
 		_btnBack = (ImageButton) findViewById(R.id.btn_back);
 		_btnCamera = (ImageButton) findViewById(R.id.btn_camera);
 		_btnSettings = (ImageButton) findViewById(R.id.btn_settings);
-		_btnSelectSourceVideo = (Button) findViewById(R.id.btn_select_video_source);
-		_btnSelectVideoDestination = (Button) findViewById(R.id.btn_select_video_destination);
+		_btnSelectSourceVideo = (Button) findViewById(R.id.btn_select_video_source_encode);
+		_btnSelectVideoDestination = (Button) findViewById(R.id.btn_select_video_destination_encode);
 		_btnSelectFileToHide = (Button) findViewById(R.id.btn_select_file_to_hide);
 		_btnEncode = (Button) findViewById(R.id.btn_encode);
 		_checkBoxFileToHide = (CheckBox) findViewById(R.id.chk_box_file_to_hide);
 		_checkBoxTextToHide = (CheckBox) findViewById(R.id.chk_box_text_to_hide);
 		_editTextContentToHide = (EditText) findViewById(R.id.edit_text_content_to_hide);
-		_editTextCryptographyKey = (EditText) findViewById(R.id.edit_text_cryptography_key);
-		_linearLayoutCryptographyKey = (LinearLayout) findViewById(R.id.linear_layout_cryptography_key);
+		_editTextCryptographyKeyEncode = (EditText) findViewById(R.id.edit_text_cryptography_key_encode);
+		_linearLayoutCryptographyKeyEncode = (LinearLayout) findViewById(R.id.linear_layout_cryptography_key_encode);
 		
 		_btnBack.setOnClickListener(onClickListener);
 		_btnCamera.setOnClickListener(onClickListener);
@@ -83,7 +83,7 @@ public class EncodeActivity extends Activity{
 		_checkBoxTextToHide.setChecked(true);
 		_checkBoxFileToHide.setOnCheckedChangeListener(onCheckedChangeListener);
 		_checkBoxTextToHide.setOnCheckedChangeListener(onCheckedChangeListener);
-		_editTextCryptographyKey.addTextChangedListener(onTextChangedListenerCryptographyKey);
+		_editTextCryptographyKeyEncode.addTextChangedListener(onTextChangedListenerCryptographyKey);
 		_editTextContentToHide.addTextChangedListener(onTextChangedListenerTextToHide);
 		
 		_encodeParameters = new EncodeParameters();
@@ -101,9 +101,9 @@ public class EncodeActivity extends Activity{
 		
 	private void updateLinearLayoutCryptographyVisibility() {
 		if (Preferences.getInstance().getUseCryptography()) {
-			_linearLayoutCryptographyKey.setVisibility(View.VISIBLE);
+			_linearLayoutCryptographyKeyEncode.setVisibility(View.VISIBLE);
 		} else {
-			_linearLayoutCryptographyKey.setVisibility(View.GONE);
+			_linearLayoutCryptographyKeyEncode.setVisibility(View.GONE);
 		}
 	}
 	
@@ -117,9 +117,9 @@ public class EncodeActivity extends Activity{
 		}
 
 		if (controller.controlDestVideoPath(_encodeParameters)) {
-			((ImageView) findViewById(R.id.img_view_valid_video_destination)).setImageResource(R.drawable.btn_check_buttonless_on);
+			((ImageView) findViewById(R.id.img_view_valid_video_destination_encode)).setImageResource(R.drawable.btn_check_buttonless_on);
 		} else {
-			((ImageView) findViewById(R.id.img_view_valid_video_destination)).setImageResource(R.drawable.ic_delete);
+			((ImageView) findViewById(R.id.img_view_valid_video_destination_encode)).setImageResource(R.drawable.ic_delete);
 		}
 
 		if (controller.controlContentToHide(_encodeParameters)) {
@@ -129,9 +129,9 @@ public class EncodeActivity extends Activity{
 		}
 		
 		if (controller.controlCryptographyKey(_encodeParameters)) {
-			((ImageView) findViewById(R.id.img_view_valid_key_length)).setImageResource(R.drawable.btn_check_buttonless_on);
+			((ImageView) findViewById(R.id.img_view_valid_key_length_encode)).setImageResource(R.drawable.btn_check_buttonless_on);
 		} else {
-			((ImageView) findViewById(R.id.img_view_valid_key_length)).setImageResource(R.drawable.ic_delete);
+			((ImageView) findViewById(R.id.img_view_valid_key_length_encode)).setImageResource(R.drawable.ic_delete);
 		}
 	}
 	
@@ -183,6 +183,7 @@ public class EncodeActivity extends Activity{
 				break;
 			default:
 				Log.d("DEBUG", "There is a big problem there!");
+				break;
 		}
 	}
 
@@ -276,10 +277,10 @@ public class EncodeActivity extends Activity{
 					Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
 					startActivityForResult(intent, SETTINGS_ACCESS);
 					break;					
-				case R.id.btn_select_video_source:
+				case R.id.btn_select_video_source_encode:
 					showFileChooser(CHOOSE_VIDEO_CONTAINER);
 					break;
-				case R.id.btn_select_video_destination:
+				case R.id.btn_select_video_destination_encode:
 					showDirectoryChooser();
 					break;
 				case R.id.btn_select_file_to_hide:
