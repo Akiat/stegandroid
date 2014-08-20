@@ -27,6 +27,8 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 	protected int _sampleFrequency;
 	protected int _channelConfiguration;
 	
+	protected byte[] _unHideData;
+	
 	public AACSteganographyContainer() {
 		_content = null;
 		_sampleList = null;
@@ -34,6 +36,8 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 		_sampleOffset = 0;
 		_sampleFrequency = 0;
 		_channelConfiguration = 0;
+		
+		_unHideData = null;
 	}
 	
 	public boolean loadData(MP4MediaReader mediaReader) {
@@ -133,8 +137,18 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 			}
 		}
 	}
+	
 
 	@Override
 	public void hideData(byte[] content) {
+	}
+	
+	@Override
+	public void unHideData() {
+	}
+	
+	@Override
+	public byte[] getUnHideData() {
+		return _unHideData;
 	}
 }

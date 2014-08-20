@@ -7,6 +7,7 @@ import java.util.List;
 import com.coremedia.iso.IsoTypeReaderVariable;
 import com.googlecode.mp4parser.authoring.Sample;
 import com.stegandroid.h264.Pair;
+import com.stegandroid.lsb.LSBDecode;
 import com.stegandroid.tools.Utils;
 
 public class H264SteganographyContainerLsb extends H264SteganographyContainer {
@@ -25,7 +26,6 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 		int previousOffset = 0;
 		int originalSize;
 		int beginOffset;
-		boolean first = true;
 		
 		// true if we can hide data on partition
 		originalSize = buffer.remaining();
@@ -128,6 +128,26 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 			currentSampleLength = -1;
 
 		}			
+	}
+	
+	@Override
+	public void unHideData() {
+		LSBDecode decoder = new LSBDecode();
+		for (Sample sample : _sampleList) {
+			// premier check pas suffisant
+			if (getMacroblockDataOffsets(sample.asByteBuffer()) != null) {
+				ByteBuffer buf = sample.asByteBuffer();
+				buf.clear();
+				byte[] bytes = new byte[buf.capacity()];
+				buf.get(bytes, 0, bytes.length);
+				
+				// Avant d'envoyer bytes a decodeFrame, s'assurer que bytes est un truc a décoder
+				_unHideData = decoder.decodeFrame(bytes);
+				if (_unHideData != null){
+					break;
+				}
+			}
+		}
 	}
 	
 //	@Override
@@ -259,4 +279,9 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 		}
 	}
 	
+	
+	@Override
+	public byte[] getUnHideData() {
+		return _unHideData;
+	}
 }

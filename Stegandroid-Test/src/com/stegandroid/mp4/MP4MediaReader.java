@@ -42,6 +42,7 @@ public class MP4MediaReader {
 			_isoFile = new IsoFile(path);
 		} catch (IOException exception) {
 			System.out.println("Not able to open the file");
+			exception.printStackTrace();
 			return false;
 		}
 		return true;

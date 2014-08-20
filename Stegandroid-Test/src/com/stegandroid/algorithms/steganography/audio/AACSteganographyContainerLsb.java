@@ -3,19 +3,33 @@ package com.stegandroid.algorithms.steganography.audio;
 import java.nio.ByteBuffer;
 
 import com.googlecode.mp4parser.authoring.Sample;
+import com.stegandroid.lsb.LSBDecode;
 import com.stegandroid.tools.Utils;
 
 public class AACSteganographyContainerLsb extends AACSteganographyContainer {
 
 	private static final int BYTE_SIZE = 8;
-//	private static final int INT_SIZE = BYTE_SIZE * 4;
-	
-//	private int _content_byte_length;
-//	private int _content_bit_length;
 	private int _nbBitToHideInOneByte;
+
 
 	public AACSteganographyContainerLsb() {
 		_nbBitToHideInOneByte = 2;
+	}
+	
+	@Override
+	public void unHideData() {
+		LSBDecode decoder = new LSBDecode();
+		for (Sample sample : _sampleList) {
+			ByteBuffer buf = sample.asByteBuffer();
+			buf.clear();
+			byte[] bytes = new byte[buf.capacity()];
+			buf.get(bytes, 0, bytes.length);
+			
+			_unHideData = decoder.decodeFrame(bytes);
+			if (_unHideData != null){
+				break;
+			}
+		}
 	}
 	
 	@Override
@@ -104,4 +118,8 @@ public class AACSteganographyContainerLsb extends AACSteganographyContainer {
 		}
 	}
 
+	@Override
+	public byte[] getUnHideData() {
+		return _unHideData;
+	}
 }
