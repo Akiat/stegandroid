@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 
 import com.stegandroid.algorithms.AlgorithmFactory;
 import com.stegandroid.algorithms.ICryptographyAlgorithm;
@@ -18,7 +17,7 @@ import com.stegandroid.parameters.EncodeParameters;
 
 public class EncodeProcess {
 
-	private final int DEFAULT_BLOCK_SIZE = 1024;
+	private final int DEFAULT_BLOCK_SIZE = 2;
 	private final String DEFAULT_H264_CONTAINER = "com.stegandroid.algorithms.steganography.video.H264SteganographyContainer";
 	private final String DEFAULT_AAC_CONTAINER = "com.stegandroid.algorithms.steganography.audio.AACSteganographyContainer";
 	
@@ -51,6 +50,7 @@ public class EncodeProcess {
 		if (pref.getUseCryptography()) {
 			_cryptographyAlgorithm = AlgorithmFactory.getCryptographyAlgorithmInstanceFromName(pref.getCryptographyAlgorithm());
 			if (_cryptographyAlgorithm == null) {
+				System.err.println("Unable to load Cryptography algorithm");
 				ret = false;
 			} else {
 				_blockSize = _cryptographyAlgorithm.getBlockSize();
@@ -69,6 +69,7 @@ public class EncodeProcess {
 				_contentToHideStream = new FileInputStream(parameters.getFileToHidePath());
 			} catch (FileNotFoundException e) {
 				_contentToHideStream = null;
+				System.err.println("Unable to load content to hide");
 				ret = false;
 			}
 		}
@@ -84,6 +85,7 @@ public class EncodeProcess {
 			_h264SteganographyContainer = AlgorithmFactory.getSteganographyContainerInstanceFromName(DEFAULT_H264_CONTAINER);
 		}
 		if (_h264SteganographyContainer == null) {
+			System.err.println("Unable to load video steganography algorithm");
 			return false;
 		}
 
@@ -93,6 +95,7 @@ public class EncodeProcess {
 			_aacSteganographyContainer = AlgorithmFactory.getSteganographyContainerInstanceFromName(DEFAULT_AAC_CONTAINER);
 		}
 		if (_aacSteganographyContainer == null) {
+			System.err.println("Unable to load audio steganography algorithm");
 			return false;
 		}
 		
@@ -102,11 +105,13 @@ public class EncodeProcess {
 	private boolean initMp4Components(EncodeParameters parameters) {
 		_mp4MediaReader = new MP4MediaReader();
 		if (!_mp4MediaReader.loadData(parameters.getSourceVideoPath())) {
+			System.err.println("Unable to load data from orignal MP4");
 			return false;
 		}
 		
 		if (!_h264SteganographyContainer.loadData(_mp4MediaReader) 
 				|| !_aacSteganographyContainer.loadData(_mp4MediaReader)) {
+			System.err.println("Unable to load channel from original MP4");
 			return false;
 		}
 		
@@ -114,56 +119,73 @@ public class EncodeProcess {
 	}
 	
 	public boolean encode(EncodeParameters parameters) {
-		byte[] data = new byte[_blockSize];
-		int readedContent = 0;
+		byte[] data;
 		
 		if (!this.init(parameters)) {
 			return false;
 		}
+	
+		while ((data = getPendingDataToHide(_blockSize)) != null) {
+			data = processCryptography(parameters, data);
+			if (processVideo(data)) continue;
+			if (processAudio(data)) continue;
+			System.err.println("Not enough space to hide data");
+			return false;
+		}
+		finalise(parameters);
 		try {
-			// TODO: Replace this horrible fucking crap
-			//processVideo(ByteBuffer.allocate(4).putInt(_contentToHideStream.available()).array());
-			
-			while ((readedContent += _contentToHideStream.read(data, readedContent, _blockSize - readedContent)) != -1) {
-				if (readedContent < _blockSize) {
-					continue;
-				}
-				data = processCryptography(parameters, data);
-				// video
-				//processVideo(data);
-				// audio
-				processAudio(data);
-				// metadata
-				readedContent = 0;
-				data = new byte[_blockSize];
-			}
-			finalise(parameters);
 			_contentToHideStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception ex) {
 		}
 		return true;
 	}
 	
-	private byte[] processCryptography(EncodeParameters parameters, byte[] content) {
-		byte[] ret = null;
-		
-		if (_cryptographyAlgorithm != null && parameters != null) {
-			ret = _cryptographyAlgorithm.encrypt(content, parameters.getCryptographyKey().getBytes());
+	private byte[] getPendingDataToHide(int size) {
+		byte[] ret = new byte[size];
+		int readedContent = 0;
+		int read = 0;
+
+		try {
+			while ((readedContent = _contentToHideStream.read(ret, readedContent, size - readedContent)) != -1) {
+				read += readedContent;
+				if (read >= size) {
+					break;
+				}
+			}
+			if (read == 0) {
+				return null;
+			}
+		} catch (IOException e) {
+			System.err.println("Unable to read data");
+			return null;
 		}
 		return ret;
 	}
 	
-	private void processVideo(byte[] content) {
-		if (_h264SteganographyContainer != null) {
-			_h264SteganographyContainer.hideData(content);
+	private byte[] processCryptography(EncodeParameters parameters, byte[] content) {		
+		if (_cryptographyAlgorithm != null && parameters != null) {
+			return (_cryptographyAlgorithm.encrypt(content, parameters.getCryptographyKey().getBytes()));
 		}
+		// Return the original content if no cryptography algorithm
+		return content;
 	}
 	
-	private void processAudio(byte[] content) {
+	private boolean processVideo(byte[] content) {
+		if (_h264SteganographyContainer != null) {
+			_h264SteganographyContainer.hideData(content);
+		} else {
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean processAudio(byte[] content) {
 		if (_aacSteganographyContainer != null) {
 			_aacSteganographyContainer.hideData(content);
-		} 
+		} else {
+			return false;
+		}
+		return true;
 	}
 
 	private void finalise(EncodeParameters parameters) {

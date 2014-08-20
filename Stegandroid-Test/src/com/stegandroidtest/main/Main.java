@@ -28,19 +28,20 @@ public class Main {
 		parameters.setCryptographyKey("This is a key!!!");
 		parameters.setDestinationVideoDirectory("sample\\");
 		parameters.setSourceVideoPath("sample\\Evanescence_-_Bring_Me_To_Life.mp4");
-		for (int i = 0; i < 10000; ++i) {
+//		parameters.setSourceVideoPath("sample\\20140328_001137.mp4");
+//		parameters.setSourceVideoPath("sample\\output.mp4");
+		for (int i = 0; i < 50000; ++i) {
 			parameters.setTextToHide(parameters.getTextToHide() + "This is a text to hide");
 		}
-//		parameters.setTextToHide("A");
 		parameters.setHidingText(true);
 		
 		// Preferences
-		Preferences.getInstance().setUseAudioChannel(true);
+		Preferences.getInstance().setUseAudioChannel(false);
 		Preferences.getInstance().setAudioAlgorithm("com.stegandroid.algorithms.steganography.audio.AACSteganographyContainerLsb");
 		Preferences.getInstance().setUseMetadataChannel(false);
-		Preferences.getInstance().setUseCryptography(true);
+		Preferences.getInstance().setUseCryptography(false);
 		Preferences.getInstance().setCryptographyAlgorithm("com.stegandroid.algorithms.cryptography.AdvancedEncryptionStandard128");
-		Preferences.getInstance().setUseVideoChannel(false);
+		Preferences.getInstance().setUseVideoChannel(true);
 		Preferences.getInstance().setVideoAlgorithm("com.stegandroid.algorithms.steganography.video.H264SteganographyContainerLsb");
 
 		// Encode process
@@ -53,9 +54,9 @@ public class Main {
 //		parameters.set
 		
 		// Preferences
-		Preferences.getInstance().setUseAudioChannel(false);
+		Preferences.getInstance().setUseAudioChannel(true);
 		Preferences.getInstance().setUseMetadataChannel(false);
-		Preferences.getInstance().setUseCryptography(true);
+		Preferences.getInstance().setUseCryptography(false);
 		Preferences.getInstance().setCryptographyAlgorithm("com.stegandroid.algorithms.cryptography.AdvancedEncryptionStandard128");
 		Preferences.getInstance().setUseVideoChannel(true);
 		Preferences.getInstance().setVideoAlgorithm("com.stegandroid.algorithms.steganography.video.H264SteganographyContainerLsb");

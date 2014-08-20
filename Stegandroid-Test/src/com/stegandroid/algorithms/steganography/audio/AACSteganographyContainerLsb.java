@@ -3,7 +3,7 @@ package com.stegandroid.algorithms.steganography.audio;
 import java.nio.ByteBuffer;
 
 import com.googlecode.mp4parser.authoring.Sample;
-import com.stegandroid.utils.Utils;
+import com.stegandroid.tools.Utils;
 
 public class AACSteganographyContainerLsb extends AACSteganographyContainer {
 

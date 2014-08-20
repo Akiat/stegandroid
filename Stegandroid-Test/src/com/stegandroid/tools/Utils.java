@@ -1,4 +1,4 @@
-package com.stegandroid.utils;
+package com.stegandroid.tools;
 
 public class Utils {
 	
