@@ -8,20 +8,16 @@ import java.util.Map;
 
 import com.coremedia.iso.IsoFile;
 import com.coremedia.iso.boxes.TrackBox;
-import com.coremedia.iso.boxes.apple.AppleWaveBox;
 import com.coremedia.iso.boxes.h264.AvcConfigurationBox;
 import com.coremedia.iso.boxes.mdat.SampleList;
 import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.Mp4TrackImpl;
 import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.boxes.mp4.ESDescriptorBox;
-import com.googlecode.mp4parser.boxes.mp4.objectdescriptors.DecoderConfigDescriptor;
-import com.googlecode.mp4parser.boxes.mp4.objectdescriptors.DecoderSpecificInfo;
 import com.googlecode.mp4parser.boxes.mp4.objectdescriptors.ESDescriptor;
 import com.googlecode.mp4parser.h264.model.PictureParameterSet;
 import com.googlecode.mp4parser.util.Path;
 import com.stegandroid.h264.NaluParser;
-import com.stegandroid.h264.PictureParameterSetParser;
 
 public class MP4MediaReader {
 
@@ -98,20 +94,6 @@ public class MP4MediaReader {
 		}
 		trackBox = (TrackBox) Path.getPath(_isoFile, VIDEO_TRACKBOX_PATH);
 		videoConfigurationBox = (AvcConfigurationBox) Path.getPath(trackBox, VIDEO_CONFIGURATION_BOX_PATH);
-		
-		PictureParameterSet test = new PictureParameterSet();
-		try {
-			NaluParser naluParser = new NaluParser();
-			naluParser.parseNaluData(videoConfigurationBox.getPictureParameterSets().get(0));
-				
-			test.read(new ByteArrayInputStream(naluParser.getRbsp()));
-			System.out.println("From original: _num_slice_groups_minus1: " + test.num_slice_groups_minus1);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
 		return videoConfigurationBox.getPictureParameterSets().get(0);
 	}
 

@@ -1,6 +1,5 @@
 package com.stegandroid.mp4;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -8,7 +7,6 @@ import java.nio.channels.FileChannel;
 
 import com.coremedia.iso.boxes.Container;
 import com.googlecode.mp4parser.DataSource;
-import com.googlecode.mp4parser.FileDataSourceImpl;
 import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
 import com.googlecode.mp4parser.authoring.tracks.AACTrackImpl;
