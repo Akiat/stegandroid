@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -182,7 +181,8 @@ public class EncodeActivity extends Activity{
 				updateImageViews();
 				break;
 			default:
-				Log.d("DEBUG", "There is a big problem there!");
+				ErrorManager.getInstance().addErrorMessage("[Encode Activity] Activity result not known");
+				ErrorManager.getInstance().displayErrorMessages(this);
 				break;
 		}
 	}
@@ -222,8 +222,7 @@ public class EncodeActivity extends Activity{
 			ErrorManager.getInstance().displayErrorMessages(this);
 		}
 	}
-	
-	
+		
 	private ChoosenDirectoryListener onChoosenDirectoryListener = new ChoosenDirectoryListener() {
 
 		@Override
@@ -290,7 +289,8 @@ public class EncodeActivity extends Activity{
 					process();
 					break;
 				default:
-					Log.d("DEBUG", "There is a big problem there!");
+					ErrorManager.getInstance().addErrorMessage("[Encode Activity] Click event not known");
+					ErrorManager.getInstance().displayErrorMessages(arg0.getContext());
 					break;
 			}
 		}

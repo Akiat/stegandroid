@@ -1,20 +1,23 @@
 package com.stegandroid.algorithms;
 
+import com.stegandroid.error.ErrorManager;
+
 public class AlgorithmFactory {
 
 	public static ISteganographyContainer getSteganographyContainerInstanceFromName(String name) {
 		ISteganographyContainer algorithm = null;
 		Class<?> algorithmClass;
+		ErrorManager errorManager = ErrorManager.getInstance();
 		
 		try {
 		    algorithmClass = Class.forName(name); 
 		    algorithm = (ISteganographyContainer) algorithmClass.newInstance();
 		} catch (ClassNotFoundException e) {
-			System.err.println("AlgorithmFactory: Unable to find class " + name);
+			errorManager.addErrorMessage("[Algorithm Factory]: Unable to find class " + name);
 		} catch (InstantiationException e) {
-			System.err.println("AlgorithmFactory: Failed to instantiate class " + name);
+			errorManager.addErrorMessage("[Algorithm Factory]: Failed to instantiate class " + name);
 		} catch (IllegalAccessException e) {
-			System.err.println("AlgorithmFactory: Illegal access to " + name);
+			errorManager.addErrorMessage("[Algorithm Factory]: Illegal access to " + name);
 		}
 		return (algorithm);
 	}
@@ -22,16 +25,17 @@ public class AlgorithmFactory {
 	public static ICryptographyAlgorithm getCryptographyAlgorithmInstanceFromName(String name) {
 		ICryptographyAlgorithm algorithm = null;
 		Class<?> algorithmClass;
+		ErrorManager errorManager = ErrorManager.getInstance();
 		
 		try {
 		    algorithmClass = Class.forName(name); 
 		    algorithm = (ICryptographyAlgorithm) algorithmClass.newInstance();
 		} catch (ClassNotFoundException e) {
-			System.err.println("AlgorithmFactory: Unable to find class " + name);
+			errorManager.addErrorMessage("[Algorithm Factory]: Unable to find class " + name);
 		} catch (InstantiationException e) {
-			System.err.println("AlgorithmFactory: Failed to instantiate class " + name);
+			errorManager.addErrorMessage("[Algorithm Factory]: Failed to instantiate class " + name);
 		} catch (IllegalAccessException e) {
-			System.err.println("AlgorithmFactory: Illegal access to " + name);
+			errorManager.addErrorMessage("[Algorithm Factory]: Illegal access to " + name);
 		}
 		return (algorithm);
 	}

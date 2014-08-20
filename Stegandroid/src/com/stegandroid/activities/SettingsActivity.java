@@ -7,7 +7,6 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,6 +24,7 @@ import com.stegandroid.algorithms.IDataAlgorithm;
 import com.stegandroid.algorithms.data.SteganographyAlgorithmData.SteganographyChannelType;
 import com.stegandroid.configuration.Configuration;
 import com.stegandroid.configuration.Preferences;
+import com.stegandroid.error.ErrorManager;
 
 public class SettingsActivity extends Activity {
 		
@@ -174,7 +174,9 @@ public class SettingsActivity extends Activity {
 					Preferences.getInstance().setUseCryptography(arg1);
 					break;
 				default:
-					Log.d("DEBUG", "There is a big problem there!");
+					ErrorManager.getInstance().addErrorMessage("[About Activity] Checked change event not known");
+					ErrorManager.getInstance().displayErrorMessages(arg0.getContext());
+					break;
 			}
 			actualizeSpinners();
 		}
@@ -218,7 +220,9 @@ public class SettingsActivity extends Activity {
 						Preferences.getInstance().setCryptographyAlgorithm(null);
 					break;
 				default:
-					Log.d("DEBUG", "There is a big problem there!");
+					ErrorManager.getInstance().addErrorMessage("[About Activity] Spinner event not known");
+					ErrorManager.getInstance().displayErrorMessages(arg0.getContext());
+					break;
 			}
 		}
 
@@ -237,7 +241,9 @@ public class SettingsActivity extends Activity {
 					finish();
 					break;
 				default:
-					Log.d("DEBUG", "There is a big problem there!");
+					ErrorManager.getInstance().addErrorMessage("[Settings Activity] Click event not known");
+					ErrorManager.getInstance().displayErrorMessages(arg0.getContext());
+					break;
 			}
 		}
 	};

@@ -2,13 +2,13 @@ package com.stegandroid.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
 import com.stegandroid.R;
+import com.stegandroid.error.ErrorManager;
 
 public class AboutActivity extends Activity {
 
@@ -39,10 +39,11 @@ public class AboutActivity extends Activity {
 					finish();
 					break;
 				default:
-					Log.d("DEBUG", "There is a big problem there!");
+					ErrorManager.getInstance().addErrorMessage("[About Activity] Click event not known");
+					ErrorManager.getInstance().displayErrorMessages(arg0.getContext());
+					break;
 			}
 		}
 	};
-
 	
 }

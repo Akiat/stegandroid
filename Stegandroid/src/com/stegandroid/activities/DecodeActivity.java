@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -154,7 +153,8 @@ public class DecodeActivity extends Activity {
 				updateImageViews();
 				break;
 			default:
-				Log.d("DEBUG", "There is a big problem there!");
+				ErrorManager.getInstance().addErrorMessage("[Decode Activity] Activity result not known");
+				ErrorManager.getInstance().displayErrorMessages(this);
 				break;
 		}
 	}
@@ -206,7 +206,8 @@ public class DecodeActivity extends Activity {
 					process();
 					break;
 				default:
-					Log.d("DEBUG", "There is a big problem there!");
+					ErrorManager.getInstance().addErrorMessage("[Decode Activity] Click event not known");
+					ErrorManager.getInstance().displayErrorMessages(arg0.getContext());
 					break;
 			}
 		}
@@ -221,7 +222,6 @@ public class DecodeActivity extends Activity {
 		}
 	};
 
-	
 	private OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener() {
 
 		@Override
