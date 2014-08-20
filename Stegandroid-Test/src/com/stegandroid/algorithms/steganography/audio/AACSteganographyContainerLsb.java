@@ -3,19 +3,17 @@ package com.stegandroid.algorithms.steganography.audio;
 import java.nio.ByteBuffer;
 
 import com.googlecode.mp4parser.authoring.Sample;
-import com.stegandroid.tools.Utils;
+import com.stegandroid.lsb.LSBEncode;
 
 public class AACSteganographyContainerLsb extends AACSteganographyContainer {
 
 	private static final int BYTE_SIZE = 8;
-//	private static final int INT_SIZE = BYTE_SIZE * 4;
-	
-//	private int _content_byte_length;
-//	private int _content_bit_length;
 	private int _nbBitToHideInOneByte;
-
+	private int _dataToHideBitOffset;
+	
 	public AACSteganographyContainerLsb() {
 		_nbBitToHideInOneByte = 2;
+		_dataToHideBitOffset = 0;
 	}
 	
 	@Override
@@ -23,7 +21,6 @@ public class AACSteganographyContainerLsb extends AACSteganographyContainer {
 		Sample sample;
 		ByteBuffer dataBuffer;
 		ByteBuffer sampleBuffer;
-		
 		
 		if (_sampleList == null || _sampleListPosition >= _sampleList.size() || data == null) {
 			return;
@@ -37,19 +34,20 @@ public class AACSteganographyContainerLsb extends AACSteganographyContainer {
 			writeHeader(sampleBuffer.capacity());
 		}
 		
-		while (dataBuffer.remaining() > 0) {
+		while (dataBuffer.remaining() > 0 && _sampleListPosition < _sampleList.size()) {
 			
 			if (sampleBuffer.remaining() == 0) {
 				_sampleOffset = 0;
 				_sampleListPosition++;
 				if (_sampleListPosition >= _sampleList.size()) {
-					return;
+					continue;
 				}
 				sample = _sampleList.get(_sampleListPosition);
 				sampleBuffer = sample.asByteBuffer();
 				writeHeader(sampleBuffer.capacity());
 			}
-			applyLsb((ByteBuffer) sampleBuffer.slice().position(_sampleOffset), dataBuffer);			
+			applyLsb((ByteBuffer) sampleBuffer.slice().position(_sampleOffset), dataBuffer);
+			System.out.println(sampleBuffer.capacity() + " | " +_sampleOffset);
 			if (_sampleOffset == sampleBuffer.capacity()) {
 				sampleBuffer.position(sampleBuffer.position() + _sampleOffset);
 				_sampleOffset = 0;			
@@ -61,47 +59,59 @@ public class AACSteganographyContainerLsb extends AACSteganographyContainer {
 	}
 
 	private void applyLsb(ByteBuffer sample, ByteBuffer data) {
-		int sizeToWrite = 0;
 		byte[] dataToHide = null;
+		byte[] signal = null;
+		int sizeToWrite = 0;
+		int requiredSize;
 
-		if (data.remaining() * BYTE_SIZE / _nbBitToHideInOneByte < sample.remaining()) {
-	       	_sampleOffset += data.remaining() * BYTE_SIZE / _nbBitToHideInOneByte; 
-	       	sizeToWrite = data.remaining() * BYTE_SIZE / _nbBitToHideInOneByte;
-       		dataToHide = new byte[data.remaining()];
-       		data.get(dataToHide);
-	       	data.position(data.capacity());
-        } else if (data.remaining() * BYTE_SIZE / _nbBitToHideInOneByte > sample.remaining()) {
-        	_sampleOffset += sample.remaining();
-        	sizeToWrite = sample.remaining();
-        } else {
-        	_sampleOffset += sample.remaining();
-	       	sizeToWrite = data.remaining() * BYTE_SIZE / _nbBitToHideInOneByte;
-       		dataToHide = new byte[data.remaining()];
-       		data.get(dataToHide);
-       		data.position(data.capacity());
-        }
-    	// Hide data
-	    byte [] tmp = new byte[sizeToWrite];
-        sample.get(tmp);
-        encode(tmp, dataToHide);
-        this.addData(tmp);
+		if (_dataToHideBitOffset != 0) {
+			applyLsbBitByBit(sample, data, true);			
+		}
+		
+		requiredSize = data.remaining() * BYTE_SIZE / _nbBitToHideInOneByte;
+		if (requiredSize <= sample.remaining()) {
+			sizeToWrite = requiredSize;
+			_sampleOffset += sizeToWrite;
+			signal = new byte[sizeToWrite];
+			sample.get(signal);
+			dataToHide = new byte[data.remaining()];
+			data.get(dataToHide);
+			encode(signal, dataToHide);
+			this.addData(signal);
+		} else {
+			applyLsbBitByBit(sample, data, false);
+		}
+	}
+	
+	private void applyLsbBitByBit(ByteBuffer sample, ByteBuffer data, boolean adjust) {
+		byte[] dataToHide = null;
+		byte[] signal = null;
+
+		signal = new byte[1];
+		dataToHide = new byte[1];
+		while (sample.hasRemaining() && data.hasRemaining()) {
+			sample.get(signal);
+			data.get(dataToHide);
+			_dataToHideBitOffset += _nbBitToHideInOneByte;
+			if (_dataToHideBitOffset >= 8) {
+				_dataToHideBitOffset = _dataToHideBitOffset % 8;
+			} else {
+				data.position(data.position() - 1);
+			}
+			dataToHide[0] = (byte) (dataToHide[0] >> ((7 - _dataToHideBitOffset) & (0xFF >> 8 - _nbBitToHideInOneByte)));
+			encode(signal, dataToHide);
+			this.addData(signal);
+			_sampleOffset++;
+			if (adjust && _dataToHideBitOffset == 0) {
+				break;
+			}
+		}
 	}
 	
 	private void encode(byte[] signal, byte[] content) {
-		int i = 0;
+		LSBEncode encode = new LSBEncode(content, _nbBitToHideInOneByte);
 		
-		if (content == null || content.length == 0) {
-			return;
-		}
-
-		for (int bitCount = 0; bitCount < content.length * BYTE_SIZE;) {
-			for (int j = 0; (j < _nbBitToHideInOneByte) && (bitCount < content.length * BYTE_SIZE); j++) {
-				int bitValue = Utils.getBitInByteArray(content, bitCount);
-				signal[i] = Utils.setSpecificBit(signal[i], bitValue, j);
-				bitCount++;
-			}
-			i++;
-		}
+		encode.encodeNextFrame(signal);
 	}
 
 }

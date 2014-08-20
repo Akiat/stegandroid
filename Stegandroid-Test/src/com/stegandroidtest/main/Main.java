@@ -30,18 +30,18 @@ public class Main {
 		parameters.setSourceVideoPath("sample\\Evanescence_-_Bring_Me_To_Life.mp4");
 //		parameters.setSourceVideoPath("sample\\20140328_001137.mp4");
 //		parameters.setSourceVideoPath("sample\\output.mp4");
-		for (int i = 0; i < 50000; ++i) {
+		for (int i = 0; i < 1000; ++i) {
 			parameters.setTextToHide(parameters.getTextToHide() + "This is a text to hide");
 		}
 		parameters.setHidingText(true);
 		
 		// Preferences
-		Preferences.getInstance().setUseAudioChannel(false);
+		Preferences.getInstance().setUseAudioChannel(true);
 		Preferences.getInstance().setAudioAlgorithm("com.stegandroid.algorithms.steganography.audio.AACSteganographyContainerLsb");
 		Preferences.getInstance().setUseMetadataChannel(false);
 		Preferences.getInstance().setUseCryptography(false);
 		Preferences.getInstance().setCryptographyAlgorithm("com.stegandroid.algorithms.cryptography.AdvancedEncryptionStandard128");
-		Preferences.getInstance().setUseVideoChannel(true);
+		Preferences.getInstance().setUseVideoChannel(false);
 		Preferences.getInstance().setVideoAlgorithm("com.stegandroid.algorithms.steganography.video.H264SteganographyContainerLsb");
 
 		// Encode process
@@ -58,7 +58,7 @@ public class Main {
 		Preferences.getInstance().setUseMetadataChannel(false);
 		Preferences.getInstance().setUseCryptography(false);
 		Preferences.getInstance().setCryptographyAlgorithm("com.stegandroid.algorithms.cryptography.AdvancedEncryptionStandard128");
-		Preferences.getInstance().setUseVideoChannel(true);
+		Preferences.getInstance().setUseVideoChannel(false);
 		Preferences.getInstance().setVideoAlgorithm("com.stegandroid.algorithms.steganography.video.H264SteganographyContainerLsb");
 
 		DecodeProcess process = new DecodeProcess();

@@ -7,7 +7,7 @@ import java.util.List;
 import com.coremedia.iso.IsoTypeReaderVariable;
 import com.googlecode.mp4parser.authoring.Sample;
 import com.stegandroid.h264.Pair;
-import com.stegandroid.tools.Utils;
+import com.stegandroid.lsb.LSBEncode;
 
 public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 
@@ -25,11 +25,9 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 		int previousOffset = 0;
 		int originalSize;
 		int beginOffset;
-		boolean first = true;
 		
 		// true if we can hide data on partition
 		originalSize = buffer.remaining();
-//		System.out.println("Original size: " + originalSize);
 		macroblocksDataOffset = getMacroblockDataOffsets(buffer.slice());
 		if (macroblocksDataOffset == null) {
 			res.add(new Pair<ByteBuffer, Boolean>(buffer, false));
@@ -38,7 +36,6 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 				if (_subSampleOffset <= macroblocksDataOffset.get(i).getFirst()) {
 					buffer.position(previousOffset);
 					res.add(new Pair<ByteBuffer, Boolean>((ByteBuffer) buffer.slice().limit(macroblocksDataOffset.get(i).getFirst() - previousOffset), false));
-//					System.out.println("Adding to direct write from " + previousOffset + " to " + (macroblocksDataOffset.get(i).getFirst() - previousOffset));
 				}
 				if (_subSampleOffset <= macroblocksDataOffset.get(i).getSecond()) {
 					
@@ -49,12 +46,10 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 					}
 					buffer.position(beginOffset);
 					res.add(new Pair<ByteBuffer, Boolean>((ByteBuffer) buffer.slice().limit(macroblocksDataOffset.get(i).getSecond() - beginOffset), true));
-//					System.out.println("Adding to lsb write from " + macroblocksDataOffset.get(i).getFirst() + " to " + (macroblocksDataOffset.get(i).getSecond() - macroblocksDataOffset.get(i).getFirst()));
 				}
 				previousOffset = macroblocksDataOffset.get(i).getSecond();
 			}
 			if (originalSize != previousOffset) {
-				System.out.println("Completing...");
 				buffer.position(previousOffset);
 				res.add(new Pair<ByteBuffer, Boolean>((ByteBuffer) buffer.slice().limit(originalSize - previousOffset), false));
 			}
@@ -130,84 +125,6 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 		}			
 	}
 	
-//	@Override
-//	public void hideData(byte[] data) {
-//		Sample currentSample;
-//		ByteBuffer currentSampleBuffer;
-//		ByteBuffer dataBuffer;
-//		int currentSampleLength = -1;
-//		int oldSampleIdx = -1;
-//		int offset = -1;
-//		byte tmp[];
-//		
-//		if (_sampleList == null || _sampleListPosition >= _sampleList.size() || data == null) {
-//			return;
-//		}
-//		currentSample = _sampleList.get(_sampleListPosition);
-//		currentSampleBuffer = currentSample.asByteBuffer().slice();
-//		dataBuffer = ByteBuffer.wrap(data);
-//		
-//		if (_subSampleIdx > 0) {
-//			// We move the buffer to the position of the current sub index
-//			for (int i = 0; i < _subSampleIdx; ++i) {
-//				currentSampleLength = (int) IsoTypeReaderVariable.read(currentSampleBuffer, _sampleLengthSize);
-//				currentSampleBuffer.position(currentSampleBuffer.position() + currentSampleLength);
-//			}
-//		}
-//		
-//		while (dataBuffer.remaining() > 0 && _sampleListPosition < _sampleList.size()) {			
-//			
-//			if (!currentSampleBuffer.hasRemaining()) {
-//				// We reset the parameter and change the frame if there is no data to read in the current sample buffer
-//				_subSampleIdx = 0;
-//				_subSampleOffset = 0;
-//				_sampleListPosition++;
-//				oldSampleIdx = -1;
-//				if (_sampleListPosition < _sampleList.size()) {
-//					currentSample = _sampleList.get(_sampleListPosition);
-//					currentSampleBuffer = currentSample.asByteBuffer().slice();
-//				}
-//				continue;
-//			} 
-//
-//			if (_subSampleIdx != oldSampleIdx) {
-//				currentSampleLength = -1;
-//			}
-//			
-//			if (currentSampleLength == -1) {
-//				currentSampleLength = (int) IsoTypeReaderVariable.read(currentSampleBuffer, _sampleLengthSize);
-//				// If this is the beginning of the frame, we write the syncrhonisation sequence and NALU
-//				if (_subSampleOffset == 0) {
-//					addData(new byte[]{0, 0, 0, 1});
-//					offset = getSliceDataOffset((ByteBuffer) currentSampleBuffer.slice().limit(currentSampleLength));
-//					if (offset == -1) {
-//						tmp = new byte[currentSampleLength];
-//					} else {
-//						tmp = new byte[offset];
-//					}
-//					currentSampleBuffer.get(tmp);
-//					this.addData(tmp);
-//					_subSampleOffset = currentSampleBuffer.position() - _sampleLengthSize;
-//				} else {
-//					currentSampleBuffer.position(currentSampleBuffer.position() + _subSampleOffset);
-//				}
-//			}
-//			
-//			// We apply the LSB transformation
-//			oldSampleIdx = _subSampleIdx;
-////			System.out.println("Current: " + currentSampleBuffer.position() + " Offset: " + _subSampleOffset);
-//			applyLsb((ByteBuffer)currentSampleBuffer.slice().limit(currentSampleLength - _subSampleOffset), dataBuffer);
-//
-//			if (_subSampleIdx == oldSampleIdx) {
-//				currentSampleBuffer.position(_subSampleOffset);
-//			} else {
-//				currentSampleBuffer.position(currentSampleLength + _sampleLengthSize);
-//			}
-//		}
-//	}
-	
-	
-	
 	private void applyLsb(ByteBuffer sample, ByteBuffer data) {
 		int requiredSize;
 		int sizeToWrite;
@@ -237,26 +154,14 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 			data.get(dataArray);
 			encode(sampleArray, dataArray);			
 		}
-		
 		this.addData(sampleArray);
 	}
 	
 	
 	private void encode(byte[] signal, byte[] content) {
-		int i = 0;
+		LSBEncode encode = new LSBEncode(content, _nbBitToHideInOneByte);
 		
-		if (content == null || content.length == 0) {
-			return;
-		}
-
-		for (int bitCount = 0; bitCount < content.length * BYTE_SIZE;) {
-			for (int j = 0; (j < _nbBitToHideInOneByte) && (bitCount < content.length * BYTE_SIZE); j++) {
-				int bitValue = Utils.getBitInByteArray(content, bitCount);
-				signal[i] = Utils.setSpecificBit(signal[i], bitValue, j);
-				bitCount++;
-			}
-			i++;
-		}
+		encode.encodeNextFrame(signal);
 	}
 	
 }

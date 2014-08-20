@@ -259,6 +259,5 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 			return ret;
 		}
 		return null;
-		
 	}
 }

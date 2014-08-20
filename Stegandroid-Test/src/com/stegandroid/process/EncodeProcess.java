@@ -17,7 +17,7 @@ import com.stegandroid.parameters.EncodeParameters;
 
 public class EncodeProcess {
 
-	private final int DEFAULT_BLOCK_SIZE = 2;
+	private final int DEFAULT_BLOCK_SIZE = 16;
 	private final String DEFAULT_H264_CONTAINER = "com.stegandroid.algorithms.steganography.video.H264SteganographyContainer";
 	private final String DEFAULT_AAC_CONTAINER = "com.stegandroid.algorithms.steganography.audio.AACSteganographyContainer";
 	
@@ -176,7 +176,7 @@ public class EncodeProcess {
 		} else {
 			return false;
 		}
-		return true;
+		return false;
 	}
 	
 	private boolean processAudio(byte[] content) {
