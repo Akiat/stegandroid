@@ -2,35 +2,35 @@ package com.stegandroid.parameters;
 
 public class EncodeParameters {
 
-	private String _srcVideoPath;
-	private String _destVideoPath;
+	private String _sourceVideoPath;
+	private String _destinationVideoDirectory;
 	private String _textToHide;
 	private String _fileToHidePath;
 	private String _cryptographyKey;
-	private Boolean _useHideText;
+	private Boolean _hidingText;
 	
 	public EncodeParameters() {
-		_srcVideoPath = "";
-		_destVideoPath = "";
+		_sourceVideoPath = "";
+		_destinationVideoDirectory = "";
 		_textToHide = "";
 		_fileToHidePath = "";
-		_useHideText = true;
+		_hidingText = true;
 	}
 	
-	public String getSrcVideoPath() {
-		return _srcVideoPath;
+	public String getSourceVideoPath() {
+		return _sourceVideoPath;
 	}
 	
-	public void setSrcVideoPath(String path) {
-		_srcVideoPath = path;
+	public void setSourceVideoPath(String path) {
+		_sourceVideoPath = path;
 	}
 	
-	public String getDestVideoPath() {
-		return _destVideoPath;
+	public String getDestinationVideoDirectory() {
+		return _destinationVideoDirectory;
 	}
 	
-	public void setDestVideoPath(String path) {
-		_destVideoPath = path;
+	public void setDestinationVideoDirectory(String path) {
+		_destinationVideoDirectory = path;
 	}
 	
 	public String getTextToHide() {
@@ -57,11 +57,11 @@ public class EncodeParameters {
 		_cryptographyKey = cryptographyKey;
 	}
 	
-	public boolean isUsingHideText() {
-		return _useHideText;
+	public boolean isHidingText() {
+		return _hidingText;
 	}
 	
-	public void setUseHideText(Boolean useHideText) {
-		_useHideText = useHideText;
+	public void setHidingText(Boolean useHideText) {
+		_hidingText = useHideText;
 	}
 }

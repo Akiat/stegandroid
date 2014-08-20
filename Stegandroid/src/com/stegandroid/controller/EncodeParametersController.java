@@ -30,7 +30,7 @@ public class EncodeParametersController {
 		if (parameters == null) {
 			return false;
 		}
-		if (parameters.getSrcVideoPath() == null || parameters.getSrcVideoPath().isEmpty()) {
+		if (parameters.getSourceVideoPath() == null || parameters.getSourceVideoPath().isEmpty()) {
 			if (!_quite) {
 				ErrorManager.getInstance().addErrorMessage(R.string.error_src_video_path_empty_string);
 			}
@@ -43,7 +43,7 @@ public class EncodeParametersController {
 		if (parameters == null) {
 			return false;
 		}
-		if (parameters.getDestVideoPath() == null || parameters.getDestVideoPath().isEmpty()) {
+		if (parameters.getDestinationVideoDirectory() == null || parameters.getDestinationVideoDirectory().isEmpty()) {
 			if (!_quite) {
 				ErrorManager.getInstance().addErrorMessage(R.string.error_dest_video_empty_string);
 			}
@@ -56,7 +56,7 @@ public class EncodeParametersController {
 		if (parameters == null) {
 			return false;
 		}
-		if (parameters.isUsingHideText()) {
+		if (parameters.isHidingText()) {
 			return controlTextToHide(parameters);
 		}
 		return controlFileToHide(parameters);

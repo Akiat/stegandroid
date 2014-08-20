@@ -44,6 +44,52 @@ public class Utils {
 		return b >> index & 1;
 	}
 	
+	/**
+	 * @param b The byte which contain the needed bit.
+	 * @return Return an int which contain the value of LSB bit (so, 0 or 1).
+	 */
+	public static int getLSB(byte b) {
+		return b >> 0 & 1;
+	}
+	
+	/**
+	 * @param b The byte you want to change the bit.
+	 * @param bitValue The Less Significant Bit to modify b.
+	 * @param offset The index of the needed bit (e.g. 0b10000001 : index 7 for the MSB, index 0 for the LSB)
+	 * @return Return b, with the byte number 'offset' modified by lsbToSet.
+	 */
+	public static byte setSpecificBit(byte b, int bitValue, int offset) {
+		byte res;
+		if (bitValue == 1)
+			res = (byte) (b | (1 << offset));
+		else
+			res = (byte) (b & ~(1 << offset));
+		
+		/*
+		System.out.println("setSpecificBit - Avant: " + ByteToBinStr(b) + " bitValue = " + bitValue);
+		System.out.println("setSpecificBit - Après: " + ByteToBinStr(res) + " offset = " + offset);
+		System.out.println("---------------");
+		*/
+		return res;
+	}
+	
+	public static int getBitInByteArray(byte[] array, int bitOffset) {
+		int byteNb = (int)bitOffset / 8;
+		int[] invert = {7,6,5,4,3,2,1,0};
+		int bitNb =  invert[bitOffset - (byteNb * 8)];
+		
+		return Utils.getBit(array[byteNb], bitNb);
+	}
+	
+	public static byte[] setBitInByteArray(byte[] array, int bitValue, int bitOffset) {
+		int byteNb = (int)bitOffset / 8;
+		int[] invert = {7,6,5,4,3,2,1,0};
+		int bitNb =  invert[bitOffset - (byteNb * 8)];
+
+		array[byteNb] = Utils.setSpecificBit(array[byteNb], bitValue, bitNb);
+		return array;
+	}
+	
 	public static List<String> getClassesPathFromPackage(Context context, String packName) {
 		DexFile dex;
 		Enumeration<String> enumClasses;

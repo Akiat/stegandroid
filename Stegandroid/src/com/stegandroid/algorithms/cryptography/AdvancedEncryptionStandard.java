@@ -4,6 +4,8 @@ import com.stegandroid.algorithms.ICryptographyAlgorithm;
 
 abstract class AdvancedEncryptionStandard implements ICryptographyAlgorithm {
 
+	private final int BLOCK_SIZE = 16;
+	
 	protected enum AESType {
 		AES_128(10, 4),
 		AES_192(12, 6),
@@ -76,6 +78,10 @@ abstract class AdvancedEncryptionStandard implements ICryptographyAlgorithm {
 			{(byte) 0xfb,(byte) 0xcb, 0x4e, 0x25,(byte) 0x92,(byte) 0x84, 0x06, 0x6b, 0x73, 0x6e, 0x1b,(byte) 0xf4, 0x5f,(byte) 0xef, 0x61, 0x7d}};
 
 	public AdvancedEncryptionStandard() {
+	}
+	
+	public int getBlockSize() {
+		return BLOCK_SIZE;
 	}
 	
 	protected byte[] encryptionProcess(AESType type, byte[] message, byte[] key) {

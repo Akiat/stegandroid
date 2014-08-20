@@ -1,171 +1,205 @@
 package com.stegandroid.process;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 import com.stegandroid.algorithms.AlgorithmFactory;
 import com.stegandroid.algorithms.ICryptographyAlgorithm;
-import com.stegandroid.algorithms.ISteganographyAlgorithm;
+import com.stegandroid.algorithms.ISteganographyContainer;
 import com.stegandroid.configuration.Preferences;
-import com.stegandroid.mp4.Mp4ChannelExtracter;
+import com.stegandroid.mp4.MP4MediaReader;
+import com.stegandroid.mp4.MP4MediaWriter;
 import com.stegandroid.parameters.EncodeParameters;
-import com.stegandroid.tools.Utils;
+
 
 public class EncodeProcess {
 
+	private final int DEFAULT_BLOCK_SIZE = 2;
+	private final String DEFAULT_H264_CONTAINER = "com.stegandroid.algorithms.steganography.video.H264SteganographyContainer";
+	private final String DEFAULT_AAC_CONTAINER = "com.stegandroid.algorithms.steganography.audio.AACSteganographyContainer";
+	
+	private MP4MediaReader _mp4MediaReader;
+	private ISteganographyContainer _h264SteganographyContainer;
+	private ISteganographyContainer _aacSteganographyContainer;	
+	private ICryptographyAlgorithm _cryptographyAlgorithm;
+	
+	private InputStream _contentToHideStream;
+	private int _blockSize;
+	
 	public EncodeProcess() {
-		
+		_mp4MediaReader = null;
+		_h264SteganographyContainer = null;
+		_aacSteganographyContainer = null;
+		_cryptographyAlgorithm = null;
+		_contentToHideStream = null;
+		_blockSize = DEFAULT_BLOCK_SIZE;
+	}
+
+	private boolean init(EncodeParameters parameters) {
+		return initCryptographyAlgorithm() && initContentToHideStream(parameters)
+				&& initSteganographyContainer() && initMp4Components(parameters);
 	}
 	
-	public boolean encode(EncodeParameters parameters) {
-		byte[] contentToHide;
-		boolean ret = false;
+	private boolean initCryptographyAlgorithm() {
+		Preferences pref = Preferences.getInstance();
+		boolean ret = true;
 		
-		if (parameters == null) {
-			return false;
-		}
-		
-		if (parameters.isUsingHideText()) {
-			contentToHide = parameters.getTextToHide().getBytes();
-		} else {
-			contentToHide = Utils.getContentOfFileAsByteArray(parameters.getFileToHidePath());
-		}
-		contentToHide = processCryptography(parameters, contentToHide);
+		if (pref.getUseCryptography()) {
+			_cryptographyAlgorithm = AlgorithmFactory.getCryptographyAlgorithmInstanceFromName(pref.getCryptographyAlgorithm());
+			if (_cryptographyAlgorithm == null) {
+				System.err.println("Unable to load Cryptography algorithm");
+				ret = false;
+			} else {
+				_blockSize = _cryptographyAlgorithm.getBlockSize();
+			}
+		} 
 		return ret;
 	}
 	
-	private byte[] processCryptography(EncodeParameters parameters, byte[] contentToHide) {
-		ICryptographyAlgorithm algorithm;
-		byte[] key;
+	private boolean initContentToHideStream(EncodeParameters parameters) {
+		boolean ret = true;
 		
-		if (!Preferences.getInstance().getUseCryptography() || parameters == null || contentToHide == null) {
-			return contentToHide;
-		}
-		key = parameters.getCryptographyKey().getBytes();
-		algorithm = AlgorithmFactory.getCryptographyAlgorithmInstanceFromName(Preferences.getInstance().getCryptographyAlgorithm());
-		if (algorithm != null) {
-			return algorithm.encrypt(contentToHide, key);
-		}
-		return contentToHide;
-	}
-	
-	private byte[] processVideoSignal(EncodeParameters parameters, byte[] contentToHide) {
-		ISteganographyAlgorithm videoAlgorithm;
-		Mp4ChannelExtracter extracter;
-		byte[] videoSignal;
-		
-		extracter = new Mp4ChannelExtracter();
-		videoSignal = extracter.extractH264(parameters.getSrcVideoPath());
-		
-		if (contentToHide != null && contentToHide.length > 0 && Preferences.getInstance().getUseVideoChannel()) {
-			videoAlgorithm = AlgorithmFactory.getSteganographyAlgorithmInstanceFromName(Preferences.getInstance().getVideoAlgorithm());
-			if (videoAlgorithm != null) {
-				videoSignal = videoAlgorithm.encode(videoSignal, contentToHide);
+		if (parameters.isHidingText()) {
+			_contentToHideStream = new ByteArrayInputStream(parameters.getTextToHide().getBytes());
+		} else {
+			try {
+				_contentToHideStream = new FileInputStream(parameters.getFileToHidePath());
+			} catch (FileNotFoundException e) {
+				_contentToHideStream = null;
+				System.err.println("Unable to load content to hide");
+				ret = false;
 			}
 		}
-		return videoSignal;
+		return ret;
 	}
 	
-	private byte[] processAudioSignal(EncodeParameters parameters, byte[] contentToHide) {
-		ISteganographyAlgorithm audioAlgorithm;
-		Mp4ChannelExtracter extracter;
-		byte[] audioSignal;
+	private boolean initSteganographyContainer() {
+		Preferences prefs = Preferences.getInstance();
 		
-		extracter = new Mp4ChannelExtracter();
-		audioSignal = extracter.extractH264(parameters.getSrcVideoPath());
-		
-		if (contentToHide != null && contentToHide.length > 0 && Preferences.getInstance().getUseAudioChannel()) {
-			audioAlgorithm = AlgorithmFactory.getSteganographyAlgorithmInstanceFromName(Preferences.getInstance().getAudioAlgorithm());
-			if (audioAlgorithm != null) {
-				audioSignal = audioAlgorithm.encode(audioSignal, contentToHide);
-			}
+		if (prefs.getUseVideoChannel()) {
+			_h264SteganographyContainer = AlgorithmFactory.getSteganographyContainerInstanceFromName(prefs.getVideoAlgorithm());
+		} else {
+			_h264SteganographyContainer = AlgorithmFactory.getSteganographyContainerInstanceFromName(DEFAULT_H264_CONTAINER);
 		}
-		return audioSignal;
-	}
-	
-	private byte[] processMetadataSignal(EncodeParameters parameters, byte[] contentToHide) {
-		ISteganographyAlgorithm metadataAlgorithm;
-		Mp4ChannelExtracter extracter;
-		byte[] metadataSignal;
-		
-		extracter = new Mp4ChannelExtracter();
-		metadataSignal = extracter.extractH264(parameters.getSrcVideoPath());
-		
-		if (contentToHide != null && contentToHide.length > 0 && Preferences.getInstance().getUseMetadataChannel()) {
-			metadataAlgorithm = AlgorithmFactory.getSteganographyAlgorithmInstanceFromName(Preferences.getInstance().getMetadataAlgorithm());
-			if (metadataAlgorithm != null) {
-				metadataSignal = metadataAlgorithm.encode(metadataSignal, contentToHide);
-			}
+		if (_h264SteganographyContainer == null) {
+			System.err.println("Unable to load video steganography algorithm");
+			return false;
 		}
-		return metadataSignal;
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//		IAlgorithm audioAlgorithm;
-//	IAlgorithm videoAlgorithm;
-//	IAlgorithm metadataAlgorithm;
-//	
-//	// TODO: Open the video and extract the channels
-//	
-//	if (Configuration.getInstance().getUseAudioChannel()) {
-//		audioAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getAudioAlgorithm());
-//		audioAlgorithm.encode();
-//	}
-//	
-//	if (Configuration.getInstance().getUseVideoChannel()) {
-//		videoAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getVideoAlgorithm());
-//		videoAlgorithm.encode();
-//		
-//	}
-//	
-//	if (Configuration.getInstance().getUseMetadataChannel()) {
-//		metadataAlgorithm = AlgorithmFactory.getInstanceFromName(Configuration.getInstance().getMetadataAlgorithm());
-//		metadataAlgorithm.encode();			
-//	}
-	
-	// TODO: Save the new video
-	//copyContent(pathToVideo, destinationPath);
 
+		if (prefs.getUseAudioChannel()) {
+			_aacSteganographyContainer = AlgorithmFactory.getSteganographyContainerInstanceFromName(prefs.getAudioAlgorithm());
+		} else {
+			_aacSteganographyContainer = AlgorithmFactory.getSteganographyContainerInstanceFromName(DEFAULT_AAC_CONTAINER);
+		}
+		if (_aacSteganographyContainer == null) {
+			System.err.println("Unable to load audio steganography algorithm");
+			return false;
+		}
+		
+		return true;
+	}
 	
-//	private void copyContent(String original, String dest) {
-//		FileInputStream fileInputStream;
-//		FileOutputStream fileOutputStream;
-//		byte [] tmp = new byte[256];
-//		int readed;
-//		
-//		try {
-//			fileInputStream = new FileInputStream(new File(original));
-//			fileOutputStream = new FileOutputStream(new File(dest + "/lalala.mp4"));
-//			
-//			while ((readed = fileInputStream.read(tmp)) >= 0) {
-//				fileOutputStream.write(tmp, 0, readed);
-//			}
-//			
-//			fileInputStream.close();
-//			fileOutputStream.close();
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//	}
+	private boolean initMp4Components(EncodeParameters parameters) {
+		_mp4MediaReader = new MP4MediaReader();
+		if (!_mp4MediaReader.loadData(parameters.getSourceVideoPath())) {
+			System.err.println("Unable to load data from orignal MP4");
+			return false;
+		}
+		
+		if (!_h264SteganographyContainer.loadData(_mp4MediaReader) 
+				|| !_aacSteganographyContainer.loadData(_mp4MediaReader)) {
+			System.err.println("Unable to load channel from original MP4");
+			return false;
+		}
+		
+		return true;
+	}
 	
+	public boolean encode(EncodeParameters parameters) {
+		byte[] data;
+		
+		if (!this.init(parameters)) {
+			return false;
+		}
+	
+		while ((data = getPendingDataToHide(_blockSize)) != null) {
+			data = processCryptography(parameters, data);
+			if (processVideo(data)) continue;
+			if (processAudio(data)) continue;
+			System.err.println("Not enough space to hide data");
+			return false;
+		}
+		finalise(parameters);
+		try {
+			_contentToHideStream.close();
+		} catch (Exception ex) {
+		}
+		return true;
+	}
+	
+	private byte[] getPendingDataToHide(int size) {
+		byte[] ret = new byte[size];
+		int readedContent = 0;
+		int read = 0;
+
+		try {
+			while ((readedContent = _contentToHideStream.read(ret, readedContent, size - readedContent)) != -1) {
+				read += readedContent;
+				if (read >= size) {
+					break;
+				}
+			}
+			if (read == 0) {
+				return null;
+			}
+		} catch (IOException e) {
+			System.err.println("Unable to read data");
+			return null;
+		}
+		return ret;
+	}
+	
+	private byte[] processCryptography(EncodeParameters parameters, byte[] content) {		
+		if (_cryptographyAlgorithm != null && parameters != null) {
+			return (_cryptographyAlgorithm.encrypt(content, parameters.getCryptographyKey().getBytes()));
+		}
+		// Return the original content if no cryptography algorithm
+		return content;
+	}
+	
+	private boolean processVideo(byte[] content) {
+		if (_h264SteganographyContainer != null) {
+			_h264SteganographyContainer.hideData(content);
+		} else {
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean processAudio(byte[] content) {
+		if (_aacSteganographyContainer != null) {
+			_aacSteganographyContainer.hideData(content);
+		} else {
+			return false;
+		}
+		return true;
+	}
+
+	private void finalise(EncodeParameters parameters) {
+		MP4MediaWriter mp4MediaWriter;
+
+		if (_h264SteganographyContainer != null) {
+			_h264SteganographyContainer.writeRemainingSamples();
+		}
+		if (_aacSteganographyContainer != null) {
+			_aacSteganographyContainer.writeRemainingSamples();
+		}
+		mp4MediaWriter = new MP4MediaWriter(parameters.getDestinationVideoDirectory() + "output.mp4", 
+				_mp4MediaReader.getTimescale(), (int) _mp4MediaReader.getDurationPerSample(),
+				_h264SteganographyContainer.getDataSource(), _aacSteganographyContainer.getDataSource());
+		mp4MediaWriter.create();
+	}
 }

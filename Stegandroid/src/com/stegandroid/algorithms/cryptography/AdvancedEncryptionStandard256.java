@@ -1,6 +1,5 @@
 package com.stegandroid.algorithms.cryptography;
 
-import com.stegandroid.error.ErrorManager;
 
 public class AdvancedEncryptionStandard256 extends AdvancedEncryptionStandard {
 
@@ -14,14 +13,14 @@ public class AdvancedEncryptionStandard256 extends AdvancedEncryptionStandard {
 		boolean valid = true;
 		
 		if (message == null) {
-			ErrorManager.getInstance().addErrorMessage("AES 256: Message to encrypt is null");
+			System.err.println("AES 256: Message to encrypt is null");
 			valid = false;
 		}
 		if (key == null) {
-			ErrorManager.getInstance().addErrorMessage("AES 256: Key is null");
+			System.err.println("AES 256: Key is null");
 			valid = false;
 		} else if (!checkKeyLength(key.length)) {
-			ErrorManager.getInstance().addErrorMessage("AES 256: Key must be " + KEY_LENGTH + " length");			
+			System.err.println("AES 256: Key must be " + KEY_LENGTH + " length");			
 			valid = false;
 		} 
 		return (valid ? super.encryptionProcess(AESType.AES_256, message, key) : null);
@@ -32,14 +31,14 @@ public class AdvancedEncryptionStandard256 extends AdvancedEncryptionStandard {
 		boolean valid = true;
 		
 		if (cipher == null) {
-			ErrorManager.getInstance().addErrorMessage("AES 256: Cipher to decrypt is null");
+			System.err.println("AES 256: Cipher to decrypt is null");
 			valid = false;
 		}
 		if (key == null) {
-			ErrorManager.getInstance().addErrorMessage("AES 256: Key is null");
+			System.err.println("AES 256: Key is null");
 			valid = false;
 		} else if (!checkKeyLength(key.length)) {
-			ErrorManager.getInstance().addErrorMessage("AES 256: Key must be " + KEY_LENGTH + " length");			
+			System.err.println("AES 256: Key must be " + KEY_LENGTH + " length");			
 			valid = false;
 		} 
 		return (valid ? super.decryptionProcess(AESType.AES_256, cipher, key) : null);

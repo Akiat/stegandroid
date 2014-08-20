@@ -81,7 +81,7 @@ public class MainActivity extends Activity {
 					createActivities(AboutActivity.class);
 					break;
 				default:
-					ErrorManager.getInstance().addErrorMessage("[Main Activity] Activity requested not known");
+					ErrorManager.getInstance().addErrorMessage("[Main Activity] Requested activity not known");
 					ErrorManager.getInstance().displayErrorMessages(arg0.getContext());
 					break;
 			}

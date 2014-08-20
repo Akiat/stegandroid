@@ -193,9 +193,9 @@ public class EncodeActivity extends Activity{
 		if (resultCode == Activity.RESULT_OK) {
 			selectedVideoLocation = data.getData();
 			
-			_encodeParameters.setSrcVideoPath(Utils.getRealPathFromUri(this, selectedVideoLocation));
-			if (_encodeParameters.getDestVideoPath() == null || _encodeParameters.getDestVideoPath().isEmpty()) {
-				_encodeParameters.setDestVideoPath(Utils.getBasenameFromPath(_encodeParameters.getSrcVideoPath()));
+			_encodeParameters.setSourceVideoPath(Utils.getRealPathFromUri(this, selectedVideoLocation));
+			if (_encodeParameters.getDestinationVideoDirectory() == null || _encodeParameters.getDestinationVideoDirectory().isEmpty()) {
+				_encodeParameters.setDestinationVideoDirectory(Utils.getBasenameFromPath(_encodeParameters.getSourceVideoPath()));
 			}
 			updateImageViews();
 		}
@@ -228,7 +228,7 @@ public class EncodeActivity extends Activity{
 
 		@Override
 		public void onChoosenDir(String directory) {
-			_encodeParameters.setDestVideoPath(directory);
+			_encodeParameters.setDestinationVideoDirectory(directory);
 			updateImageViews();
 		}
 	};
@@ -241,22 +241,22 @@ public class EncodeActivity extends Activity{
 				_editTextContentToHide.setVisibility(View.GONE);
 				_btnSelectFileToHide.setVisibility(View.VISIBLE);
 				_checkBoxTextToHide.setChecked(false);
-				_encodeParameters.setUseHideText(false);
+				_encodeParameters.setHidingText(false);
 			} else if (arg0.getId() == R.id.chk_box_file_to_hide) {
 				_editTextContentToHide.setVisibility(View.VISIBLE);
 				_btnSelectFileToHide.setVisibility(View.GONE);
 				_checkBoxTextToHide.setChecked(true);
-				_encodeParameters.setUseHideText(true);
+				_encodeParameters.setHidingText(true);
 			} else if (arg0.getId() == R.id.chk_box_text_to_hide && arg1) {
 				_btnSelectFileToHide.setVisibility(View.GONE);
 				_editTextContentToHide.setVisibility(View.VISIBLE);
 				_checkBoxFileToHide.setChecked(false);
-				_encodeParameters.setUseHideText(true);
+				_encodeParameters.setHidingText(true);
 			} else {
 				_btnSelectFileToHide.setVisibility(View.VISIBLE);
 				_editTextContentToHide.setVisibility(View.GONE);
 				_checkBoxFileToHide.setChecked(true);
-				_encodeParameters.setUseHideText(false);
+				_encodeParameters.setHidingText(false);
 			}
 			updateImageViews();
 		}
