@@ -1,9 +1,9 @@
 package com.stegandroid.mp4;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import android.util.SparseIntArray;
 
 import com.coremedia.iso.IsoFile;
 import com.coremedia.iso.boxes.TrackBox;
@@ -206,7 +206,7 @@ public class MP4MediaReader {
 	}
 
 	private int getSamplingFrequencyFromCode(int code) {
-		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		SparseIntArray map = new SparseIntArray();
 
 		map.put(96000, 0);
 		map.put(88200, 1);
@@ -221,7 +221,7 @@ public class MP4MediaReader {
 		map.put(11025, 10);
 		map.put(8000, 11);
 		map.put(7350, 12);
-		return map.get(code);
+		return map.get(code, 4);
 	} 
 	
 	public int getChannelConfiguration() {

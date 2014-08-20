@@ -659,4 +659,256 @@ public class SliceParser {
 	public List<Pair<Integer, Integer>> getMacroblockDataOffset () {
 		return _macroblockDataOffset;
 	}
+
+	public int getNalUnitType() {
+		return _nalUnitType;
+	}
+
+	public int getNalRefIdc() {
+		return _nalRefIdc;
+	}
+
+	public int getChromaArrayType() {
+		return _chromaArrayType;
+	}
+
+	public boolean isIdrPicFlag() {
+		return _idrPicFlag;
+	}
+
+	public List<Pair<Integer, Integer>> get_macroblockDataOffset() {
+		return _macroblockDataOffset;
+	}
+
+	public int getFirstMbInSlice() {
+		return _first_mb_in_slice;
+	}
+
+	public int getSliceType() {
+		return _slice_type;
+	}
+
+	public int getPicParameterSetId() {
+		return _pic_parameter_set_id;
+	}
+
+	public int getColourPlaneId() {
+		return _colour_plane_id;
+	}
+
+	public int getFrameNum() {
+		return _frame_num;
+	}
+
+	public int getFieldPicFlag() {
+		return _field_pic_flag;
+	}
+
+	public int getBottomFieldFlag() {
+		return _bottom_field_flag;
+	}
+
+	public int getIdrPicId() {
+		return _idr_pic_id;
+	}
+
+	public int getPicOrderCntLsb() {
+		return _pic_order_cnt_lsb;
+	}
+
+	public int getDeltaPicOrderCntBottom() {
+		return _delta_pic_order_cnt_bottom;
+	}
+
+	public int[] getDeltaPicOrderCnt() {
+		return _delta_pic_order_cnt;
+	}
+
+	public int getRedundantPicCnt() {
+		return _redundant_pic_cnt;
+	}
+
+	public int getDirectSpatialMvPredFlag() {
+		return _direct_spatial_mv_pred_flag;
+	}
+
+	public int getNumRefIdxActiveOverrideFlag() {
+		return _num_ref_idx_active_override_flag;
+	}
+
+	public int getNumRefIdxL0ActiveMinus1() {
+		return _num_ref_idx_l0_active_minus1;
+	}
+
+	public int getNumRefIdxL1ActiveMinus1() {
+		return _num_ref_idx_l1_active_minus1;
+	}
+
+	public int getCabacInitIdc() {
+		return _cabac_init_idc;
+	}
+
+	public int getSliceQpDelta() {
+		return _slice_qp_delta;
+	}
+
+	public int getSpForSwitchFlag() {
+		return _sp_for_switch_flag;
+	}
+
+	public int getSliceQsDelta() {
+		return _slice_qs_delta;
+	}
+
+	public int getDisableDeblockingFilterIdc() {
+		return _disable_deblocking_filter_idc;
+	}
+
+	public int getSliceAlphaC0OffsetDiv2() {
+		return _slice_alpha_c0_offset_div2;
+	}
+
+	public int getSliceBetaOffsetDiv2() {
+		return _slice_beta_offset_div2;
+	}
+
+	public int getSliceGroupChangeCycle() {
+		return _slice_group_change_cycle;
+	}
+
+	public int getRefPicListModificationFlagL0() {
+		return _ref_pic_list_modification_flag_l0;
+	}
+
+	public int getModificationOfPicNumIdc() {
+		return _modification_of_pic_num_idc;
+	}
+
+	public int getAbsDiffPicNumMinus1() {
+		return _abs_diff_pic_num_minus1;
+	}
+
+	public int getLongTermPicNum() {
+		return _long_term_pic_num;
+	}
+
+	public int getAbsDiffViewIdxMinus1() {
+		return _abs_diff_view_idx_minus1;
+	}
+
+	public int getRefPicListModificationFlagL1() {
+		return _ref_pic_list_modification_flag_l1;
+	}
+
+	public int getLumaLog2WeightDenom() {
+		return _luma_log2_weight_denom;
+	}
+
+	public int getChromaLog2WeightDenom() {
+		return _chroma_log2_weight_denom;
+	}
+
+	public int getLumaWeightL0Flag() {
+		return _luma_weight_l0_flag;
+	}
+
+	public int[] getLumaWeightL0() {
+		return _luma_weight_l0;
+	}
+
+	public int[] getLumaOffsetL0() {
+		return _luma_offset_l0;
+	}
+
+	public int getChromaWeightL0Flag() {
+		return _chroma_weight_l0_flag;
+	}
+
+	public int[][] getChromaWeightL0() {
+		return _chroma_weight_l0;
+	}
+
+	public int[][] getChromaOffsetL0() {
+		return _chroma_offset_l0;
+	}
+
+	public int getLumaWeightL1Flag() {
+		return _luma_weight_l1_flag;
+	}
+
+	public int[] getLumaWeightL1() {
+		return _luma_weight_l1;
+	}
+
+	public int[] getLumaOffsetL1() {
+		return _luma_offset_l1;
+	}
+
+	public int getChromaWeightL1Flag() {
+		return _chroma_weight_l1_flag;
+	}
+
+	public int[][] getChromaWeightL1() {
+		return _chroma_weight_l1;
+	}
+
+	public int[][] getChromaOffsetL1() {
+		return _chroma_offset_l1;
+	}
+
+	public int getNoOutputOfPriorPicsFlag() {
+		return _no_output_of_prior_pics_flag;
+	}
+
+	public int getLongTermReferenceFlag() {
+		return _long_term_reference_flag;
+	}
+
+	public int getAdaptiveRefPicMarkingModeFlag() {
+		return _adaptive_ref_pic_marking_mode_flag;
+	}
+
+	public int getMemoryManagementControlOperation() {
+		return _memory_management_control_operation;
+	}
+
+	public int getDifferenceOfPicNumsMinus1() {
+		return _difference_of_pic_nums_minus1;
+	}
+
+	public int getLongTermFrameIdx() {
+		return _long_term_frame_idx;
+	}
+
+	public int getMaxLongTermFrameIdxPlus1() {
+		return _max_long_term_frame_idx_plus1;
+	}
+
+	public int[] getMapUnitToSliceGroupMap() {
+		return _mapUnitToSliceGroupMap;
+	}
+
+	public int[] getMbToSliceGroupMap() {
+		return _mbToSliceGroupMap;
+	}
+
+	public int getCabacAlignementOneBit() {
+		return _cabac_alignement_one_bit;
+	}
+
+	public int getMbSkipRun() {
+		return _mb_skip_run;
+	}
+
+	public int getMbSkipFlag() {
+		return _mb_skip_flag;
+	}
+
+	public int getMbFieldDecodingFlag() {
+		return _mb_field_decoding_flag;
+	}
+
+	public int getEndOfSliceFlag() {
+		return _end_of_slice_flag;
+	}
 }

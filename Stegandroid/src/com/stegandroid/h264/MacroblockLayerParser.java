@@ -597,4 +597,128 @@ public class MacroblockLayerParser {
 	public List<Pair<Integer, Integer>> getMacroblockResidualOffset () {
 		return _macroblockResidualOffset;
 	}
+
+	public SeqParameterSetParser get_seqParameterSetParser() {
+		return _seqParameterSetParser;
+	}
+
+	public PictureParameterSetParser get_pictureParameterSetParser() {
+		return _pictureParameterSetParser;
+	}
+
+	public int get_sliceType() {
+		return _sliceType;
+	}
+
+	public int get_fieldPicFlag() {
+		return _fieldPicFlag;
+	}
+
+	public int get_mbFieldDecodingFlag() {
+		return _mbFieldDecodingFlag;
+	}
+
+	public List<Pair<Integer, Integer>> get_macroblockResidualOffset() {
+		return _macroblockResidualOffset;
+	}
+
+	public int getMbType() {
+		return _mb_type;
+	}
+
+	public int getPcmAlignmentZeroBit() {
+		return _pcm_alignment_zero_bit;
+	}
+
+	public int[] getPcmSampleLuma() {
+		return _pcm_sample_luma;
+	}
+
+	public int[] getPcmSampleChroma() {
+		return _pcm_sample_chroma;
+	}
+
+	public int getTransformSize8x8Flag() {
+		return _transform_size_8x8_flag;
+	}
+
+	public int getCodedBlockPattern() {
+		return _coded_block_pattern;
+	}
+
+	public int getMbQpDelta() {
+		return _mb_qp_delta;
+	}
+
+	public int[] getPrevIntra4x4PredModeFlag() {
+		return _prev_intra4x4_pred_mode_flag;
+	}
+
+	public int[] getRemIntra4x4PredMode() {
+		return _rem_intra4x4_pred_mode;
+	}
+
+	public int[] getPrevIntra8x8PredModeFlag() {
+		return _prev_intra8x8_pred_mode_flag;
+	}
+
+	public int[] getRemIntra8x8PredMode() {
+		return _rem_intra8x8_pred_mode;
+	}
+
+	public int getIntraChromaPredMode() {
+		return _intra_chroma_pred_mode;
+	}
+
+	public int[] getRefIdxL0() {
+		return _ref_idx_l0;
+	}
+
+	public int[] getRefIdxL1() {
+		return _ref_idx_l1;
+	}
+
+	public int[][][] getMvdL0() {
+		return _mvd_l0;
+	}
+
+	public int[][][] getMvdL1() {
+		return _mvd_l1;
+	}
+
+	public int[] getSubMbType() {
+		return _sub_mb_type;
+	}
+
+	public int[] getI16x16DClevel() {
+		return _i16x16DClevel;
+	}
+
+	public int[][] getI16x16AClevel() {
+		return _i16x16AClevel;
+	}
+
+	public int[][] getLevel4x4() {
+		return _level4x4;
+	}
+
+	public int[][] getLevel8x8() {
+		return _level8x8;
+	}
+
+	public int getCoeffToken() {
+		return _coeff_token;
+	}
+
+	public int getTrailingOnesSignFlag() {
+		return _trailing_ones_sign_flag;
+	}
+
+	public int getLevelPrefix() {
+		return _level_prefix;
+	}
+
+	public int getLevelSuffix() {
+		return _level_suffix;
+	}
 }

@@ -25,11 +25,9 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 		int previousOffset = 0;
 		int originalSize;
 		int beginOffset;
-		boolean first = true;
 		
 		// true if we can hide data on partition
 		originalSize = buffer.remaining();
-//		System.out.println("Original size: " + originalSize);
 		macroblocksDataOffset = getMacroblockDataOffsets(buffer.slice());
 		if (macroblocksDataOffset == null) {
 			res.add(new Pair<ByteBuffer, Boolean>(buffer, false));
@@ -38,7 +36,6 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 				if (_subSampleOffset <= macroblocksDataOffset.get(i).getFirst()) {
 					buffer.position(previousOffset);
 					res.add(new Pair<ByteBuffer, Boolean>((ByteBuffer) buffer.slice().limit(macroblocksDataOffset.get(i).getFirst() - previousOffset), false));
-//					System.out.println("Adding to direct write from " + previousOffset + " to " + (macroblocksDataOffset.get(i).getFirst() - previousOffset));
 				}
 				if (_subSampleOffset <= macroblocksDataOffset.get(i).getSecond()) {
 					
@@ -49,7 +46,6 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 					}
 					buffer.position(beginOffset);
 					res.add(new Pair<ByteBuffer, Boolean>((ByteBuffer) buffer.slice().limit(macroblocksDataOffset.get(i).getSecond() - beginOffset), true));
-//					System.out.println("Adding to lsb write from " + macroblocksDataOffset.get(i).getFirst() + " to " + (macroblocksDataOffset.get(i).getSecond() - macroblocksDataOffset.get(i).getFirst()));
 				}
 				previousOffset = macroblocksDataOffset.get(i).getSecond();
 			}

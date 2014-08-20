@@ -168,8 +168,8 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 	}
 	
 	private void switchOutputStreamToFile() {
-		if (_content != null && _content instanceof ByteArrayOutputStream) {
-//				&& ((ByteArrayOutputStream)_content).size() >= MAX_SIZE_BUFFERING) {
+		if (_content != null && _content instanceof ByteArrayOutputStream
+				&& ((ByteArrayOutputStream)_content).size() >= MAX_SIZE_BUFFERING) {
 				FileOutputStream fos;
 				try {
 					fos = new FileOutputStream(new File("h264.tmp"));
