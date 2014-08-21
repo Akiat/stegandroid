@@ -24,8 +24,9 @@ public class LSBDecode {
 	 * a byte array with the unhidden content otherwise
 	 */
 	public byte[] decodeFrame(byte[] frame) {
-		if (_cursor > _to_unhide_bit_length)
+		if (_cursor > _to_unhide_bit_length) {
 			return _unhide_content;
+		}
 		
 		for (int i = 0; i < frame.length; i++) {
 			if (_get_int_cursor < INT_SIZE * 2) {

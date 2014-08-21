@@ -1,6 +1,5 @@
 package com.stegandroid.mp4;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -15,9 +14,7 @@ import com.googlecode.mp4parser.authoring.Mp4TrackImpl;
 import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.boxes.mp4.ESDescriptorBox;
 import com.googlecode.mp4parser.boxes.mp4.objectdescriptors.ESDescriptor;
-import com.googlecode.mp4parser.h264.model.PictureParameterSet;
 import com.googlecode.mp4parser.util.Path;
-import com.stegandroid.h264.NaluParser;
 
 public class MP4MediaReader {
 

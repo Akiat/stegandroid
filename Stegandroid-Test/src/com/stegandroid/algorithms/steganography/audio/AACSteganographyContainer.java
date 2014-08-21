@@ -18,7 +18,7 @@ import com.stegandroid.mp4.StegandroidMemoryDataSourceImpl;
 
 public class AACSteganographyContainer implements ISteganographyContainer {
 	
-	private final int MAX_SIZE_BUFFERING = 250000000; // 250 Mo
+	private final int MAX_SIZE_BUFFERING = 200000000; // 200 Mo
 	
 	protected OutputStream _content;
 	protected SampleList _sampleList;
@@ -68,7 +68,6 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 		}
 		return dataSource;
 	}
-
 	
 	public void writeRemainingSamples() {
 		Sample sample;
@@ -109,7 +108,6 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 		
 		this.addData(header);
 	}
-
 	
 	private void switchOutputStreamToFile() {
 		if (_content != null && _content instanceof ByteArrayOutputStream
@@ -137,7 +135,6 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 			}
 		}
 	}
-	
 
 	@Override
 	public void hideData(byte[] content) {

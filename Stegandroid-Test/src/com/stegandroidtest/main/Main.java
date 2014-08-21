@@ -22,7 +22,7 @@ public class Main {
 	public static void main(String[] args) {
 
 		testEncode();
-		//testDecode();
+//		testDecode();
 	}
 
 	public static void create_mp4() {
@@ -77,9 +77,9 @@ public class Main {
 		parameters.setTextToHide("This is a text to hide");
 //		parameters.setSourceVideoPath("sample\\20140328_001137.mp4");
 //		parameters.setSourceVideoPath("sample\\output.mp4");
-//		for (int i = 0; i < 1000; ++i) {
-//			parameters.setTextToHide(parameters.getTextToHide() + "This is a text to hide");
-//		}
+		for (int i = 0; i < 100; ++i) {
+			parameters.setTextToHide(parameters.getTextToHide() + "This is a text to hide");
+		}
 		parameters.setHidingText(true);
 
 		// Preferences
@@ -102,7 +102,7 @@ public class Main {
 		parameters.setUseVideoChannel(false);
 		parameters.setDestinationVideoDirectory("sample\\");
 		parameters.setDisplay(false);
-		parameters.setVideoPath("sample\\Evanescence_-_Bring_Me_To_Life.mp4");
+		parameters.setVideoPath("sample\\output.mp4");
 
 		// Preferences
 		Preferences.getInstance().setUseCryptography(false);

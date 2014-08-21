@@ -73,6 +73,7 @@ public class DecodeProcess {
 			String filename = parameters.getDestinationVideoDirectory() + parameters.getOutputName();
 			FileOutputStream output = new FileOutputStream(filename);
 			output.write(_unHideData);
+			System.out.println(_unHideData.length);
 			output.close();
 
 		} catch (IOException e) {

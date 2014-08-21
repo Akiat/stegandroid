@@ -257,14 +257,18 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 		sample.get(tmp);
 		parser.parseNaluData(tmp);
 		if (parser.getNalUnitType() == 1) {
-			SliceParser sp = new SliceParser(_seqParameterSetParser, _pictureParameterSetParser, parser.getNalUnitType(), parser.getNalRefIdc());
-			sp.parseSlice(parser.getRbsp());
-			ret = sp.getMacroblockDataOffset();
-			for (Pair<Integer, Integer> p : ret) {
-				p.setFirst(p.getFirst() + parser.getNaluHeaderSize());
-				p.setSecond(p.getSecond() + parser.getNaluHeaderSize());
+			try {
+				SliceParser sp = new SliceParser(_seqParameterSetParser, _pictureParameterSetParser, parser.getNalUnitType(), parser.getNalRefIdc());
+				sp.parseSlice(parser.getRbsp());
+				ret = sp.getMacroblockDataOffset();
+				for (Pair<Integer, Integer> p : ret) {
+					p.setFirst(p.getFirst() + parser.getNaluHeaderSize());
+					p.setSecond(p.getSecond() + parser.getNaluHeaderSize());
+				}
+				return ret;
+			} catch (Exception exception) {
+				exception.printStackTrace();
 			}
-			return ret;
 		}
 		return null;
 	}
