@@ -127,6 +127,8 @@ public class EncodeProcess {
 	
 	public boolean encode(EncodeParameters parameters) {
 		
+		Preferences prefs = Preferences.getInstance();
+		
 		if (!this.init(parameters)) {
 			return false;
 		}
@@ -134,21 +136,25 @@ public class EncodeProcess {
 		try {
 			byte[] bytes = IOUtils.toByteArray(_contentToHideStream);
 
-			int padding = bytes.length % 16;
-			if (padding > 0)
-				bytes = Arrays.copyOf(bytes, bytes.length + (16 - padding));
-			
-			_encryptedBytes = new byte[bytes.length];
-			for (int i = 0; i < bytes.length; i += 16) {
-				byte[] tmp = new byte[16];
-				System.arraycopy(bytes, i, tmp, 0, 16);
+			if (prefs.getUseCryptography())
+			{
+				int padding = bytes.length % 16;
+				if (padding > 0)
+					bytes = Arrays.copyOf(bytes, bytes.length + (16 - padding));
 				
-				tmp = processCryptography(parameters, tmp);
-				
-				System.arraycopy(tmp, 0, _encryptedBytes, i, 16);
-			}
+				_encryptedBytes = new byte[bytes.length];
+				for (int i = 0; i < bytes.length; i += 16) {
+					byte[] tmp = new byte[16];
+					System.arraycopy(bytes, i, tmp, 0, 16);
+					
+					tmp = processCryptography(parameters, tmp);
+					
+					System.arraycopy(tmp, 0, _encryptedBytes, i, 16);
+				}
+			} else
+				_encryptedBytes = bytes;
 
-			Preferences prefs = Preferences.getInstance();
+			
 			if (prefs.getUseVideoChannel()) {
 				_h264SteganographyContainer.hideData(_encryptedBytes);
 			} else if (prefs.getUseAudioChannel()) {
@@ -160,91 +166,8 @@ public class EncodeProcess {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		
-		
-		
-		
-//		byte[] toHide = new byte[0];
-//		
-//		
-//		while ((data = getPendingDataToHide(_blockSize)) != null) {
-//			System.out.println("AVANT = ");
-//			bArrayDump(data);
-//			//data = processCryptography(parameters, data);
-//			System.out.println("APRES = ");
-//			bArrayDump(data);
-//			byte[] tmp = new byte[toHide.length + data.length];
-//			
-//			System.arraycopy(toHide, 	0, 		tmp, 	0, 				toHide.length);
-//			System.arraycopy(data, 		0, 		tmp, 	toHide.length, 	data.length);
-//			toHide = tmp;
-//			System.out.println("DUMP TOTAL = ");
-//			bArrayDump(toHide);
-//		}
-//		
 		return true;
-//		Preferences prefs = Preferences.getInstance();
-//		if (prefs.getUseVideoChannel()) {
-//			_h264SteganographyContainer.hideData();
-//			_unHideData = _h264SteganographyContainer.getUnHideData();
-//		} else if (prefs.getUseAudioChannel()) {
-//			_aacSteganographyContainer.unHideData();
-//			_unHideData = _aacSteganographyContainer.getUnHideData();
-//		}
-//
-//		if (_unHideData != null) {
-//			_unHideData = processCryptography(parameters, _unHideData);
-//			this.finalise(parameters);
-//			return true;
-//		}
-//		return false;
-//		
-//		
-//		
-//		fileinputstream.getChannel().size()
-//		
-//		ByteBuffer toHide = ByteBuffer.allocate(arg0);
-//		while ((data = getPendingDataToHide(_blockSize)) != null) {
-//			data = processCryptography(parameters, data);
-//			toHide = new byte[toHide.length + data.length];
-//
-//			System.arraycopy(toHide, 0, combined, 0, one.length);
-//			System.arraycopy(two,0,combined,one.length,two.length);
-//			
-//			if (processVideo(data)) continue;
-//			if (processAudio(data)) continue;
-//			System.err.println("Not enough space to hide data");
-//			return false;
-//		}
-//		finalise(parameters);
-//		try {
-//			_contentToHideStream.close();
-//		} catch (Exception ex) {
-//		}
-//		return true;
-	}
-	
-	private byte[] getPendingDataToHide(int size) {
-		byte[] ret = new byte[size];
-		int readedContent = 0;
-		int read = 0;
-
-		try {
-			while ((readedContent = _contentToHideStream.read(ret, readedContent, size - readedContent)) != -1) {
-				read += readedContent;
-				if (read >= size) {
-					break;
-				}
-			}
-			if (read == 0) {
-				return null;
-			}
-		} catch (IOException e) {
-			System.err.println("Unable to read data");
-			return null;
-		}
-		return ret;
 	}
 	
 	private byte[] processCryptography(EncodeParameters parameters, byte[] content) {		
@@ -253,24 +176,6 @@ public class EncodeProcess {
 		}
 		// Return the original content if no cryptography algorithm
 		return content;
-	}
-	
-	private boolean processVideo(byte[] content) {
-		if (_h264SteganographyContainer != null) {
-			_h264SteganographyContainer.hideData(content);
-		} else {
-			return false;
-		}
-		return false;
-	}
-	
-	private boolean processAudio(byte[] content) {
-		if (_aacSteganographyContainer != null) {
-			_aacSteganographyContainer.hideData(content);
-		} else {
-			return false;
-		}
-		return true;
 	}
 
 	private void finalise(EncodeParameters parameters) {
