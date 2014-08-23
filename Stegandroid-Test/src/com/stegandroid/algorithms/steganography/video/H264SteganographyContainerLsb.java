@@ -86,8 +86,9 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 				// Sample
 				sample = new byte[currentSampleLength - sliceDataOffset];
 				currentSampleBuffer.get(sample);
+				sample = removeEscapeSequence(sample);
 				_unHideData = decoder.decodeFrame(sample);
-				if (_unHideData != null){
+				if (_unHideData != null) {
 					return;
 				}
 			}
@@ -134,6 +135,24 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 				byteArrayOutputStream.write(sample[i + 1]);
 				byteArrayOutputStream.write(0x03);
 				byteArrayOutputStream.write(sample[i + 2]);
+				i += 2;
+			} else {
+				byteArrayOutputStream.write(sample[i]);
+			}
+		}
+		return byteArrayOutputStream.toByteArray();
+	}
+
+	private byte[] removeEscapeSequence(byte sample[]) {
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		
+		if (sample == null) {
+			return byteArrayOutputStream.toByteArray();
+		}
+		for (int i = 0; i < sample.length; ++i) {
+			if (i + 2 < sample.length && sample[i] == 0x00 && sample[i + 1] == 0x00 && sample[i + 2] == 0x03) {
+				byteArrayOutputStream.write(sample[i]);
+				byteArrayOutputStream.write(sample[i + 1]);
 				i += 2;
 			} else {
 				byteArrayOutputStream.write(sample[i]);

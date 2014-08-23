@@ -97,12 +97,12 @@ public class Main {
 		parameters.setHidingText(true);
 
 		// Preferences
-		Preferences.getInstance().setUseAudioChannel(true);
+		Preferences.getInstance().setUseAudioChannel(false);
 		Preferences.getInstance().setAudioAlgorithm("com.stegandroid.algorithms.steganography.audio.AACSteganographyContainerLsb");
 		Preferences.getInstance().setUseMetadataChannel(false);
-		Preferences.getInstance().setUseCryptography(true);
+		Preferences.getInstance().setUseCryptography(false);
 		Preferences.getInstance().setCryptographyAlgorithm("com.stegandroid.algorithms.cryptography.AdvancedEncryptionStandard128");
-		Preferences.getInstance().setUseVideoChannel(false);
+		Preferences.getInstance().setUseVideoChannel(true);
 		Preferences.getInstance().setVideoAlgorithm("com.stegandroid.algorithms.steganography.video.H264SteganographyContainerLsb");
 
 		// Encode process
@@ -112,15 +112,15 @@ public class Main {
 
 	public static void testDecode() {
 		DecodeParameters parameters = new DecodeParameters();
-		parameters.setUseAudioChannel(true);
-		parameters.setUseVideoChannel(false);
+		parameters.setUseAudioChannel(false);
+		parameters.setUseVideoChannel(true);
 		parameters.setDestinationVideoDirectory("sample\\");
 		parameters.setDisplay(false);
 		parameters.setCryptographyKey("This is a key!!!");
 		parameters.setVideoPath("sample\\output.mp4");
 
 		// Preferences
-		Preferences.getInstance().setUseCryptography(true);
+		Preferences.getInstance().setUseCryptography(false);
 		Preferences.getInstance().setCryptographyAlgorithm("com.stegandroid.algorithms.cryptography.AdvancedEncryptionStandard128");
 
 		DecodeProcess process = new DecodeProcess();

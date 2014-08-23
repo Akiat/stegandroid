@@ -252,6 +252,7 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 		File file = new File(FILE_STORAGE_NAME);
 		file.delete();
 	}
+	
 	protected int getSliceLayerWithoutPartitioningIdrDataOffset(ByteBuffer sample) {		
 		NaluParser parser = new NaluParser();
 		byte tmp[] = new byte[sample.remaining()];
