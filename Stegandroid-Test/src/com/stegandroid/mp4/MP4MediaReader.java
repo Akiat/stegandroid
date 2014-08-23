@@ -38,7 +38,7 @@ public class MP4MediaReader {
 		try {
 			_isoFile = new IsoFile(path);
 		} catch (IOException exception) {
-			System.out.println("Not able to open the file");
+			System.err.println("Not able to open the file");
 			exception.printStackTrace();
 			return false;
 		}
@@ -53,7 +53,7 @@ public class MP4MediaReader {
 		try {
 			_isoFile.close();
 		} catch (IOException exception) {
-			System.out.println("Not able to close the file");
+			System.err.println("Not able to close the file");
 			return false;
 		} 
 		return true;

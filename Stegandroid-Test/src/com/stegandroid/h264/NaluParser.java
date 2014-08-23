@@ -80,7 +80,7 @@ public class NaluParser {
 		_nal_ref_idc = (int) bitBufferReader.readNBits(2);
 		_nal_unit_type = (int) bitBufferReader.readNBits(5);
 		_naluHeaderSize++;
-		
+				
 		if (_nal_unit_type == 14 || _nal_unit_type == 20 || _nal_unit_type == 21) {
 			_svc_extension_flag = (int) bitBufferReader.readNBits(1);
 			if (_svc_extension_flag == 1) {

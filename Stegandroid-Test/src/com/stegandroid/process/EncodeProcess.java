@@ -5,24 +5,23 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
 
+import com.googlecode.mp4parser.DataSource;
 import com.stegandroid.algorithms.AlgorithmFactory;
 import com.stegandroid.algorithms.ICryptographyAlgorithm;
 import com.stegandroid.algorithms.ISteganographyContainer;
 import com.stegandroid.configuration.Preferences;
-import com.stegandroid.lsb.LSBEncode;
 import com.stegandroid.mp4.MP4MediaReader;
 import com.stegandroid.mp4.MP4MediaWriter;
 import com.stegandroid.parameters.EncodeParameters;
+import com.stegandroid.tools.Utils;
 
 
 public class EncodeProcess {
 
-	private final int DEFAULT_BLOCK_SIZE = 16;
 	private final String DEFAULT_H264_CONTAINER = "com.stegandroid.algorithms.steganography.video.H264SteganographyContainer";
 	private final String DEFAULT_AAC_CONTAINER = "com.stegandroid.algorithms.steganography.audio.AACSteganographyContainer";
 	
@@ -33,7 +32,6 @@ public class EncodeProcess {
 	
 	private InputStream _contentToHideStream;
 	private byte[]		_encryptedBytes;
-	private int _blockSize;
 	
 	public EncodeProcess() {
 		_mp4MediaReader = null;
@@ -41,7 +39,6 @@ public class EncodeProcess {
 		_aacSteganographyContainer = null;
 		_cryptographyAlgorithm = null;
 		_contentToHideStream = null;
-		_blockSize = DEFAULT_BLOCK_SIZE;
 		_encryptedBytes = null;
 	}
 
@@ -59,8 +56,6 @@ public class EncodeProcess {
 			if (_cryptographyAlgorithm == null) {
 				System.err.println("Unable to load Cryptography algorithm");
 				ret = false;
-			} else {
-				_blockSize = _cryptographyAlgorithm.getBlockSize();
 			}
 		} 
 		return ret;
@@ -136,12 +131,11 @@ public class EncodeProcess {
 		try {
 			byte[] bytes = IOUtils.toByteArray(_contentToHideStream);
 
-			if (prefs.getUseCryptography())
-			{
+			if (prefs.getUseCryptography()) {
 				int padding = bytes.length % 16;
-				if (padding > 0)
+				if (padding > 0) {
 					bytes = Arrays.copyOf(bytes, bytes.length + (16 - padding));
-				
+				}
 				_encryptedBytes = new byte[bytes.length];
 				for (int i = 0; i < bytes.length; i += 16) {
 					byte[] tmp = new byte[16];
@@ -151,9 +145,9 @@ public class EncodeProcess {
 					
 					System.arraycopy(tmp, 0, _encryptedBytes, i, 16);
 				}
-			} else
+			} else {
 				_encryptedBytes = bytes;
-
+			}
 			
 			if (prefs.getUseVideoChannel()) {
 				_h264SteganographyContainer.hideData(_encryptedBytes);
@@ -180,16 +174,28 @@ public class EncodeProcess {
 
 	private void finalise(EncodeParameters parameters) {
 		MP4MediaWriter mp4MediaWriter;
-
+		DataSource h264DataSource;
+		DataSource aacDataSource;
+		String outputVideoName;
+		
 		if (_h264SteganographyContainer != null) {
 			_h264SteganographyContainer.writeRemainingSamples();
 		}
 		if (_aacSteganographyContainer != null) {
 			_aacSteganographyContainer.writeRemainingSamples();
 		}
-		mp4MediaWriter = new MP4MediaWriter(parameters.getDestinationVideoDirectory() + "output.mp4", 
-				_mp4MediaReader.getTimescale(), (int) _mp4MediaReader.getDurationPerSample(),
-				_h264SteganographyContainer.getDataSource(), _aacSteganographyContainer.getDataSource());
+		outputVideoName = Utils.getCurrentDateAndTime() + ".mp4";
+		outputVideoName = "output.mp4";
+		
+		h264DataSource = _h264SteganographyContainer.getDataSource();
+		aacDataSource = _aacSteganographyContainer.getDataSource();
+		
+		mp4MediaWriter = new MP4MediaWriter(parameters.getDestinationVideoDirectory() + outputVideoName, 
+				_mp4MediaReader.getTimescale(), (int) _mp4MediaReader.getDurationPerSample(), h264DataSource, aacDataSource);
 		mp4MediaWriter.create();
+		mp4MediaWriter.cleanUpResources();
+		
+		_h264SteganographyContainer.cleanUpResources();
+		_aacSteganographyContainer.cleanUpResources();
 	}
 }

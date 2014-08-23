@@ -19,8 +19,10 @@ import com.stegandroid.mp4.StegandroidMemoryDataSourceImpl;
 public class AACSteganographyContainer implements ISteganographyContainer {
 	
 	private final int MAX_SIZE_BUFFERING = 200000000; // 200 Mo
+	private final String FILE_STORAGE_NAME = "aac.tmp";
 	
 	protected OutputStream _content;
+	protected DataSource _dataSource;
 	protected SampleList _sampleList;
 	protected int _sampleListPosition;
 	protected int _sampleOffset;
@@ -40,6 +42,7 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 		_unHideData = null;
 	}
 	
+	// Interface methods
 	public boolean loadData(MP4MediaReader mediaReader) {
 		if (mediaReader != null) {
 			_content = new ByteArrayOutputStream();
@@ -51,22 +54,6 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 			return true;
 		}
 		return false;
-	}
-	
-	public DataSource getDataSource() {
-		DataSource dataSource;
-		
-		if (_content != null && _content instanceof ByteArrayOutputStream) {
-			dataSource = new StegandroidMemoryDataSourceImpl(((ByteArrayOutputStream)_content).toByteArray());
-		} else {
-			try {
-				dataSource = new FileDataSourceImpl(new File("aac.tmp"));
-			} catch (FileNotFoundException e) {
-				dataSource = null;
-				e.printStackTrace();
-			}
-		}
-		return dataSource;
 	}
 	
 	public void writeRemainingSamples() {
@@ -93,6 +80,53 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 		}
 	}
 	
+	@Override
+	public void hideData(byte[] content) {
+	}
+	
+	@Override
+	public void unHideData() {
+	}
+
+	@Override
+	public long getSamplesLengthUsedForSteganography() {
+		long ret = 0;
+
+		if (_sampleList != null) {
+			for (Sample s : _sampleList) {
+				ret += s.getSize();
+			}
+		}
+		return ret;
+	}
+
+	@Override
+	public byte[] getUnHideData() {
+		return _unHideData;
+	}
+
+	public DataSource getDataSource() {
+		DataSource dataSource;
+		
+		if (_content != null && _content instanceof ByteArrayOutputStream) {
+			dataSource = new StegandroidMemoryDataSourceImpl(((ByteArrayOutputStream)_content).toByteArray());
+		} else {
+			try {
+				dataSource = new FileDataSourceImpl(new File(FILE_STORAGE_NAME));
+			} catch (FileNotFoundException e) {
+				dataSource = null;
+				e.printStackTrace();
+			}
+		}
+		return dataSource;
+	}
+
+	public void cleanUpResources() {
+		cleanDataSource();
+		cleanContentStream();
+	}
+	
+	// Specific methods
 	protected void writeHeader(int frameLength) {
 		int profile = 2;  //AAC-LC
 		byte[] header = new byte[7];
@@ -114,7 +148,7 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 			&& ((ByteArrayOutputStream)_content).size() >= MAX_SIZE_BUFFERING) {
 				FileOutputStream fos;
 				try {
-					fos = new FileOutputStream(new File("aac.tmp"));
+					fos = new FileOutputStream(new File(FILE_STORAGE_NAME));
 					((ByteArrayOutputStream)_content).writeTo(fos);
 					_content = fos;
 				} catch (FileNotFoundException e) {
@@ -136,16 +170,31 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 		}
 	}
 
-	@Override
-	public void hideData(byte[] content) {
+	// Private methods
+	private void cleanDataSource() {
+		if (_dataSource != null) {
+			try {
+				_dataSource.close();
+				_dataSource = null;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		System.gc();		
 	}
 	
-	@Override
-	public void unHideData() {
+	private void cleanContentStream() {
+		if (_content != null) {
+			try {
+				_content.close();
+				_content = null;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		System.gc();
+		File file = new File(FILE_STORAGE_NAME);
+		file.delete();		
 	}
-	
-	@Override
-	public byte[] getUnHideData() {
-		return _unHideData;
-	}
+
 }

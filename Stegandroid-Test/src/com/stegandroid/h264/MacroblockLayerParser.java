@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.stegandroid.tools.BitBufferReader;
+import com.stegandroid.tools.Pair;
 
 public class MacroblockLayerParser {
 
@@ -125,12 +126,10 @@ public class MacroblockLayerParser {
 //				residual(0, 15);
 				Pair<Integer, Integer> offset = new Pair<Integer, Integer>();
 				offset.setFirst(bitBufferReader.getCurrentOffset());
-//				System.out.print(bitBufferReader.getCurrentOffset() + " : " + bitBufferReader.getCurrentBitOffset());
 				for (int i = 0; i < 32; ++i) {
 					bitBufferReader.readNBits(8);
 				}
 				offset.setSecond(bitBufferReader.getCurrentOffset());
-//				System.out.println(" | " + (bitBufferReader.getCurrentOffset()));
 				_macroblockResidualOffset.add(offset);
 			}
 		}
@@ -256,7 +255,7 @@ public class MacroblockLayerParser {
 		}
 	}
 
-	private void readResidual(BitBufferReader bitBufferReader, int startIdx, int endIdx) {
+//	private void readResidual(BitBufferReader bitBufferReader, int startIdx, int endIdx) {
 //		int entropyCodingMode = _pictureParameterSetParser.getEntropyCodingModeFlag();
 //		int chromaArrayType = (_seqParameterSetParser.getSeparateColourPlaneFlag() == 0 ? _seqParameterSetParser.getChromaFormatIdc() : 0);
 //		int i16x16DClevel;
@@ -314,51 +313,51 @@ public class MacroblockLayerParser {
 //			CrLevel4x4 = level4x4
 //			CrLevel8x8 = level8x8
 //		}
-	}
+//	}
 	
-	private void readResidualLuma(BitBufferReader bitBufferReader, int i16x16DClevel, int i16x16AClevel, int level4x4, int level8x8, int startIdx, int endIdx) {
-		int entropyCodingMode = _pictureParameterSetParser.getEntropyCodingModeFlag();
-		int transformSize8x8Flag = (_pictureParameterSetParser.getTransform8x8ModeFlag());
-		int codedBlockPatternLuma = _coded_block_pattern % 16;
-		
-		if (startIdx == 0 && mbPartPredMode(_mb_type, 0) == PredictionMode.Intra_16x16) {
-			readResidualCavcl(bitBufferReader, _i16x16DClevel, 0, 15, 16);
-		}
-		for (int i8x8 = 0; i8x8 < 4; i8x8++) {
-			if (transformSize8x8Flag == 0 || entropyCodingMode == 0) {
-				for (int i4x4 = 0; i4x4 < 4; i4x4++) {
-					if ((codedBlockPatternLuma & (1 << i8x8)) == 1) {
-						if (mbPartPredMode(_mb_type, 0) == PredictionMode.Intra_16x16) {
-							readResidualCavcl(bitBufferReader, _i16x16AClevel[i8x8 * 4 + i4x4], Math.max(0, startIdx - 1), endIdx - 1, 15);
-						} else {
-							readResidualCavcl(bitBufferReader, _level4x4[i8x8 * 4 + i4x4], startIdx, endIdx, 16);
-						}
-					} else if (mbPartPredMode(_mb_type, 0) == PredictionMode.Intra_16x16) {
-						for (int i = 0; i < 15; i++) {
-							_i16x16AClevel[i8x8 * 4 + i4x4][i] = 0;
-						}
-					} else {
-						for (int i = 0; i < 16; i++) {
-							_level4x4[i8x8 * 4 + i4x4][i] = 0;
-						}
-					}
-					if (entropyCodingMode == 0 && transformSize8x8Flag == 1) {
-						for (int i = 0; i < 16; i++) {
-							_level8x8[i8x8][4 * i + i4x4] = _level4x4[i8x8 * 4 + i4x4][i];
-						}
-					}
-				}
-			} else if ((codedBlockPatternLuma & (1 << i8x8)) == 1) {
-				readResidualCavcl(bitBufferReader, _level8x8[i8x8], 4 * startIdx, 4 * endIdx + 3, 64);
-			} else {
-				for(int i = 0; i < 64; i++ ) {
-					_level8x8[i8x8][i] = 0;
-				}
-			}
-		}
-	}
+//	private void readResidualLuma(BitBufferReader bitBufferReader, int i16x16DClevel, int i16x16AClevel, int level4x4, int level8x8, int startIdx, int endIdx) {
+//		int entropyCodingMode = _pictureParameterSetParser.getEntropyCodingModeFlag();
+//		int transformSize8x8Flag = (_pictureParameterSetParser.getTransform8x8ModeFlag());
+//		int codedBlockPatternLuma = _coded_block_pattern % 16;
+//		
+//		if (startIdx == 0 && mbPartPredMode(_mb_type, 0) == PredictionMode.Intra_16x16) {
+//			readResidualCavcl(bitBufferReader, _i16x16DClevel, 0, 15, 16);
+//		}
+//		for (int i8x8 = 0; i8x8 < 4; i8x8++) {
+//			if (transformSize8x8Flag == 0 || entropyCodingMode == 0) {
+//				for (int i4x4 = 0; i4x4 < 4; i4x4++) {
+//					if ((codedBlockPatternLuma & (1 << i8x8)) == 1) {
+//						if (mbPartPredMode(_mb_type, 0) == PredictionMode.Intra_16x16) {
+//							readResidualCavcl(bitBufferReader, _i16x16AClevel[i8x8 * 4 + i4x4], Math.max(0, startIdx - 1), endIdx - 1, 15);
+//						} else {
+//							readResidualCavcl(bitBufferReader, _level4x4[i8x8 * 4 + i4x4], startIdx, endIdx, 16);
+//						}
+//					} else if (mbPartPredMode(_mb_type, 0) == PredictionMode.Intra_16x16) {
+//						for (int i = 0; i < 15; i++) {
+//							_i16x16AClevel[i8x8 * 4 + i4x4][i] = 0;
+//						}
+//					} else {
+//						for (int i = 0; i < 16; i++) {
+//							_level4x4[i8x8 * 4 + i4x4][i] = 0;
+//						}
+//					}
+//					if (entropyCodingMode == 0 && transformSize8x8Flag == 1) {
+//						for (int i = 0; i < 16; i++) {
+//							_level8x8[i8x8][4 * i + i4x4] = _level4x4[i8x8 * 4 + i4x4][i];
+//						}
+//					}
+//				}
+//			} else if ((codedBlockPatternLuma & (1 << i8x8)) == 1) {
+//				readResidualCavcl(bitBufferReader, _level8x8[i8x8], 4 * startIdx, 4 * endIdx + 3, 64);
+//			} else {
+//				for(int i = 0; i < 64; i++ ) {
+//					_level8x8[i8x8][i] = 0;
+//				}
+//			}
+//		}
+//	}
 	
-	private void readResidualCavcl(BitBufferReader bitBufferReader, int coeffLevel[], int startIdx, int endIdx, int maxNumCoeff) {
+//	private void readResidualCavcl(BitBufferReader bitBufferReader, int coeffLevel[], int startIdx, int endIdx, int maxNumCoeff) {
 //		int suffixLength;
 //		
 //		for (int i = 0; i < maxNumCoeff; i++) {
@@ -429,7 +428,7 @@ public class MacroblockLayerParser {
 //				coeffLevel[startIdx + coeffNum] = levelVal[i];
 //			}
 //		}
-	}
+//	}
 	
 	private int getNumMbPart(int mbType) {
 		if (_sliceType == 1 || _sliceType == 6) {

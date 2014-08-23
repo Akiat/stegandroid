@@ -1,8 +1,15 @@
 package com.stegandroidtest.main;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.coremedia.iso.boxes.Container;
 import com.googlecode.mp4parser.FileDataSourceImpl;
@@ -10,6 +17,7 @@ import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
 import com.googlecode.mp4parser.authoring.tracks.AACTrackImpl;
 import com.googlecode.mp4parser.authoring.tracks.H264TrackImpl;
+import com.stegandroid.algorithms.cryptography.AdvancedEncryptionStandard128;
 import com.stegandroid.configuration.Preferences;
 import com.stegandroid.mp4.MP4MediaReader;
 import com.stegandroid.parameters.DecodeParameters;
@@ -19,10 +27,16 @@ import com.stegandroid.process.EncodeProcess;
 
 public class Main {
 
-	public static void main(String[] args) {
-
+	public static void main(String[] args) {		
 		testEncode();
-//		testDecode();
+		System.out.println("#######################################");
+		testDecode();
+	}
+	
+	public static String getCurrentDateAndTime() {
+		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+		Date date = new Date();
+		return dateFormat.format(date);
 	}
 
 	public static void create_mp4() {
@@ -74,11 +88,11 @@ public class Main {
 		parameters.setCryptographyKey("This is a key!!!");
 		parameters.setDestinationVideoDirectory("sample\\");
 		parameters.setSourceVideoPath("sample\\Evanescence_-_Bring_Me_To_Life.mp4");
-		parameters.setTextToHide("This is a text to hide");
-//		parameters.setSourceVideoPath("sample\\20140328_001137.mp4");
+		parameters.setTextToHide("abcdefghijklmnopqrstuvwxyz");
+		parameters.setSourceVideoPath("sample\\20140328_001137.mp4");
 //		parameters.setSourceVideoPath("sample\\output.mp4");
-		for (int i = 0; i < 100; ++i) {
-			parameters.setTextToHide(parameters.getTextToHide() + "This is a text to hide");
+		for (int i = 0; i < 1000; ++i) {
+			parameters.setTextToHide(parameters.getTextToHide() + "abcdefghijklmnopqrstuvwxyz");
 		}
 		parameters.setHidingText(true);
 
@@ -86,7 +100,7 @@ public class Main {
 		Preferences.getInstance().setUseAudioChannel(true);
 		Preferences.getInstance().setAudioAlgorithm("com.stegandroid.algorithms.steganography.audio.AACSteganographyContainerLsb");
 		Preferences.getInstance().setUseMetadataChannel(false);
-		Preferences.getInstance().setUseCryptography(false);
+		Preferences.getInstance().setUseCryptography(true);
 		Preferences.getInstance().setCryptographyAlgorithm("com.stegandroid.algorithms.cryptography.AdvancedEncryptionStandard128");
 		Preferences.getInstance().setUseVideoChannel(false);
 		Preferences.getInstance().setVideoAlgorithm("com.stegandroid.algorithms.steganography.video.H264SteganographyContainerLsb");
@@ -102,10 +116,11 @@ public class Main {
 		parameters.setUseVideoChannel(false);
 		parameters.setDestinationVideoDirectory("sample\\");
 		parameters.setDisplay(false);
+		parameters.setCryptographyKey("This is a key!!!");
 		parameters.setVideoPath("sample\\output.mp4");
 
 		// Preferences
-		Preferences.getInstance().setUseCryptography(false);
+		Preferences.getInstance().setUseCryptography(true);
 		Preferences.getInstance().setCryptographyAlgorithm("com.stegandroid.algorithms.cryptography.AdvancedEncryptionStandard128");
 
 		DecodeProcess process = new DecodeProcess();

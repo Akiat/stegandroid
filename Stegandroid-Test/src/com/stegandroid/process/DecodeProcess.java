@@ -2,6 +2,7 @@ package com.stegandroid.process;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import com.stegandroid.algorithms.AlgorithmFactory;
 import com.stegandroid.algorithms.ICryptographyAlgorithm;
@@ -32,7 +33,7 @@ public class DecodeProcess {
 	}
 
 	public boolean decode(DecodeParameters parameters) {
-
+	
 		if (!init(parameters))
 			return false;
 
@@ -47,7 +48,23 @@ public class DecodeProcess {
 		}
 
 		if (_unHideData != null) {
-			_unHideData = processCryptography(parameters, _unHideData);
+
+			if (Preferences.getInstance().getUseCryptography()) {
+				int padding = _unHideData.length % 16;
+				if (padding > 0) {
+					_unHideData = Arrays.copyOf(_unHideData, _unHideData.length + (16 - padding));
+				}
+
+				for (int i = 0; i < _unHideData.length; i += 16) {
+					byte[] tmp = new byte[16];
+					System.arraycopy(_unHideData, i, tmp, 0, 16);
+					
+					tmp = processCryptography(parameters, tmp);
+					
+					System.arraycopy(tmp, 0, _unHideData, i, 16);
+				}
+			} 
+						
 			this.finalise(parameters);
 			return true;
 		}
@@ -56,7 +73,7 @@ public class DecodeProcess {
 
 	private byte[] processCryptography(DecodeParameters parameters, byte[] content) {
 		if (_cryptographyAlgorithm != null && parameters != null) {
-			return (_cryptographyAlgorithm.encrypt(content, parameters.getCryptographyKey().getBytes()));
+			return (_cryptographyAlgorithm.decrypt(content, parameters.getCryptographyKey().getBytes()));
 		}
 		// Return the original content if no cryptography algorithm
 		return content;
@@ -73,7 +90,6 @@ public class DecodeProcess {
 			String filename = parameters.getDestinationVideoDirectory() + parameters.getOutputName();
 			FileOutputStream output = new FileOutputStream(filename);
 			output.write(_unHideData);
-			System.out.println(_unHideData.length);
 			output.close();
 
 		} catch (IOException e) {
