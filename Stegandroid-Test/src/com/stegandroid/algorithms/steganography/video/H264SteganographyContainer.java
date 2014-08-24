@@ -96,46 +96,31 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 		if (_sampleList == null || _sampleListPosition >= _sampleList.size()) {
 			return;
 		}
-		currentSample = _sampleList.get(_sampleListPosition);
-		currentSampleBuffer = currentSample.asByteBuffer().slice();
 		
-		if (_subSampleIdx > 0) {
-			// We move the buffer to the position of the current sub index
-			for (int i = 0; i < _subSampleIdx; ++i) {
-				currentSampleLength = (int) IsoTypeReaderVariable.read(currentSampleBuffer, _sampleLengthSize);
-				currentSampleBuffer.position(currentSampleBuffer.position() + currentSampleLength);
-			}
-		}
-		
-		while (_sampleListPosition < _sampleList.size()) {			
+		for (; _sampleListPosition < _sampleList.size(); _sampleListPosition++) {
+			currentSample = _sampleList.get(_sampleListPosition);
+			currentSampleBuffer = currentSample.asByteBuffer();
 			
-			if (!currentSampleBuffer.hasRemaining()) {
-				// We reset the parameter and change the frame if there is no data to read in the current sample buffer
-				_subSampleIdx = 0;
-				_subSampleOffset = 0;
-				_sampleListPosition++;
-				if (_sampleListPosition < _sampleList.size()) {
-					currentSample = _sampleList.get(_sampleListPosition);
-					currentSampleBuffer = currentSample.asByteBuffer();
+			if (_subSampleIdx > 0) {
+				for (int i = 0; i < _subSampleIdx; ++i) {
+					currentSampleLength = (int) IsoTypeReaderVariable.read(currentSampleBuffer, _sampleLengthSize);
+					currentSampleBuffer.position(currentSampleBuffer.position() + currentSampleLength);
 				}
-				continue;
-			} 
-
-			currentSampleLength = (int) IsoTypeReaderVariable.read(currentSampleBuffer, _sampleLengthSize);
-			
-			// If this is the beginning of the frame, we write the syncrhonisation sequence
-			if (_subSampleOffset == 0) {
-				addData(new byte[]{0, 0, 1});
-			} else {
-				currentSampleBuffer.position(currentSampleBuffer.position() + _subSampleOffset);
 			}
-			
-			// We write the data
-			dataToWrite = new byte[currentSampleBuffer.remaining()];
-			currentSampleBuffer.get(dataToWrite);
-			this.addData(dataToWrite);
-			_subSampleIdx++;
-			_subSampleOffset = 0;
+
+			while (currentSampleBuffer.hasRemaining()) {
+				currentSampleLength = (int) IsoTypeReaderVariable.read(currentSampleBuffer, _sampleLengthSize);
+				currentSampleBuffer.position(currentSampleBuffer.position() + _subSampleOffset);
+				dataToWrite = new byte[currentSampleLength - _subSampleOffset];
+				currentSampleBuffer.get(dataToWrite);
+				if (_subSampleOffset == 0) {
+					this.addData(new byte[]{0x00, 0x00, 0x01});
+				}
+				this.addData(dataToWrite);
+				_subSampleOffset = 0;
+				_subSampleIdx++;
+			}
+			_subSampleIdx = 0;
 		}
 	}
 
@@ -209,15 +194,10 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 	protected void addData(ByteBuffer content) {
 		byte tmp[];
 		
-		switchOutputStreamToFile();
 		if (_content != null) {
-			try {
-				tmp = new byte[content.remaining()];
-				content.get(tmp);
-				_content.write(tmp);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			tmp = new byte[content.remaining()];
+			content.get(tmp);
+			addData(tmp);
 		}		
 	}
 	
