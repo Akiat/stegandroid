@@ -180,6 +180,10 @@ public class EncodeActivity extends Activity{
 				updateLinearLayoutCryptographyVisibility();
 				updateImageViews();
 				break;
+			case RECORD_VIDEO:
+				if (resultCode != 0)
+					Toast.makeText(this, "Video saved", Toast.LENGTH_LONG).show();
+				break;
 			default:
 				ErrorManager.getInstance().addErrorMessage("[Encode Activity] Activity result not known");
 				ErrorManager.getInstance().displayErrorMessages(this);
