@@ -63,7 +63,7 @@ public class EncodeParametersController {
 	}
 	
 	private Boolean controlTextToHide(EncodeParameters parameters) {
-		if (parameters.getTextToHide() == null || parameters.getTextToHide().isEmpty()) {
+		if (parameters.isHidingText() && (parameters.getTextToHide() == null || parameters.getTextToHide().isEmpty())) {
 			if (!_quite) {
 				ErrorManager.getInstance().addErrorMessage(R.string.error_text_to_hide_empty_string);
 			}
@@ -73,7 +73,7 @@ public class EncodeParametersController {
 	}
 	
 	private Boolean controlFileToHide(EncodeParameters parameters) {
-		if (parameters.getFileToHidePath() == null || parameters.getFileToHidePath().isEmpty()) {
+		if (!parameters.isHidingText() && (parameters.getFileToHidePath() == null || parameters.getFileToHidePath().isEmpty())) {
 			if (!_quite) {
 				ErrorManager.getInstance().addErrorMessage(R.string.error_file_to_hide_empty_string);
 			}
