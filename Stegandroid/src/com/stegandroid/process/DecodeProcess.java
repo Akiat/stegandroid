@@ -42,10 +42,20 @@ public class DecodeProcess {
 		if (Preferences.getInstance().getUseVideoChannel()) {
 			_h264SteganographyContainer.unHideData();
 			unHideDataVideo = _h264SteganographyContainer.getUnHideData();
+			// Nothing was found
+			if (unHideDataVideo == null || unHideDataVideo.length == 0) {
+				System.err.println("A problem was detected during the unhide process on H.264");
+				return false;
+			}
 		} 
 		if (Preferences.getInstance().getUseAudioChannel()) {
 			_aacSteganographyContainer.unHideData();
 			unHideDataAudio = _aacSteganographyContainer.getUnHideData();
+			// Nothing was found
+			if (unHideDataAudio == null || unHideDataAudio.length == 0) {
+				System.err.println("A problem was detected during the unhide process on AAC");
+				return false;
+			}
 		} 
 
 		processContentWithCryptography(parameters, unHideDataAudio);

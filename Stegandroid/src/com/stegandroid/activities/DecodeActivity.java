@@ -1,6 +1,7 @@
 package com.stegandroid.activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,11 +22,12 @@ import android.widget.Toast;
 
 import com.stegandroid.R;
 import com.stegandroid.configuration.Preferences;
-import com.stegandroid.controller.DecodeParameterController;
+import com.stegandroid.controller.DecodeParametersController;
 import com.stegandroid.directorydialog.ChoosenDirectoryListener;
 import com.stegandroid.directorydialog.DirectoryDialog;
 import com.stegandroid.error.ErrorManager;
 import com.stegandroid.parameters.DecodeParameters;
+import com.stegandroid.process.DecodeProcess;
 import com.stegandroid.tools.Utils;
 
 public class DecodeActivity extends Activity {
@@ -101,7 +103,7 @@ public class DecodeActivity extends Activity {
 	}
 	
 	private void updateImageViews() {
-		DecodeParameterController controller = new DecodeParameterController(true);
+		DecodeParametersController controller = new DecodeParametersController(true);
 		
 		if (controller.controlSrcVideoPath(_decodeParameters)) {
 			((ImageView) findViewById(R.id.img_view_valid_video_source)).setImageResource(R.drawable.btn_check_buttonless_on);
@@ -180,8 +182,22 @@ public class DecodeActivity extends Activity {
 	}
 	
 	private void process() {
-		ErrorManager.getInstance().addErrorMessage("TO DO!");
-		ErrorManager.getInstance().displayErrorMessages(this);
+		DecodeParametersController controller;
+		
+		ProgressDialog loading = ProgressDialog.show(this, "Loading", "Stegandroid extract your data...");
+		_decodeParameters.setUseAudioChannel(Preferences.getInstance().getUseAudioChannel());
+		_decodeParameters.setUseVideoChannel(Preferences.getInstance().getUseVideoChannel());
+		controller = new DecodeParametersController(false);
+		if (controller.controlAllData(_decodeParameters)){
+			DecodeProcess process = new DecodeProcess();
+			if (!process.decode(_decodeParameters)) {
+				ErrorManager.getInstance().addErrorMessage("[Decode Activity] Impossible to find somthing in this file");
+				ErrorManager.getInstance().displayErrorMessages(this);
+			}
+		} else {
+			ErrorManager.getInstance().displayErrorMessages(this);
+		}
+		loading.cancel();
 	}
 	
 	private OnClickListener onClickListener = new OnClickListener() {

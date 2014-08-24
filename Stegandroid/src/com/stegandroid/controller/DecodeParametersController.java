@@ -7,12 +7,12 @@ import com.stegandroid.configuration.Preferences;
 import com.stegandroid.error.ErrorManager;
 import com.stegandroid.parameters.DecodeParameters;
 
-public class DecodeParameterController {
+public class DecodeParametersController {
 
 	private boolean _quite;
 	
 	// TODO: Complete the control of data if necessary [ IT IS NECESSARY ;) ]
-	public DecodeParameterController(boolean quite) {
+	public DecodeParametersController(boolean quite) {
 		_quite = quite;
 	}
 	
@@ -29,7 +29,7 @@ public class DecodeParameterController {
 		if (parameters == null) {
 			return false;
 		}
-		if (parameters.getVideoPath() == null || parameters.getVideoPath().isEmpty()) {
+		if ((parameters.getVideoPath() == null || parameters.getVideoPath().isEmpty())) {
 			if (!_quite) {
 				ErrorManager.getInstance().addErrorMessage(R.string.error_src_video_path_empty_string);
 			}
@@ -68,6 +68,9 @@ public class DecodeParameterController {
 	public boolean controlCryptographyKey(DecodeParameters parameters) {
 		String path;
 		CryptographyAlgorithmData data;
+		
+		if (!Preferences.getInstance().getUseCryptography())
+			return true;
 		
 		if (parameters == null) {
 			return false;

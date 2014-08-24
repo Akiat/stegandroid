@@ -1,6 +1,7 @@
 package com.stegandroid.activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -219,6 +220,7 @@ public class EncodeActivity extends Activity{
 	private void process() {
 		EncodeParametersController controller;
 		
+		ProgressDialog loading = ProgressDialog.show(this, "Loading", "Stegandroid hide your data...");
 		_encodeParameters.setTextToHide(_editTextContentToHide.getText().toString());
 		controller = new EncodeParametersController(false);
 		if (controller.controlAllData(_encodeParameters)){
@@ -228,6 +230,7 @@ public class EncodeActivity extends Activity{
 		} else {
 			ErrorManager.getInstance().displayErrorMessages(this);
 		}
+		loading.cancel();
 	}
 		
 	private ChoosenDirectoryListener onChoosenDirectoryListener = new ChoosenDirectoryListener() {
