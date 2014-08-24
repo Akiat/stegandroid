@@ -5,12 +5,15 @@ import com.stegandroid.mp4.MP4MediaReader;
 
 public interface ISteganographyContainer {
 
-	public void writeRemainingSamples();
-	public void hideData(byte[] content);
 	public boolean loadData(MP4MediaReader mediaReader);
-	public DataSource getDataSource();
-	
+	public void writeRemainingSamples();
 
-	//	public byte[] decode(byte[] signal);
+	public void hideData(byte[] content);
+	public void unHideData();	
 	
+	public long getMaxContentToHide();
+	public byte[] getUnHideData();
+	public DataSource getDataSource();	
+
+	public void cleanUpResources();
 }

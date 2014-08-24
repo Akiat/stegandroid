@@ -165,9 +165,9 @@ public class DecodeActivity extends Activity {
 		if (resultCode == Activity.RESULT_OK) {
 			selectedVideoLocation = data.getData();
 			
-			_decodeParameters.setSrcVideoPath(Utils.getRealPathFromUri(this, selectedVideoLocation));
-			if (_decodeParameters.getDestFilePath() == null || _decodeParameters.getDestFilePath().isEmpty()) {
-				_decodeParameters.setDestFilePath(Utils.getBasenameFromPath(_decodeParameters.getSrcVideoPath()));
+			_decodeParameters.setVideoPath(Utils.getRealPathFromUri(this, selectedVideoLocation));
+			if (_decodeParameters.getDestinationVideoDirectory() == null || _decodeParameters.getDestinationVideoDirectory().isEmpty()) {
+				_decodeParameters.setDestinationVideoDirectory(Utils.getBasenameFromPath(_decodeParameters.getVideoPath()));
 			}
 			updateImageViews();
 		}
@@ -217,7 +217,7 @@ public class DecodeActivity extends Activity {
 
 		@Override
 		public void onChoosenDir(String directory) {
-			_decodeParameters.setDestFilePath(directory);
+			_decodeParameters.setDestinationVideoDirectory(directory);
 			updateImageViews();
 		}
 	};
@@ -229,19 +229,19 @@ public class DecodeActivity extends Activity {
 			if (arg0.getId() == R.id.chk_box_display_content && arg1) {
 				_linearLayoutSaveIntoFile.setVisibility(View.GONE);
 				_checkBoxSaveIntoFile.setChecked(false);
-				_decodeParameters.setDisplayText(true);
+				_decodeParameters.setDisplay(true);
 			} else if (arg0.getId() == R.id.chk_box_display_content) {
 				_linearLayoutSaveIntoFile.setVisibility(View.VISIBLE);
 				_checkBoxSaveIntoFile.setChecked(true);
-				_decodeParameters.setDisplayText(false);
+				_decodeParameters.setDisplay(false);
 			} else if (arg0.getId() == R.id.chk_box_save_into_file && arg1) {
 				_linearLayoutSaveIntoFile.setVisibility(View.VISIBLE);
 				_checkBoxDisplayContent.setChecked(false);
-				_decodeParameters.setDisplayText(false);
+				_decodeParameters.setDisplay(false);
 			} else {
 				_linearLayoutSaveIntoFile.setVisibility(View.GONE);
 				_checkBoxDisplayContent.setChecked(true);
-				_decodeParameters.setDisplayText(true);
+				_decodeParameters.setDisplay(true);
 			}
 			updateImageViews();
 		}
@@ -276,7 +276,7 @@ public class DecodeActivity extends Activity {
 		
 		@Override
 		public void afterTextChanged(Editable s) {
-			_decodeParameters.setFileExtension(s.toString());
+			//_decodeParameters.setFileExtension(s.toString());
 			updateImageViews();
 		}
 	};

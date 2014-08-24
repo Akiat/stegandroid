@@ -29,7 +29,7 @@ public class DecodeParameterController {
 		if (parameters == null) {
 			return false;
 		}
-		if (parameters.getSrcVideoPath() == null || parameters.getSrcVideoPath().isEmpty()) {
+		if (parameters.getVideoPath() == null || parameters.getVideoPath().isEmpty()) {
 			if (!_quite) {
 				ErrorManager.getInstance().addErrorMessage(R.string.error_src_video_path_empty_string);
 			}
@@ -42,7 +42,7 @@ public class DecodeParameterController {
 		if (parameters == null) {
 			return false;
 		}
-		if (parameters.getDestFilePath() == null || parameters.getDestFilePath().isEmpty()) {
+		if (parameters.getDestinationVideoDirectory() == null || parameters.getDestinationVideoDirectory().isEmpty()) {
 			if (!_quite) {
 				ErrorManager.getInstance().addErrorMessage(R.string.error_dest_video_empty_string);
 			}
@@ -51,18 +51,18 @@ public class DecodeParameterController {
 		return true;
 	}
 
-	public Boolean controlFileExtension(DecodeParameters parameters) {
-		if (parameters == null) {
-			return false;
-		}
-		if (parameters.getFileExtension() == null || parameters.getFileExtension().isEmpty()) {
-			if (!_quite) {
-				ErrorManager.getInstance().addErrorMessage(R.string.error_file_extension_empty_string);
-			}
-			return false;
-		}
-		return true;
-	}
+//	public Boolean controlFileExtension(DecodeParameters parameters) {
+//		if (parameters == null) {
+//			return false;
+//		}
+//		if (parameters.getFileExtension() == null || parameters.getFileExtension().isEmpty()) {
+//			if (!_quite) {
+//				ErrorManager.getInstance().addErrorMessage(R.string.error_file_extension_empty_string);
+//			}
+//			return false;
+//		}
+//		return true;
+//	}
 
 	
 	public boolean controlCryptographyKey(DecodeParameters parameters) {

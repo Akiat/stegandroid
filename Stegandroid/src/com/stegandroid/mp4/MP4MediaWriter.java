@@ -63,7 +63,13 @@ public class MP4MediaWriter {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}        
+	}
+
+	public void cleanUpResources() {
+        _h264TrackImpl = null;
+        _aacTrackImpl = null;
+        System.gc();
 	}
 	
 }
