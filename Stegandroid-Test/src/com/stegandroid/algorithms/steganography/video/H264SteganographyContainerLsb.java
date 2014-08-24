@@ -10,11 +10,16 @@ import com.stegandroid.lsb.LSBEncode;
 
 public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 
-	private int _nbBitToHideInOneByte;
-
+	private final int BYTE_SIZE = 8;
+	
+	protected int _nbBitToHideInOneByte;
+	
+	private long _maxContentToHide;
+	
 	public H264SteganographyContainerLsb() {
 		super();
 		_nbBitToHideInOneByte = 1;
+		_maxContentToHide = -1;
 	}
 	
 	// Parent methods
@@ -88,7 +93,7 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 				currentSampleBuffer.get(sample);
 				sample = removeEscapeSequence(sample);
 				_unHideData = decoder.decodeFrame(sample);
-				if (_unHideData != null) {
+				if (_unHideData != null) {					
 					return;
 				}
 			}
@@ -96,29 +101,11 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 	}
 	
 	@Override
-	public long getSamplesLengthUsedForSteganography() {
-		ByteBuffer currentSampleBuffer;
-		int currentSampleLength;
-		int sliceDataOffset;
-		long ret = 0;
-		
-		if (_sampleList != null) {
-			for (Sample s : _sampleList) {
-				currentSampleBuffer = s.asByteBuffer();
-				while (currentSampleBuffer.hasRemaining()) {
-					currentSampleLength = (int) IsoTypeReaderVariable.read(currentSampleBuffer, _sampleLengthSize);
-					sliceDataOffset = this.getSliceLayerWithoutPartitioningIdrDataOffset((ByteBuffer) currentSampleBuffer.slice().limit(currentSampleLength));
-		
-					if (sliceDataOffset == -1) {
-						currentSampleBuffer.position(currentSampleBuffer.position() + currentSampleLength);	
-						continue;
-					}
-					currentSampleBuffer.position(currentSampleBuffer.position() + currentSampleLength);
-					ret += (currentSampleLength - sliceDataOffset);
-				}			
-			}
+	public long getMaxContentToHide() {
+		if (_maxContentToHide == -1) {
+			reckonMaxContentToHide();
 		}
-		return ret;
+		return _maxContentToHide;
 	}
 
 	// Private methods
@@ -159,5 +146,32 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 			}
 		}
 		return byteArrayOutputStream.toByteArray();
+	}
+
+	private void reckonMaxContentToHide() {
+		ByteBuffer currentSampleBuffer;
+		int currentSampleLength;
+		int sliceDataOffset;
+		long ret = 0;
+		float sizeNeededToHideOneByte = (float) Math.ceil((float) BYTE_SIZE / _nbBitToHideInOneByte);
+				
+		if (_sampleList != null) {
+			for (Sample s : _sampleList) {
+				currentSampleBuffer = s.asByteBuffer();
+				while (currentSampleBuffer.hasRemaining()) {
+					currentSampleLength = (int) IsoTypeReaderVariable.read(currentSampleBuffer, _sampleLengthSize);
+					sliceDataOffset = this.getSliceLayerWithoutPartitioningIdrDataOffset((ByteBuffer) currentSampleBuffer.slice().limit(currentSampleLength));		
+					currentSampleBuffer.position(currentSampleBuffer.position() + currentSampleLength);	
+
+					if (sliceDataOffset == -1) {
+						continue;
+					}
+					ret += (currentSampleLength - sliceDataOffset);
+				}			
+			}
+		}		
+		ret -= 8; // The header of LSBEncode/LSBDecode (size + nbBitsHideInOneByte)
+		ret /= Math.floor(sizeNeededToHideOneByte);
+		_maxContentToHide = ret;
 	}
 }

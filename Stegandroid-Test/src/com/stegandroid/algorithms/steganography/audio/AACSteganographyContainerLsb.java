@@ -8,7 +8,9 @@ import com.stegandroid.lsb.LSBEncode;
 
 public class AACSteganographyContainerLsb extends AACSteganographyContainer {
 
-	private int _nbBitToHideInOneByte;
+	private final int BYTE_SIZE = 8;
+	
+	protected int _nbBitToHideInOneByte;
 
 	public AACSteganographyContainerLsb() {
 		_nbBitToHideInOneByte = 1;
@@ -35,7 +37,6 @@ public class AACSteganographyContainerLsb extends AACSteganographyContainer {
 			return;
 		}
 			
-		// TODO : nbBitinOneByte a changer par les preferences
 		LSBEncode encoder = new LSBEncode(dataToHide, _nbBitToHideInOneByte);
 		for (Sample sample : _sampleList) {
 			byte[] frame = sampleToByteArray(sample);
@@ -53,6 +54,22 @@ public class AACSteganographyContainerLsb extends AACSteganographyContainer {
 		return _unHideData;
 	}
 
+	@Override
+	public long getMaxContentToHide() {
+		long ret = 0;
+		float sizeNeededToHideOneByte = (float) Math.ceil((float) BYTE_SIZE / _nbBitToHideInOneByte);
+		
+		if (_sampleList != null) {
+			for (Sample s : _sampleList) {
+				ret += s.getSize();
+			}
+		}
+
+		ret -= 8; // The header of LSBEncode/LSBDecode (size + nbBitsHideInOneByte)
+		ret /= Math.floor(sizeNeededToHideOneByte);
+		return ret;
+	}
+	
 	// Private methods
 	private byte[] sampleToByteArray(Sample sample) {
 		ByteBuffer buf = sample.asByteBuffer();

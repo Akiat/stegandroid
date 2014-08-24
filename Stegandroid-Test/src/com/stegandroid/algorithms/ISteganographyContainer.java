@@ -11,7 +11,7 @@ public interface ISteganographyContainer {
 	public void hideData(byte[] content);
 	public void unHideData();	
 	
-	public long getSamplesLengthUsedForSteganography();
+	public long getMaxContentToHide();
 	public byte[] getUnHideData();
 	public DataSource getDataSource();	
 

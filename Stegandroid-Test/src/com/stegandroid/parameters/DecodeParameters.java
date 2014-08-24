@@ -18,7 +18,7 @@ public class DecodeParameters {
 		_destinationVideoDirectory = "";
 		_display = true;
 		_useAudioChannel = false;
-		_audioAlgorithm = "com.stegandroid.algorithms.steganography.audio.AACSteganographyContainerLsb";
+		_audioAlgorithm = "com.stegandroid.algorithms.steganography.audio.AACSteganographyContainerLsb1Bit";
 		_useVideoChannel = false;
 		_videoAlgorithm = "com.stegandroid.algorithms.steganography.video.H264SteganographyContainerLsb";
 		_outputName = "default_name.txt";

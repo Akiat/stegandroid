@@ -89,7 +89,7 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 	}
 
 	@Override
-	public long getSamplesLengthUsedForSteganography() {
+	public long getMaxContentToHide() {
 		long ret = 0;
 
 		if (_sampleList != null) {

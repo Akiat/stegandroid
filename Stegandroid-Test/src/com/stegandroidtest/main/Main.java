@@ -6,10 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 import com.coremedia.iso.boxes.Container;
 import com.googlecode.mp4parser.FileDataSourceImpl;
@@ -32,6 +34,7 @@ public class Main {
 		System.out.println("#######################################");
 		testDecode();
 	}
+	
 	
 	public static String getCurrentDateAndTime() {
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
@@ -71,7 +74,7 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
-	
+	 
 	public static void testFps() {
 		MP4MediaReader reader = new MP4MediaReader();
 		reader.loadData("sample\\Evanescence_-_Bring_Me_To_Life.mp4");
@@ -89,21 +92,21 @@ public class Main {
 		parameters.setDestinationVideoDirectory("sample\\");
 		parameters.setSourceVideoPath("sample\\Evanescence_-_Bring_Me_To_Life.mp4");
 		parameters.setTextToHide("abcdefghijklmnopqrstuvwxyz");
-		parameters.setSourceVideoPath("sample\\20140328_001137.mp4");
+//		parameters.setSourceVideoPath("sample\\20140328_001137.mp4");
 //		parameters.setSourceVideoPath("sample\\output.mp4");
-		for (int i = 0; i < 1000; ++i) {
+		for (int i = 0; i < 3000; ++i) {
 			parameters.setTextToHide(parameters.getTextToHide() + "abcdefghijklmnopqrstuvwxyz");
 		}
 		parameters.setHidingText(true);
 
 		// Preferences
-		Preferences.getInstance().setUseAudioChannel(false);
-		Preferences.getInstance().setAudioAlgorithm("com.stegandroid.algorithms.steganography.audio.AACSteganographyContainerLsb");
+		Preferences.getInstance().setUseAudioChannel(true);
+		Preferences.getInstance().setAudioAlgorithm("com.stegandroid.algorithms.steganography.audio.AACSteganographyContainerLsb2Bits");
 		Preferences.getInstance().setUseMetadataChannel(false);
-		Preferences.getInstance().setUseCryptography(false);
+		Preferences.getInstance().setUseCryptography(true);
 		Preferences.getInstance().setCryptographyAlgorithm("com.stegandroid.algorithms.cryptography.AdvancedEncryptionStandard128");
 		Preferences.getInstance().setUseVideoChannel(true);
-		Preferences.getInstance().setVideoAlgorithm("com.stegandroid.algorithms.steganography.video.H264SteganographyContainerLsb");
+		Preferences.getInstance().setVideoAlgorithm("com.stegandroid.algorithms.steganography.video.H264SteganographyContainerLsb1Bit");
 
 		// Encode process
 		EncodeProcess process = new EncodeProcess();
@@ -112,16 +115,19 @@ public class Main {
 
 	public static void testDecode() {
 		DecodeParameters parameters = new DecodeParameters();
-		parameters.setUseAudioChannel(false);
-		parameters.setUseVideoChannel(true);
 		parameters.setDestinationVideoDirectory("sample\\");
 		parameters.setDisplay(false);
 		parameters.setCryptographyKey("This is a key!!!");
 		parameters.setVideoPath("sample\\output.mp4");
 
 		// Preferences
-		Preferences.getInstance().setUseCryptography(false);
+		Preferences.getInstance().setUseAudioChannel(true);
+		Preferences.getInstance().setAudioAlgorithm("com.stegandroid.algorithms.steganography.audio.AACSteganographyContainerLsb2Bits");
+		Preferences.getInstance().setUseMetadataChannel(false);
+		Preferences.getInstance().setUseCryptography(true);
 		Preferences.getInstance().setCryptographyAlgorithm("com.stegandroid.algorithms.cryptography.AdvancedEncryptionStandard128");
+		Preferences.getInstance().setUseVideoChannel(false);
+		Preferences.getInstance().setVideoAlgorithm("com.stegandroid.algorithms.steganography.video.H264SteganographyContainerLsb1Bit");
 
 		DecodeProcess process = new DecodeProcess();
 		process.decode(parameters);
