@@ -27,6 +27,7 @@ import com.stegandroid.directorydialog.ChoosenDirectoryListener;
 import com.stegandroid.directorydialog.DirectoryDialog;
 import com.stegandroid.error.ErrorManager;
 import com.stegandroid.parameters.EncodeParameters;
+import com.stegandroid.process.EncodeProcess;
 import com.stegandroid.tools.Utils;
 
 public class EncodeActivity extends Activity{
@@ -221,7 +222,9 @@ public class EncodeActivity extends Activity{
 		_encodeParameters.setTextToHide(_editTextContentToHide.getText().toString());
 		controller = new EncodeParametersController(false);
 		if (controller.controlAllData(_encodeParameters)){
-			
+			EncodeProcess process = new EncodeProcess();
+			process.encode(_encodeParameters);
+
 		} else {
 			ErrorManager.getInstance().displayErrorMessages(this);
 		}

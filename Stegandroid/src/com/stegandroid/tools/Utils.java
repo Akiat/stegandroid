@@ -20,7 +20,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import dalvik.system.DexFile;
 
-
 public class Utils {
 	
 	/**

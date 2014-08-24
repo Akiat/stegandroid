@@ -40,7 +40,9 @@ public class MP4MediaWriter {
 		_outputPath = outputPath;
 		try {
 			_h264TrackImpl = new H264TrackImpl(h264, DEFAULT_LANGUAGE, timescale, frametick);
-			_aacTrackImpl = new AACTrackImpl(aac);
+			if (aac != null && aac.size() != 0) {
+				_aacTrackImpl = new AACTrackImpl(aac);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -52,7 +54,9 @@ public class MP4MediaWriter {
 		FileChannel fileChannel;
 		
         movie.addTrack(_h264TrackImpl);
-        movie.addTrack(_aacTrackImpl);
+        if (_aacTrackImpl != null) {
+        	movie.addTrack(_aacTrackImpl);
+        }
         
         container = new DefaultMp4Builder().build(movie);
         try {

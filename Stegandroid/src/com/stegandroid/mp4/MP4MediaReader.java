@@ -184,6 +184,9 @@ public class MP4MediaReader {
 			return null;
 		}
         trackBox = (TrackBox) Path.getPath(_isoFile, AUDIO_TRACKBOX_PATH);
+        if (trackBox == null) {
+        	return null;
+        }
 		sampleList = new SampleList(trackBox, new IsoFile[0]);
 		return sampleList;
 	}
@@ -199,6 +202,9 @@ public class MP4MediaReader {
 			return 0;
 		}
 		trackBox = (TrackBox) Path.getPath(_isoFile, AUDIO_TRACKBOX_PATH);
+		if (trackBox == null) {
+			return 0;
+		}
 		esDescriptorBox = (ESDescriptorBox) Path.getPath(trackBox, AUDIO_CONFIGURATION_BOX_PATH);
 		descriptor = (ESDescriptor) esDescriptorBox.getDescriptor();
 		code = descriptor.getDecoderConfigDescriptor().getAudioSpecificInfo().getSamplingFrequency();
@@ -233,6 +239,9 @@ public class MP4MediaReader {
 			return 0;
 		}
 		trackBox = (TrackBox) Path.getPath(_isoFile, AUDIO_TRACKBOX_PATH);
+		if (trackBox == null) {
+			return 0;
+		}
 		esDescriptorBox = (ESDescriptorBox) Path.getPath(trackBox, AUDIO_CONFIGURATION_BOX_PATH);
 		descriptor = (ESDescriptor) esDescriptorBox.getDescriptor();
 		return descriptor.getDecoderConfigDescriptor().getAudioSpecificInfo().getChannelConfiguration();

@@ -54,7 +54,7 @@ public class EncodeProcess {
 
 	public boolean encode(EncodeParameters parameters) {
 		Preferences prefs = Preferences.getInstance();
-		
+
 		if (!this.init(parameters) || !this.checkMemoryRequirementForOperation()) {
 			return false;
 		}
@@ -284,7 +284,7 @@ public class EncodeProcess {
 			_aacSteganographyContainer.writeRemainingSamples();
 		}
 		outputVideoName = Utils.getCurrentDateAndTime() + ".mp4";
-		outputVideoName = "output.mp4";
+		outputVideoName = "/output.mp4";
 		
 		h264DataSource = _h264SteganographyContainer.getDataSource();
 		aacDataSource = _aacSteganographyContainer.getDataSource();

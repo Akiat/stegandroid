@@ -2,13 +2,23 @@
 <algorithms>
     
 	<algorithm>
-	    <display>Audio Algorithm 1</display>
-	    <path>com.stegandroid.algorithms.steganography.audio.AudioAlgorithm1</path>
+	    <display>LSB with 1 bit</display>
+	    <path>com.stegandroid.algorithms.steganography.audio..AACSteganographyContainerLsb1Bit</path>
 	</algorithm>
 	
 	<algorithm>
-	    <display>Audio Algorithm 2</display>
-	    <path>com.stegandroid.algorithms.steganography.audio.AudioAlgorithm2</path>
+	    <display>LSB with 2 bits</display>
+	    <path>com.stegandroid.algorithms.steganography.audio.AACSteganographyContainerLsb2Bit</path>
+	</algorithm>    
+
+	<algorithm>
+	    <display>LSB with 3 bits</display>
+	    <path>com.stegandroid.algorithms.steganography.audio.AACSteganographyContainerLsb3Bits</path>
 	</algorithm>    
 	
+	<algorithm>
+	    <display>LSB with 4 bits</display>
+	    <path>com.stegandroid.algorithms.steganography.audio.AACSteganographyContainerLsb4Bits</path>
+	</algorithm>    
+		
 </algorithms>
