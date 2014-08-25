@@ -5,6 +5,9 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -34,6 +37,8 @@ public class DecodeActivity extends Activity {
 
 	private final int CHOOSE_VIDEO_CONTAINER = 0;
 	private final int SETTINGS_ACCESS = 1;
+	private static final int ERROR_IN_PROCESS = 0;
+	private static final int PROCESS_OK = 1;
 	
 	// Graphical components
 	private ImageButton _btnBack;
@@ -47,9 +52,31 @@ public class DecodeActivity extends Activity {
 	private EditText _editTextFileExtension;
 	private LinearLayout _linearLayoutCryptographyKeyDecode;
 	private LinearLayout _linearLayoutSaveIntoFile;
-	
-	// Private attributes
+	private ProgressDialog _progressDialog;
 	private DecodeParameters _decodeParameters;
+	
+	private Handler processHandler = new Handler()
+	{
+	    @Override
+	    public void handleMessage(Message msg)
+	    {
+	    	_progressDialog.cancel();
+	        if (msg.what == ERROR_IN_PROCESS)
+	        {
+	        	displayProcessErrors();
+	        } else {
+	        	displayProcessSuccess();
+	        }
+	    }
+	};
+	
+	private void displayProcessErrors() {
+		ErrorManager.getInstance().displayErrorMessages(this);
+	}
+	
+	private void displayProcessSuccess() {
+		Toast.makeText(this, "Your data was unhidden.", Toast.LENGTH_LONG).show();
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {		
@@ -106,9 +133,9 @@ public class DecodeActivity extends Activity {
 		DecodeParametersController controller = new DecodeParametersController(true);
 		
 		if (controller.controlSrcVideoPath(_decodeParameters)) {
-			((ImageView) findViewById(R.id.img_view_valid_video_source_encode)).setImageResource(R.drawable.btn_check_buttonless_on);
+			((ImageView) findViewById(R.id.img_view_valid_video_source_decode)).setImageResource(R.drawable.btn_check_buttonless_on);
 		} else {
-			((ImageView) findViewById(R.id.img_view_valid_video_source_encode)).setImageResource(R.drawable.ic_delete);
+			((ImageView) findViewById(R.id.img_view_valid_video_source_decode)).setImageResource(R.drawable.ic_delete);
 		}
 		
 		if (controller.controlDestFilePath(_decodeParameters)) {
@@ -182,22 +209,30 @@ public class DecodeActivity extends Activity {
 	}
 	
 	private void process() {
-		DecodeParametersController controller;
+		_progressDialog = ProgressDialog.show(this, "Loading", "Stegandroid extract your data...");
 		
-		ProgressDialog loading = ProgressDialog.show(this, "Loading", "Stegandroid extract your data...");
-		_decodeParameters.setUseAudioChannel(Preferences.getInstance().getUseAudioChannel());
-		_decodeParameters.setUseVideoChannel(Preferences.getInstance().getUseVideoChannel());
-		controller = new DecodeParametersController(false);
-		if (controller.controlAllData(_decodeParameters)){
-			DecodeProcess process = new DecodeProcess();
-			if (!process.decode(_decodeParameters)) {
-				ErrorManager.getInstance().addErrorMessage("[Decode Activity] Impossible to find somthing in this file");
-				ErrorManager.getInstance().displayErrorMessages(this);
-			}
-		} else {
-			ErrorManager.getInstance().displayErrorMessages(this);
-		}
-		loading.cancel();
+		new Thread(new Runnable() {
+		    public void run() {
+		    	Message res = processHandler.obtainMessage(PROCESS_OK);
+		    	
+		    	DecodeParametersController controller;
+		    	_decodeParameters.setUseAudioChannel(Preferences.getInstance().getUseAudioChannel());
+				_decodeParameters.setUseVideoChannel(Preferences.getInstance().getUseVideoChannel());
+				controller = new DecodeParametersController(false);
+				if (controller.controlAllData(_decodeParameters)){
+					DecodeProcess process = new DecodeProcess();
+					if (!process.decode(_decodeParameters)) {
+						ErrorManager.getInstance().addErrorMessage("[Decode Activity] Impossible to find something in this file");
+						res = processHandler.obtainMessage(ERROR_IN_PROCESS);
+					}
+				} else {
+					res = processHandler.obtainMessage(ERROR_IN_PROCESS);
+				}
+				
+				processHandler.sendMessage(res);
+		    }
+		  }).start();
+		
 	}
 	
 	private OnClickListener onClickListener = new OnClickListener() {

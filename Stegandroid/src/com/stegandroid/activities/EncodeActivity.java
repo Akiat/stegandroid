@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -37,6 +39,8 @@ public class EncodeActivity extends Activity{
 	private final int CHOOSE_VIDEO_CONTAINER = 1;
 	private final int RECORD_VIDEO = 2;
 	private final int SETTINGS_ACCESS = 3;
+	private static final int ERROR_IN_PROCESS = 0;
+	private static final int PROCESS_OK = 1;
 
 	// Graphical components
 	private ImageButton _btnBack;
@@ -51,10 +55,24 @@ public class EncodeActivity extends Activity{
 	private EditText _editTextContentToHide;
 	private EditText _editTextCryptographyKeyEncode;
 	private LinearLayout _linearLayoutCryptographyKeyEncode;
-	
-	// Private attributes
+	private ProgressDialog _progressDialog;
 	private EncodeParameters _encodeParameters;
-	
+
+	private Handler _processHandler = new Handler()
+	{
+	    @Override
+	    public void handleMessage(Message msg)
+	    {
+	    	_progressDialog.cancel();
+	        if (msg.what == ERROR_IN_PROCESS)
+	        {
+	        	displayProcessErrors();
+	        } else {
+	        	displayProcessSuccess();
+	        }
+	    }
+	};
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);
@@ -100,6 +118,14 @@ public class EncodeActivity extends Activity{
 		return true;
 	}
 		
+	private void displayProcessErrors() {
+		ErrorManager.getInstance().displayErrorMessages(this);
+	}
+	
+	private void displayProcessSuccess() {
+		Toast.makeText(this, "A new file in the selected destination was created.", Toast.LENGTH_LONG).show();
+	}
+	
 	private void updateLinearLayoutCryptographyVisibility() {
 		if (Preferences.getInstance() != null) {
 			if (Preferences.getInstance().getUseCryptography()) {
@@ -228,24 +254,29 @@ public class EncodeActivity extends Activity{
 	}
 	
 	private void process() {
-		EncodeParametersController controller;
-		boolean displayError = false;
+		_progressDialog = ProgressDialog.show(this, "Loading", "Stegandroid hiding your data...");
 		
-		ProgressDialog loading = ProgressDialog.show(this, "Loading", "Stegandroid hiding your data...");
-		_encodeParameters.setTextToHide(_editTextContentToHide.getText().toString());
-		controller = new EncodeParametersController(false);
-		if (controller.controlAllData(_encodeParameters)){
-			EncodeProcess process = new EncodeProcess();
-			if (!process.encode(_encodeParameters)) {
-				displayError = true;
+		new Thread(new Runnable() {
+			public void run() {
+				Message res = _processHandler.obtainMessage(PROCESS_OK);
+
+				EncodeParametersController controller;
+
+				_encodeParameters.setTextToHide(_editTextContentToHide.getText().toString());
+				controller = new EncodeParametersController(false);
+				if (controller.controlAllData(_encodeParameters)){
+					EncodeProcess process = new EncodeProcess();
+					if (!process.encode(_encodeParameters)) {
+						res = _processHandler.obtainMessage(ERROR_IN_PROCESS);
+					}
+				} else {
+					res = _processHandler.obtainMessage(ERROR_IN_PROCESS);
+				}
+				
+				_processHandler.sendMessage(res);
+
 			}
-		} else {
-			displayError = true;
-		}
-		if (displayError) {
-			ErrorManager.getInstance().displayErrorMessages(this);
-		}
-		loading.dismiss();
+		}).start();
 	}
 		
 	private ChoosenDirectoryListener onChoosenDirectoryListener = new ChoosenDirectoryListener() {
