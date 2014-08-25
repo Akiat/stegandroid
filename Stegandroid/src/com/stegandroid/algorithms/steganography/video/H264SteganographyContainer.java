@@ -66,22 +66,25 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 			_subSampleIdx = 0;
 			_subSampleOffset = 0;
 			
-			this.addData(new byte[]{0, 0, 0, 1});
 			sps = mediaReader.getSequenceParameterSets();
-			this.addData(sps);			
-			naluParser = new NaluParser();
-			_seqParameterSetParser = new SeqParameterSetParser();
-			naluParser.parseNaluData(sps);
-			_seqParameterSetParser.parseSeqParameterSetData(naluParser.getRbsp());
+			if (sps != null && sps.length > 0) {
+				this.addData(new byte[]{0, 0, 0, 1});
+				this.addData(sps);
+				naluParser = new NaluParser();
+				_seqParameterSetParser = new SeqParameterSetParser();
+				naluParser.parseNaluData(sps);
+				_seqParameterSetParser.parseSeqParameterSetData(naluParser.getRbsp());
+			}
 
-			this.addData(new byte[]{0, 0, 0, 1});
 			pps = mediaReader.getPictureParameterSets();
-			this.addData(pps);
-			naluParser = new NaluParser();
-			_pictureParameterSetParser = new PictureParameterSetParser(_seqParameterSetParser);
-			naluParser.parseNaluData(pps);
-			_pictureParameterSetParser.parsePictureParameterSet(naluParser.getRbsp());
-			
+			if (pps != null && pps.length > 0) {
+				this.addData(new byte[]{0, 0, 0, 1});
+				this.addData(pps);
+				naluParser = new NaluParser();
+				_pictureParameterSetParser = new PictureParameterSetParser(_seqParameterSetParser);
+				naluParser.parseNaluData(pps);
+				_pictureParameterSetParser.parsePictureParameterSet(naluParser.getRbsp());
+			}
 			return true;
 		}
 		return false;
