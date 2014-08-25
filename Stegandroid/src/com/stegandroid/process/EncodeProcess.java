@@ -117,7 +117,7 @@ public class EncodeProcess {
 		}
 		
 		if (size > Utils.MAX_BYTE_TO_HIDE) {
-			ErrorManager.getInstance().addErrorMessage("The content you want to hide is to big");
+			ErrorManager.getInstance().addErrorMessage("The content you want to hide is to big (30Mo max)");
 			ret = false;
 		}
 		
