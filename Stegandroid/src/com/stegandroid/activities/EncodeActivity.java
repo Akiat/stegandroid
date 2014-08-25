@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -123,6 +124,7 @@ public class EncodeActivity extends Activity{
 	}
 	
 	private void displayProcessSuccess() {
+		sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
 		Toast.makeText(this, "A new file in the selected destination was created.", Toast.LENGTH_LONG).show();
 	}
 	
