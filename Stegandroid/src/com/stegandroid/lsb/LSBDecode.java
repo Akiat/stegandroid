@@ -33,14 +33,20 @@ public class LSBDecode {
 				_intRepr += Utils.getBit(frame[i], 0);
 				_get_int_cursor++;
 				try {
+					
 					if (_get_int_cursor == INT_SIZE) {
-							_to_unhide_byte_length = Integer.parseInt(_intRepr, 2);
+						_to_unhide_byte_length = Integer.parseInt(_intRepr, 2);
 						_to_unhide_bit_length = _to_unhide_byte_length * BYTE_SIZE;
 						_unhide_content = new byte[_to_unhide_byte_length];
 						_intRepr = "";
 					} else if (_get_int_cursor == INT_SIZE * 2) {
 						_nbBitToDecodeInOneByte = Integer.parseInt(_intRepr, 2);
+						// The nb of bit to hide in one byte is limited to 4
+						// If its > 4, there is a problem
+						if (_nbBitToDecodeInOneByte > 4)
+							return new byte[0];
 					}
+					
 				} catch (NumberFormatException e) {
 					return new byte[0];
 				}
