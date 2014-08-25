@@ -262,7 +262,10 @@ public class EncodeProcess {
 		
 		long maxContentToHide = videoSteganographyLength + audioSteganographyLength;
 		if (maxContentToHide < dataLength) {
-			ErrorManager.getInstance().addErrorMessage("Not enough space in video to hide data with selected channel(s). You can hide a maximum of " + maxContentToHide + " bytes.");
+			String msg = "Not enough space in video to hide data with selected channel(s). You can hide a maximum of " + maxContentToHide + " bytes.";
+			if (maxContentToHide == 0)
+				msg += " Have you selected a channel in the settings ?";
+			ErrorManager.getInstance().addErrorMessage(msg);
 			System.err.println("[Encode process] Not enough space in video to hide data with selected channel(s)");
 			return false;
 		}

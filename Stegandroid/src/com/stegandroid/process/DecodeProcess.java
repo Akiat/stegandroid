@@ -11,6 +11,7 @@ import com.stegandroid.algorithms.ISteganographyContainer;
 import com.stegandroid.configuration.Preferences;
 import com.stegandroid.mp4.MP4MediaReader;
 import com.stegandroid.parameters.DecodeParameters;
+import com.stegandroid.tools.Utils;
 
 public class DecodeProcess {
 
@@ -190,7 +191,7 @@ public class DecodeProcess {
 				return;
 			}
 
-			String filename = parameters.getDestinationVideoDirectory() + parameters.getOutputName();
+			String filename = parameters.getDestinationVideoDirectory() + "steg_decoded_" + Utils.getCurrentDateAndTime() + ".txt";
 			FileOutputStream output = new FileOutputStream(filename);
 			output.write(_unHideData);
 			output.close();
