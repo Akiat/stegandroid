@@ -40,7 +40,7 @@ public class EncodeProcess {
 	private InputStream _contentToHideStream;
 	private byte[]		_encryptedBytesForVideo;
 	private byte[]		_encryptedBytesForAudio;
-	private int _blockSize;
+	private int 		_blockSize;
 	
 	public EncodeProcess() {
 		_mp4MediaReader = null;
@@ -259,8 +259,10 @@ public class EncodeProcess {
 				audioSteganographyLength -= (audioSteganographyLength % _blockSize);
 			}
 		}
-		if (videoSteganographyLength + audioSteganographyLength < dataLength) {
-			ErrorManager.getInstance().addErrorMessage("Not enough space in video to hide data with selected channel(s)");
+		
+		long maxContentToHide = videoSteganographyLength + audioSteganographyLength;
+		if (maxContentToHide < dataLength) {
+			ErrorManager.getInstance().addErrorMessage("Not enough space in video to hide data with selected channel(s). You can hide a maximum of " + maxContentToHide + " bytes.");
 			System.err.println("[Encode process] Not enough space in video to hide data with selected channel(s)");
 			return false;
 		}
