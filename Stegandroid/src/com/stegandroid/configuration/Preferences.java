@@ -8,6 +8,12 @@ import android.util.Log;
 
 public class Preferences {
 
+	// Default values
+	private final String DEFAULT_STEGANOGRAPHY_AUDIO_ALGORITHM = "com.stegandroid.algorithms.steganography.audio.AACSteganographyContainerLsb1Bit";
+	private final String DEFAULT_STEGANOGRAPHY_VIDEO_ALGORITHM = "com.stegandroid.algorithms.steganography.video.H264SteganographyContainerLsb1Bit";
+	private final String DEFAULT_CRYPTOGRAPHY_ALGORITHM = "com.stegandroid.algorithms.cryptography.AdvancedEncryptionStandard128";
+	
+	// Keys
 	private final String KEY_USE_AUDIO_CHANNEL = "com.stegandroid.USE_AUDIO_CHANNEL_KEY";
 	private final String KEY_AUDIO_ALGORITHM = "com.stegandroid.AUDIO_ALGORITHM_KEY";
 
@@ -181,10 +187,10 @@ public class Preferences {
 		_useMetadataChannel = sharedPref.getBoolean(KEY_USE_METADATA_CHANNEL, false);
 		_useCryptography = sharedPref.getBoolean(KEY_USE_CRYPTOGRAPHY, false);
 		
-		_audioAlgorithm = sharedPref.getString(KEY_AUDIO_ALGORITHM, "");
-		_videoAlgorithm = sharedPref.getString(KEY_VIDEO_ALGORITHM, "");
+		_audioAlgorithm = sharedPref.getString(KEY_AUDIO_ALGORITHM, DEFAULT_STEGANOGRAPHY_AUDIO_ALGORITHM);
+		_videoAlgorithm = sharedPref.getString(KEY_VIDEO_ALGORITHM, DEFAULT_STEGANOGRAPHY_VIDEO_ALGORITHM);
 		_metadataAlgorithm = sharedPref.getString(KEY_METADATA_ALGORITHM, "");
-		_cryptographyAlgorithm = sharedPref.getString(KEY_CRYPTOGRAPHY_ALGORITHM, "");
+		_cryptographyAlgorithm = sharedPref.getString(KEY_CRYPTOGRAPHY_ALGORITHM, DEFAULT_CRYPTOGRAPHY_ALGORITHM);
 	}
 	
 }

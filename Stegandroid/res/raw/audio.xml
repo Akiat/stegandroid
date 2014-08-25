@@ -3,12 +3,12 @@
     
 	<algorithm>
 	    <display>LSB with 1 bit</display>
-	    <path>com.stegandroid.algorithms.steganography.audio..AACSteganographyContainerLsb1Bit</path>
+	    <path>com.stegandroid.algorithms.steganography.audio.AACSteganographyContainerLsb1Bit</path>
 	</algorithm>
 	
 	<algorithm>
 	    <display>LSB with 2 bits</display>
-	    <path>com.stegandroid.algorithms.steganography.audio.AACSteganographyContainerLsb2Bit</path>
+	    <path>com.stegandroid.algorithms.steganography.audio.AACSteganographyContainerLsb2Bits</path>
 	</algorithm>    
 
 	<algorithm>
