@@ -2,6 +2,7 @@ package com.stegandroid.process;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -60,8 +61,8 @@ public class EncodeProcess {
 			return false;
 		}
 
-		processContentWithCryptography(parameters, _encryptedBytesForVideo);			
-		processContentWithCryptography(parameters, _encryptedBytesForAudio);			
+		processContentWithCryptography(parameters, _encryptedBytesForVideo);
+		processContentWithCryptography(parameters, _encryptedBytesForAudio);
 		
 		if (prefs.getUseAudioChannel()) {
 			_aacSteganographyContainer.hideData(_encryptedBytesForAudio);
@@ -100,8 +101,11 @@ public class EncodeProcess {
 	private boolean initContentToHideStream(EncodeParameters parameters) {
 		boolean ret = true;
 		
+		long size = new File(parameters.getFileToHidePath()).length();
+		
 		if (parameters.isHidingText()) {
 			_contentToHideStream = new ByteArrayInputStream(parameters.getTextToHide().getBytes());
+			size = parameters.getTextToHide().getBytes().length;
 		} else {
 			try {
 				_contentToHideStream = new FileInputStream(parameters.getFileToHidePath());
@@ -111,6 +115,12 @@ public class EncodeProcess {
 				ret = false;
 			}
 		}
+		
+		if (size > Utils.MAX_BYTE_TO_HIDE) {
+			ErrorManager.getInstance().addErrorMessage("The content you want to hide is to big");
+			ret = false;
+		}
+		
 		return ret;
 	}
 	

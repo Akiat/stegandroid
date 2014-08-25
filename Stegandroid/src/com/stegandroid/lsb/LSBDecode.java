@@ -37,6 +37,8 @@ public class LSBDecode {
 					if (_get_int_cursor == INT_SIZE) {
 						_to_unhide_byte_length = Integer.parseInt(_intRepr, 2);
 						_to_unhide_bit_length = _to_unhide_byte_length * BYTE_SIZE;
+						if (_to_unhide_byte_length > Utils.MAX_BYTE_TO_HIDE)
+							return new byte[0];
 						_unhide_content = new byte[_to_unhide_byte_length];
 						_intRepr = "";
 					} else if (_get_int_cursor == INT_SIZE * 2) {

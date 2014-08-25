@@ -22,6 +22,8 @@ import dalvik.system.DexFile;
 
 public class Utils {
 	
+	public static final int MAX_BYTE_TO_HIDE = 30720000; // 30mo
+	
 	/**
 	 * @param b The byte you want to change the LSB.
 	 * @param bitValue The Less Significant Bit to modify b.
