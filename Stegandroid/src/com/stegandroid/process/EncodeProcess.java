@@ -260,6 +260,7 @@ public class EncodeProcess {
 			}
 		}
 		if (videoSteganographyLength + audioSteganographyLength < dataLength) {
+			ErrorManager.getInstance().addErrorMessage("Not enough space in video to hide data with selected channel(s)");
 			System.err.println("[Encode process] Not enough space in video to hide data with selected channel(s)");
 			return false;
 		}
