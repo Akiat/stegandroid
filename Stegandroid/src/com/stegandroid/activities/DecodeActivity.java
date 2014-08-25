@@ -3,10 +3,12 @@ package com.stegandroid.activities;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -111,6 +113,20 @@ public class DecodeActivity extends Activity {
 		
 		updateImageViews();
 		updateLinearLayoutCryptographyVisibility();
+		
+		// ------------------
+		
+		SharedPreferences wmbPreference = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean isFirstRun = wmbPreference.getBoolean("FIRSTRUNDECODE", true);
+		if (isFirstRun)
+		{
+		    
+			// TODO : put the tutorial here 
+			
+		    SharedPreferences.Editor editor = wmbPreference.edit();
+		    editor.putBoolean("FIRSTRUNDECODE", false);
+		    editor.commit();
+		}
 	}
 
 	@Override

@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -76,6 +78,20 @@ public class SettingsActivity extends Activity {
 				Configuration.getInstance().getCryptographyAlgorithms(), 
 				Preferences.getInstance().getCryptographyAlgorithm());
 		this.actualizeSpinners();
+		
+		// ------------------
+		
+		SharedPreferences wmbPreference = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean isFirstRun = wmbPreference.getBoolean("FIRSTRUNSETTINGS", true);
+		if (isFirstRun)
+		{
+		    
+			// TODO : put the tutorial here 
+			
+		    SharedPreferences.Editor editor = wmbPreference.edit();
+		    editor.putBoolean("FIRSTRUNSETTINGS", false);
+		    editor.commit();
+		}
 	}
 	
 	private void initCheckboxes() {

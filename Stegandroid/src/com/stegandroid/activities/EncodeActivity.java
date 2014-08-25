@@ -3,14 +3,17 @@ package com.stegandroid.activities;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Display;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -110,6 +113,21 @@ public class EncodeActivity extends Activity{
 		
 		updateImageViews();
 		updateLinearLayoutCryptographyVisibility();
+		
+		// ------------------
+		
+		SharedPreferences wmbPreference = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean isFirstRun = wmbPreference.getBoolean("FIRSTRUNENCODE", true);
+		if (isFirstRun)
+		{
+		    
+			// TODO : put the tutorial here 
+			
+		    SharedPreferences.Editor editor = wmbPreference.edit();
+		    editor.putBoolean("FIRSTRUNENCODE", false);
+		    editor.commit();
+		}
+		
 	}
 
 	@Override
