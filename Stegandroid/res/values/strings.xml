@@ -3,7 +3,7 @@
 
     <!-- General string resources -->
 
-    <string name="app_name">stegandroid</string>
+    <string name="app_name">Stegandroid</string>
     
     <string name="about_string">About</string>
     <string name="aes_string">AES</string>
