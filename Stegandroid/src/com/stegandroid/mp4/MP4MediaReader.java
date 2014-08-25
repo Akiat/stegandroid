@@ -15,6 +15,7 @@ import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.boxes.mp4.ESDescriptorBox;
 import com.googlecode.mp4parser.boxes.mp4.objectdescriptors.ESDescriptor;
 import com.googlecode.mp4parser.util.Path;
+import com.stegandroid.error.ErrorManager;
 
 public class MP4MediaReader {
 
@@ -38,7 +39,7 @@ public class MP4MediaReader {
 		try {
 			_isoFile = new IsoFile(path);
 		} catch (IOException exception) {
-			System.out.println("Not able to open the file");
+			ErrorManager.getInstance().addErrorMessage("[MP4 Media Reader]: Not able to open the file");
 			return false;
 		}
 		return true;
@@ -52,7 +53,7 @@ public class MP4MediaReader {
 		try {
 			_isoFile.close();
 		} catch (IOException exception) {
-			System.out.println("Not able to close the file");
+			ErrorManager.getInstance().addErrorMessage("[MP4 Media Reader]: Not able to close the file");
 			return false;
 		} 
 		return true;
@@ -66,7 +67,10 @@ public class MP4MediaReader {
         	return null;
         }
         trackBox = (TrackBox) Path.getPath(_isoFile, VIDEO_TRACKBOX_PATH);
-		sampleList = new SampleList(trackBox, new IsoFile[0]);
+		if (trackBox == null) {
+			return null;
+		}
+        sampleList = new SampleList(trackBox, new IsoFile[0]);
 		return sampleList;
 	}
 
@@ -78,6 +82,9 @@ public class MP4MediaReader {
 			return null;
 		}
 		trackBox = (TrackBox) Path.getPath(_isoFile, VIDEO_TRACKBOX_PATH);
+		if (trackBox == null) {
+			return null;
+		}
 		videoConfigurationBox = (AvcConfigurationBox) Path.getPath(trackBox, VIDEO_CONFIGURATION_BOX_PATH);
 		return videoConfigurationBox.getSequenceParameterSets().get(0);
 	}
@@ -90,8 +97,10 @@ public class MP4MediaReader {
 			return null;
 		}
 		trackBox = (TrackBox) Path.getPath(_isoFile, VIDEO_TRACKBOX_PATH);
+		if (trackBox == null) {
+			return null;
+		}
 		videoConfigurationBox = (AvcConfigurationBox) Path.getPath(trackBox, VIDEO_CONFIGURATION_BOX_PATH);
-		
 		return videoConfigurationBox.getPictureParameterSets().get(0);
 	}
 
@@ -109,7 +118,10 @@ public class MP4MediaReader {
 		
 		movie = new Movie();
 		trackBoxes = _isoFile.getMovieBox().getBoxes(TrackBox.class);
-        for (TrackBox trackBox : trackBoxes) {
+        if (trackBoxes == null) {
+        	return 25.0;
+        }
+		for (TrackBox trackBox : trackBoxes) {
             movie.addTrack(new Mp4TrackImpl(trackBox));
         }
     	track = movie.getTracks().get(0);
@@ -133,6 +145,9 @@ public class MP4MediaReader {
 		
 		movie = new Movie();
 		trackBoxes = _isoFile.getMovieBox().getBoxes(TrackBox.class);
+		if (trackBoxes == null) {
+			return 25L;
+		}
         for (TrackBox trackBox : trackBoxes) {
             movie.addTrack(new Mp4TrackImpl(trackBox));
         }
@@ -154,6 +169,9 @@ public class MP4MediaReader {
 		
 		movie = new Movie();
 		trackBoxes = _isoFile.getMovieBox().getBoxes(TrackBox.class);
+		if (trackBoxes == null) {
+			return 1L;
+		}
         for (TrackBox trackBox : trackBoxes) {
             movie.addTrack(new Mp4TrackImpl(trackBox));
         }
@@ -172,6 +190,9 @@ public class MP4MediaReader {
 			return 0;
 		}
 		trackBox = (TrackBox) Path.getPath(_isoFile, VIDEO_TRACKBOX_PATH);
+		if (trackBox == null) {
+			return 0;
+		}
 		videoConfigurationBox = (AvcConfigurationBox) Path.getPath(trackBox, VIDEO_CONFIGURATION_BOX_PATH);
 		return videoConfigurationBox.getLengthSizeMinusOne();
 	}

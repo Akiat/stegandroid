@@ -17,6 +17,7 @@ import com.stegandroid.algorithms.AlgorithmFactory;
 import com.stegandroid.algorithms.ICryptographyAlgorithm;
 import com.stegandroid.algorithms.ISteganographyContainer;
 import com.stegandroid.configuration.Preferences;
+import com.stegandroid.error.ErrorManager;
 import com.stegandroid.mp4.MP4MediaReader;
 import com.stegandroid.mp4.MP4MediaWriter;
 import com.stegandroid.parameters.EncodeParameters;
@@ -88,7 +89,7 @@ public class EncodeProcess {
 		if (pref.getUseCryptography()) {
 			_cryptographyAlgorithm = AlgorithmFactory.getCryptographyAlgorithmInstanceFromName(pref.getCryptographyAlgorithm());
 			if (_cryptographyAlgorithm == null) {
-				System.err.println("Unable to load Cryptography algorithm");
+				ErrorManager.getInstance().addErrorMessage("Unable to load Cryptography algorithm");
 				ret = false;
 			}
 			_blockSize = _cryptographyAlgorithm.getBlockSize();
@@ -106,7 +107,7 @@ public class EncodeProcess {
 				_contentToHideStream = new FileInputStream(parameters.getFileToHidePath());
 			} catch (FileNotFoundException e) {
 				_contentToHideStream = null;
-				System.err.println("Unable to load content to hide");
+				ErrorManager.getInstance().addErrorMessage("Unable to load content to hide");
 				ret = false;
 			}
 		}
@@ -122,7 +123,7 @@ public class EncodeProcess {
 			_h264SteganographyContainer = AlgorithmFactory.getSteganographyContainerInstanceFromName(DEFAULT_H264_CONTAINER);
 		}
 		if (_h264SteganographyContainer == null) {
-			System.err.println("Unable to load video steganography algorithm");
+			ErrorManager.getInstance().addErrorMessage("Unable to load video steganography algorithm");
 			return false;
 		}
 
@@ -132,7 +133,7 @@ public class EncodeProcess {
 			_aacSteganographyContainer = AlgorithmFactory.getSteganographyContainerInstanceFromName(DEFAULT_AAC_CONTAINER);
 		}
 		if (_aacSteganographyContainer == null) {
-			System.err.println("Unable to load audio steganography algorithm");
+			ErrorManager.getInstance().addErrorMessage("Unable to load audio steganography algorithm");
 			return false;
 		}
 		
@@ -142,13 +143,13 @@ public class EncodeProcess {
 	private boolean initMp4Components(EncodeParameters parameters) {
 		_mp4MediaReader = new MP4MediaReader();
 		if (!_mp4MediaReader.loadData(parameters.getSourceVideoPath())) {
-			System.err.println("Unable to load data from orignal MP4");
+			ErrorManager.getInstance().addErrorMessage("Unable to load data from orignal MP4");
 			return false;
 		}
 		
 		if (!_h264SteganographyContainer.loadData(_mp4MediaReader) 
 				|| !_aacSteganographyContainer.loadData(_mp4MediaReader)) {
-			System.err.println("Unable to load channel from original MP4");
+			ErrorManager.getInstance().addErrorMessage("Unable to load channel(s) from original MP4");
 			return false;
 		}
 		
@@ -283,8 +284,7 @@ public class EncodeProcess {
 		if (_aacSteganographyContainer != null) {
 			_aacSteganographyContainer.writeRemainingSamples();
 		}
-		outputVideoName = Utils.getCurrentDateAndTime() + ".mp4";
-		outputVideoName = "/output.mp4";
+		outputVideoName = "steg_" + Utils.getCurrentDateAndTime() + ".mp4";
 		
 		h264DataSource = _h264SteganographyContainer.getDataSource();
 		aacDataSource = _aacSteganographyContainer.getDataSource();

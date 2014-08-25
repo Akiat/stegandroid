@@ -19,7 +19,7 @@ public class SocialNetworkActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_social_network);
 		
-		_btnBack = (ImageButton) findViewById(R.id.btn_back);
+		_btnBack = (ImageButton) findViewById(R.id.btn_back_social_network);
 		_btnBack.setOnClickListener(onClickListener);
 	}
 
@@ -35,7 +35,7 @@ public class SocialNetworkActivity extends Activity {
 		@Override
 		public void onClick(View arg0) {
 			switch (arg0.getId()) {
-				case R.id.btn_back:
+				case R.id.btn_back_social_network:
 					finish();
 					break;
 				default:

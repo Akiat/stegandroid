@@ -1,5 +1,7 @@
 package com.stegandroid.algorithms.cryptography;
 
+import com.stegandroid.error.ErrorManager;
+
 
 public class AdvancedEncryptionStandard192 extends AdvancedEncryptionStandard {
 	
@@ -13,14 +15,14 @@ public class AdvancedEncryptionStandard192 extends AdvancedEncryptionStandard {
 		boolean valid = true;
 		
 		if (message == null) {
-			System.err.println("AES 192: Message to encrypt is null");
+			ErrorManager.getInstance().addErrorMessage("[AES 192]: Message to encrypt is null");
 			valid = false;
 		}
 		if (key == null) {
-			System.err.println("AES 192: Key is null");
+			ErrorManager.getInstance().addErrorMessage("[AES 192]: Key is null");
 			valid = false;
 		} else if (!checkKeyLength(key.length)) {
-			System.err.println("AES 192: Key must be " + KEY_LENGTH + " length");			
+			ErrorManager.getInstance().addErrorMessage("[AES 192]: Key must be " + KEY_LENGTH + " length");			
 			valid = false;
 		} 
 		return (valid ? super.encryptionProcess(AESType.AES_192, message, key) : null);
@@ -31,14 +33,14 @@ public class AdvancedEncryptionStandard192 extends AdvancedEncryptionStandard {
 		boolean valid = true;
 		
 		if (cipher == null) {
-			System.err.println("AES 192: Cipher to decrypt is null");
+			ErrorManager.getInstance().addErrorMessage("[AES 192]: Cipher to decrypt is null");
 			valid = false;
 		}
 		if (key == null) {
-			System.err.println("AES 192: Key is null");
+			ErrorManager.getInstance().addErrorMessage("[AES 192]: Key is null");
 			valid = false;
 		} else if (!checkKeyLength(key.length)) {
-			System.err.println("AES 192: Key must be " + KEY_LENGTH + " length");			
+			ErrorManager.getInstance().addErrorMessage("[AES 192]: Key must be " + KEY_LENGTH + " length");			
 			valid = false;
 		} 
 		return (valid ? super.decryptionProcess(AESType.AES_192, cipher, key) : null);

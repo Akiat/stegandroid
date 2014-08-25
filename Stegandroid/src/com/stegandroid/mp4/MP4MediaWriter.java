@@ -26,8 +26,12 @@ public class MP4MediaWriter {
 
 		_outputPath = outputPath;
 		try {
-			_h264TrackImpl = new H264TrackImpl(h264);
-			_aacTrackImpl = new AACTrackImpl(aac);
+			if (h264 != null && h264.size() > 0) {
+				_h264TrackImpl = new H264TrackImpl(h264);
+			}
+			if (aac != null && aac.size() > 0) {
+				_aacTrackImpl = new AACTrackImpl(aac);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -38,9 +42,12 @@ public class MP4MediaWriter {
 		_aacTrackImpl = null;
 
 		_outputPath = outputPath;
+		System.out.println("The ouput path is: " + _outputPath);
 		try {
-			_h264TrackImpl = new H264TrackImpl(h264, DEFAULT_LANGUAGE, timescale, frametick);
-			if (aac != null && aac.size() != 0) {
+			if (h264 != null && h264.size() > 0) {
+				_h264TrackImpl = new H264TrackImpl(h264, DEFAULT_LANGUAGE, timescale, frametick);
+			}
+			if (aac != null && aac.size() > 0) {
 				_aacTrackImpl = new AACTrackImpl(aac);
 			}
 		} catch (IOException e) {
@@ -53,7 +60,9 @@ public class MP4MediaWriter {
 		Container container;
 		FileChannel fileChannel;
 		
-        movie.addTrack(_h264TrackImpl);
+		if (_h264TrackImpl != null) {
+			movie.addTrack(_h264TrackImpl);
+		}
         if (_aacTrackImpl != null) {
         	movie.addTrack(_aacTrackImpl);
         }

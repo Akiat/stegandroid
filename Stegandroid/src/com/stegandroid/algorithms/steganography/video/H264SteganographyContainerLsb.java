@@ -58,7 +58,9 @@ public class H264SteganographyContainerLsb extends H264SteganographyContainer {
 				encoder.encodeNextFrame(sample);
 				sample = insertEscapeSequence(sample);
 				this.addData(sample);
+				_subSampleIdx++;
 			}
+			_subSampleIdx = 0;
 			_sampleListPosition++;
 		}		
 	}

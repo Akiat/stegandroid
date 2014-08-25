@@ -56,11 +56,11 @@ public class DecodeActivity extends Activity {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_decode);
         
-		_btnBack = (ImageButton) findViewById(R.id.btn_back);
-		_btnSettings = (ImageButton) findViewById(R.id.btn_settings);
-		_btnSelectSourceVideo = (Button) findViewById(R.id.btn_select_video_source_decode);
+		_btnBack = (ImageButton) findViewById(R.id.btn_back_decode);
 		_btnDecode = (Button) findViewById(R.id.btn_decode);
+		_btnSelectSourceVideo = (Button) findViewById(R.id.btn_select_video_source_decode);
 		_btnSelectFileDestination = (Button) findViewById(R.id.btn_select_file_destination_decode);
+		_btnSettings = (ImageButton) findViewById(R.id.btn_settings_decode);
 		_checkBoxDisplayContent = (CheckBox) findViewById(R.id.chk_box_display_content);
 		_checkBoxSaveIntoFile = (CheckBox) findViewById(R.id.chk_box_save_into_file);
 		_editTextCryptographyKeyDecode = (EditText) findViewById(R.id.edit_text_cryptography_key_decode);
@@ -106,9 +106,9 @@ public class DecodeActivity extends Activity {
 		DecodeParametersController controller = new DecodeParametersController(true);
 		
 		if (controller.controlSrcVideoPath(_decodeParameters)) {
-			((ImageView) findViewById(R.id.img_view_valid_video_source)).setImageResource(R.drawable.btn_check_buttonless_on);
+			((ImageView) findViewById(R.id.img_view_valid_video_source_encode)).setImageResource(R.drawable.btn_check_buttonless_on);
 		} else {
-			((ImageView) findViewById(R.id.img_view_valid_video_source)).setImageResource(R.drawable.ic_delete);
+			((ImageView) findViewById(R.id.img_view_valid_video_source_encode)).setImageResource(R.drawable.ic_delete);
 		}
 		
 		if (controller.controlDestFilePath(_decodeParameters)) {
@@ -205,10 +205,10 @@ public class DecodeActivity extends Activity {
 		@Override
 		public void onClick(View arg0) {
 			switch (arg0.getId()) {
-				case R.id.btn_back:
+				case R.id.btn_back_decode:
 					finish();
 					break;
-				case R.id.btn_settings:
+				case R.id.btn_settings_decode:
 					Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
 					startActivityForResult(intent, SETTINGS_ACCESS);
 					break;

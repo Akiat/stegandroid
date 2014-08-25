@@ -19,7 +19,7 @@ public class AboutActivity extends Activity {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
         
-		_btnBack = (ImageButton) findViewById(R.id.btn_back);
+		_btnBack = (ImageButton) findViewById(R.id.btn_back_about);
 		_btnBack.setOnClickListener(onClickListener);
 	}
 
@@ -35,7 +35,7 @@ public class AboutActivity extends Activity {
 		@Override
 		public void onClick(View arg0) {
 			switch (arg0.getId()) {
-				case R.id.btn_back:
+				case R.id.btn_back_about:
 					finish();
 					break;
 				default:

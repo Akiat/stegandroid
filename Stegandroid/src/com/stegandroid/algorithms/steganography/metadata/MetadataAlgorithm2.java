@@ -1,5 +1,6 @@
 package com.stegandroid.algorithms.steganography.metadata;
 
+// TODO: Remove this class
 public class MetadataAlgorithm2{
 
 	public byte[] encode(byte[] signal, byte[] content) {

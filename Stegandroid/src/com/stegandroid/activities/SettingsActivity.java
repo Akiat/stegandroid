@@ -57,7 +57,7 @@ public class SettingsActivity extends Activity {
 		_spinMetadataAlrogithm = (Spinner) findViewById(R.id.spinner_metadata_algorithm);
 		_spinCryptographyAlgorithm = (Spinner) findViewById(R.id.spinner_cryptography_algorithm);
 		
-		_btnBack = (ImageButton) findViewById(R.id.btn_back);
+		_btnBack = (ImageButton) findViewById(R.id.btn_back_settings);
 		_btnBack.setOnClickListener(onClickListener);
 		
 		_mapClasses = new HashMap<String, String>();
@@ -237,7 +237,7 @@ public class SettingsActivity extends Activity {
 		@Override
 		public void onClick(View arg0) {
 			switch (arg0.getId()) {
-				case R.id.btn_back:
+				case R.id.btn_back_settings:
 					finish();
 					break;
 				default:

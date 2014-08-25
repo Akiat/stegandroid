@@ -189,6 +189,7 @@ public class Utils {
 				sb.append('/').append(chunks[i]);
 			}
 		}
+		sb.append("/");
 		return (sb.toString());
 	}
 

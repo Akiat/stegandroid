@@ -103,7 +103,7 @@ public class DirectoryDialog {
 		} else {
 			sb.append(directory);
 		}
-		System.out.println(sb + "####");
+
 		if (sb.toString().isEmpty() || sb.charAt(sb.length() - 1) != '/') {
 			sb.append('/');
 		}

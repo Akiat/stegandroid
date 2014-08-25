@@ -60,9 +60,9 @@ public class EncodeActivity extends Activity{
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_encode);
         
-		_btnBack = (ImageButton) findViewById(R.id.btn_back);
+		_btnBack = (ImageButton) findViewById(R.id.btn_back_encode);
 		_btnCamera = (ImageButton) findViewById(R.id.btn_camera);
-		_btnSettings = (ImageButton) findViewById(R.id.btn_settings);
+		_btnSettings = (ImageButton) findViewById(R.id.btn_settings_encode);
 		_btnSelectSourceVideo = (Button) findViewById(R.id.btn_select_video_source_encode);
 		_btnSelectVideoDestination = (Button) findViewById(R.id.btn_select_video_destination_encode);
 		_btnSelectFileToHide = (Button) findViewById(R.id.btn_select_file_to_hide);
@@ -101,10 +101,12 @@ public class EncodeActivity extends Activity{
 	}
 		
 	private void updateLinearLayoutCryptographyVisibility() {
-		if (Preferences.getInstance().getUseCryptography()) {
-			_linearLayoutCryptographyKeyEncode.setVisibility(View.VISIBLE);
-		} else {
-			_linearLayoutCryptographyKeyEncode.setVisibility(View.GONE);
+		if (Preferences.getInstance() != null) {
+			if (Preferences.getInstance().getUseCryptography()) {
+				_linearLayoutCryptographyKeyEncode.setVisibility(View.VISIBLE);
+			} else {
+				_linearLayoutCryptographyKeyEncode.setVisibility(View.GONE);
+			}
 		}
 	}
 	
@@ -112,9 +114,9 @@ public class EncodeActivity extends Activity{
 		EncodeParametersController controller = new EncodeParametersController(true);
 		
 		if (controller.controlSrcVideoPath(_encodeParameters)) {
-			((ImageView) findViewById(R.id.img_view_valid_video_source)).setImageResource(R.drawable.btn_check_buttonless_on);
+			((ImageView) findViewById(R.id.img_view_valid_video_source_encode)).setImageResource(R.drawable.btn_check_buttonless_on);
 		} else {
-			((ImageView) findViewById(R.id.img_view_valid_video_source)).setImageResource(R.drawable.ic_delete);
+			((ImageView) findViewById(R.id.img_view_valid_video_source_encode)).setImageResource(R.drawable.ic_delete);
 		}
 
 		if (controller.controlDestVideoPath(_encodeParameters)) {
@@ -124,9 +126,9 @@ public class EncodeActivity extends Activity{
 		}
 
 		if (controller.controlContentToHide(_encodeParameters)) {
-			((ImageView) findViewById(R.id.img_view_valid_content_to_hide)).setImageResource(R.drawable.btn_check_buttonless_on);
+			((ImageView) findViewById(R.id.img_view_valid_content_to_hide_encode)).setImageResource(R.drawable.btn_check_buttonless_on);
 		} else {
-			((ImageView) findViewById(R.id.img_view_valid_content_to_hide)).setImageResource(R.drawable.ic_delete);
+			((ImageView) findViewById(R.id.img_view_valid_content_to_hide_encode)).setImageResource(R.drawable.ic_delete);
 		}
 		
 		if (controller.controlCryptographyKey(_encodeParameters)) {
@@ -199,9 +201,13 @@ public class EncodeActivity extends Activity{
 		if (resultCode == Activity.RESULT_OK) {
 			selectedVideoLocation = data.getData();
 			
-			_encodeParameters.setSourceVideoPath(Utils.getRealPathFromUri(this, selectedVideoLocation));
-			if (_encodeParameters.getDestinationVideoDirectory() == null || _encodeParameters.getDestinationVideoDirectory().isEmpty()) {
-				_encodeParameters.setDestinationVideoDirectory(Utils.getBasenameFromPath(_encodeParameters.getSourceVideoPath()));
+			if (selectedVideoLocation != null) {
+				_encodeParameters.setSourceVideoPath(Utils.getRealPathFromUri(this, selectedVideoLocation));
+				if (_encodeParameters.getDestinationVideoDirectory() == null || _encodeParameters.getDestinationVideoDirectory().isEmpty()) {
+					_encodeParameters.setDestinationVideoDirectory(Utils.getBasenameFromPath(_encodeParameters.getSourceVideoPath()));
+				}
+			} else {
+				_encodeParameters.setSourceVideoPath("");
 			}
 			updateImageViews();
 		}
@@ -212,25 +218,34 @@ public class EncodeActivity extends Activity{
 		
 		if (resultCode == Activity.RESULT_OK) {
 			selectedFileLocation = data.getData();
-			_encodeParameters.setFileToHidePath(Utils.getRealPathFromUri(this, selectedFileLocation));
+			if (selectedFileLocation != null) {
+				_encodeParameters.setFileToHidePath(Utils.getRealPathFromUri(this, selectedFileLocation));
+			} else {
+				_encodeParameters.setFileToHidePath("");
+			}
 			updateImageViews();
 		}
 	}
 	
 	private void process() {
 		EncodeParametersController controller;
+		boolean displayError = false;
 		
-		ProgressDialog loading = ProgressDialog.show(this, "Loading", "Stegandroid hide your data...");
+		ProgressDialog loading = ProgressDialog.show(this, "Loading", "Stegandroid hiding your data...");
 		_encodeParameters.setTextToHide(_editTextContentToHide.getText().toString());
 		controller = new EncodeParametersController(false);
 		if (controller.controlAllData(_encodeParameters)){
 			EncodeProcess process = new EncodeProcess();
-			process.encode(_encodeParameters);
-
+			if (!process.encode(_encodeParameters)) {
+				displayError = true;
+			}
 		} else {
+			displayError = true;
+		}
+		if (displayError) {
 			ErrorManager.getInstance().displayErrorMessages(this);
 		}
-		loading.cancel();
+		loading.dismiss();
 	}
 		
 	private ChoosenDirectoryListener onChoosenDirectoryListener = new ChoosenDirectoryListener() {
@@ -276,13 +291,13 @@ public class EncodeActivity extends Activity{
 		@Override
 		public void onClick(View arg0) {
 			switch (arg0.getId()) {
-				case R.id.btn_back:
+				case R.id.btn_back_encode:
 					finish();
 					break;
 				case R.id.btn_camera:
 					recordVideo();
 					break;
-				case R.id.btn_settings:
+				case R.id.btn_settings_encode:
 					Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
 					startActivityForResult(intent, SETTINGS_ACCESS);
 					break;					
@@ -318,7 +333,9 @@ public class EncodeActivity extends Activity{
 		
 		@Override
 		public void afterTextChanged(Editable s) {
-			_encodeParameters.setCryptographyKey(s.toString());
+			if (s != null) {
+				_encodeParameters.setCryptographyKey(s.toString());
+			} 
 			updateImageViews();
 		}
 	};
@@ -335,7 +352,9 @@ public class EncodeActivity extends Activity{
 		
 		@Override
 		public void afterTextChanged(Editable s) {
-			_encodeParameters.setTextToHide(s.toString());
+			if (s != null) {
+				_encodeParameters.setTextToHide(s.toString());
+			}
 			updateImageViews();
 		}
 	};

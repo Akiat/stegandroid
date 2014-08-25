@@ -163,9 +163,9 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 					System.gc();
 					_dataSource = new FileDataSourceImpl(new File(FILE_STORAGE_NAME));
 				} catch (FileNotFoundException e) {
-					e.printStackTrace();
+					System.err.println("[H264 Steganography container]: Unable to get data source: " +  e.getMessage());
 				} catch (IOException e) {
-					e.printStackTrace();
+					System.err.println("[H264 Steganography container]: Unable to get data source: " +  e.getMessage());
 				}
 			}
 		}
@@ -179,7 +179,7 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 			try {
 				_content.write(content);
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.err.println("[H264 Steganography container]: Unable to add data: " +  e.getMessage());
 			}
 		}
 	}
@@ -213,7 +213,7 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 				_dataSource.close();
 				_dataSource = null;
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.err.println("[H264 Steganography container]: Unable to clean data source: " +  e.getMessage());
 			}
 		}
 		System.gc();		
@@ -225,7 +225,7 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 				_content.close();
 				_content = null;
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.err.println("[H264 Steganography container]: Unable to clean content stream: " +  e.getMessage());
 			}
 		}
 		System.gc();
@@ -251,18 +251,18 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 	private void switchOutputStreamToFile() {
 		if (_content != null && _content instanceof ByteArrayOutputStream
 				&& ((ByteArrayOutputStream)_content).size() >= MAX_SIZE_BUFFERING) {
-				FileOutputStream fos;
-				try {
-					fos = new FileOutputStream(new File(FILE_STORAGE_NAME));
-					((ByteArrayOutputStream)_content).writeTo(fos);
-					_content.close();
-					_content = null;
-					System.gc();
-					_content = fos;
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
+			FileOutputStream fos;
+			try {
+				fos = new FileOutputStream(new File(FILE_STORAGE_NAME));
+				((ByteArrayOutputStream)_content).writeTo(fos);
+				_content.close();
+				_content = null;
+				System.gc();
+				_content = fos;
+			} catch (FileNotFoundException e) {
+				System.err.println("[H264 Steganography container]: Unable to switch content stream: " +  e.getMessage());
+			} catch (IOException e) {
+				System.err.println("[H264 Steganography container]: Unable to switch content stream: " +  e.getMessage());
 			}
 		}		
 	}

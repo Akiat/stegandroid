@@ -115,7 +115,7 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 				dataSource = new FileDataSourceImpl(new File(FILE_STORAGE_NAME));
 			} catch (FileNotFoundException e) {
 				dataSource = null;
-				e.printStackTrace();
+				System.err.println("[AAC Steganography container]: Unable to get data source: " +  e.getMessage());
 			}
 		}
 		return dataSource;
@@ -152,9 +152,9 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 					((ByteArrayOutputStream)_content).writeTo(fos);
 					_content = fos;
 				} catch (FileNotFoundException e) {
-					e.printStackTrace();
+					System.err.println("[AAC Steganography container]: Unable to switch stream content: " +  e.getMessage());
 				} catch (IOException e) {
-					e.printStackTrace();
+					System.err.println("[AAC Steganography container]: Unable to switch stream content: " +  e.getMessage());
 			}
 		}		
 	}
@@ -165,7 +165,7 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 			try {
 				_content.write(content);
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.err.println("[AAC Steganography container]: Unable to add data: " +  e.getMessage());
 			}
 		}
 	}
@@ -177,7 +177,7 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 				_dataSource.close();
 				_dataSource = null;
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.err.println("[AAC Steganography container]: Unable to clean data source: " +  e.getMessage());
 			}
 		}
 		System.gc();		
@@ -189,7 +189,7 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 				_content.close();
 				_content = null;
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.err.println("[AAC Steganography container]: Unable to clean content stream: " +  e.getMessage());
 			}
 		}
 		System.gc();
