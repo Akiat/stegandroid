@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.stegandroid.tools.BitBufferReader;
+import com.stegandroid.tools.Pair;
 
 public class SliceParser {
 
@@ -104,8 +105,12 @@ public class SliceParser {
 		BitBufferReader bitBufferReader = new BitBufferReader(data);
 		
 		parseSliceHeader(bitBufferReader);
-		_sliceDataOffset = bitBufferReader.getCurrentBitOffset() == 0 ? bitBufferReader.getCurrentOffset() : bitBufferReader.getCurrentOffset() + 1;
-		parseSliceData(bitBufferReader);
+		_sliceDataOffset = (bitBufferReader.getCurrentBitOffset() == 0 ? bitBufferReader.getCurrentOffset() : bitBufferReader.getCurrentOffset() + 1);
+		try {
+			parseSliceData(bitBufferReader);
+		} catch (Exception ex) {
+			System.err.println("[Slice Parser]: " + ex.getMessage());
+		}
 	}
 	
 	private void parseSliceHeader(BitBufferReader bitBufferReader) {
@@ -449,31 +454,24 @@ public class SliceParser {
 		if (_pictureParameterSetParser.getNumSliceGroupsMinus1() != 0) {
 			switch (_pictureParameterSetParser.getSliceGroupMapType()) {
 				case 0:
-					System.out.println("Second cas");
 					createMapUnitWithInterleavedSlice();
 					break;
 				case 1:
-					System.out.println("Troisieme cas");
 					createMapUnitWithDispersedSlice();
 					break;
 				case 2:
-					System.out.println("Quatrieme cas");
 					createMapUnitWithForegroundSlice();
 					break;
 				case 3:
-					System.out.println("Cinquieme cas");
 					createMapUnitWithBoxoutSlice();
 					break;
 				case 4:
-					System.out.println("Sixieme cas");
 					createMapUnitWithRasterSlice();
 					break;
 				case 5:
-					System.out.println("Septieme cas");
 					createMapUnitWithWipeSlice();
 					break;
 				case 6:
-					System.out.println("Huitieme cas");
 					createMapUnitWithExplicitSlice();
 					break;
 				default:

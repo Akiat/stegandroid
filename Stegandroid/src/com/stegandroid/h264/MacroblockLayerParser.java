@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.stegandroid.tools.BitBufferReader;
+import com.stegandroid.tools.Pair;
 
 public class MacroblockLayerParser {
 
@@ -125,12 +126,10 @@ public class MacroblockLayerParser {
 //				residual(0, 15);
 				Pair<Integer, Integer> offset = new Pair<Integer, Integer>();
 				offset.setFirst(bitBufferReader.getCurrentOffset());
-//				System.out.print(bitBufferReader.getCurrentOffset() + " : " + bitBufferReader.getCurrentBitOffset());
 				for (int i = 0; i < 32; ++i) {
 					bitBufferReader.readNBits(8);
 				}
 				offset.setSecond(bitBufferReader.getCurrentOffset());
-//				System.out.println(" | " + (bitBufferReader.getCurrentOffset()));
 				_macroblockResidualOffset.add(offset);
 			}
 		}
