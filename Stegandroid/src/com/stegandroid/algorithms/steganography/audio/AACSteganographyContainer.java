@@ -18,12 +18,13 @@ import com.stegandroid.mp4.StegandroidMemoryDataSourceImpl;
 
 public class AACSteganographyContainer implements ISteganographyContainer {
 	
-	private final int MAX_SIZE_BUFFERING = 200000000; // 200 Mo
+	private final int MAX_SIZE_BUFFERING = 10000000; // 10 Mo
 	private final String FILE_STORAGE_NAME = "aac.tmp";
-	
+
 	protected OutputStream _content;
 	protected DataSource _dataSource;
 	protected SampleList _sampleList;
+	protected String _fileStreamDirectory;
 	protected int _sampleListPosition;
 	protected int _sampleOffset;
 	protected int _sampleFrequency;
@@ -34,6 +35,7 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 	public AACSteganographyContainer() {
 		_content = null;
 		_sampleList = null;
+		_fileStreamDirectory = null;
 		_sampleListPosition = 0;
 		_sampleOffset = 0;
 		_sampleFrequency = 0;
@@ -112,13 +114,21 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 			dataSource = new StegandroidMemoryDataSourceImpl(((ByteArrayOutputStream)_content).toByteArray());
 		} else {
 			try {
-				dataSource = new FileDataSourceImpl(new File(FILE_STORAGE_NAME));
+				dataSource = new FileDataSourceImpl(new File(_fileStreamDirectory + FILE_STORAGE_NAME));
 			} catch (FileNotFoundException e) {
 				dataSource = null;
 				System.err.println("[AAC Steganography container]: Unable to get data source: " +  e.getMessage());
 			}
 		}
 		return dataSource;
+	}
+
+	public void setFileStreamDirectory(String directory) {
+		_fileStreamDirectory = directory;
+	}
+	
+	public String getFileStreamDirectory() {
+		return _fileStreamDirectory;
 	}
 
 	public void cleanUpResources() {
@@ -148,7 +158,7 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 			&& ((ByteArrayOutputStream)_content).size() >= MAX_SIZE_BUFFERING) {
 				FileOutputStream fos;
 				try {
-					fos = new FileOutputStream(new File(FILE_STORAGE_NAME));
+					fos = new FileOutputStream(new File(_fileStreamDirectory + FILE_STORAGE_NAME));
 					((ByteArrayOutputStream)_content).writeTo(fos);
 					_content = fos;
 				} catch (FileNotFoundException e) {
@@ -193,7 +203,7 @@ public class AACSteganographyContainer implements ISteganographyContainer {
 			}
 		}
 		System.gc();
-		File file = new File(FILE_STORAGE_NAME);
+		File file = new File(_fileStreamDirectory + FILE_STORAGE_NAME);
 		file.delete();		
 	}
 

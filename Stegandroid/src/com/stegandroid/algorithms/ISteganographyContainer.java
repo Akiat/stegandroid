@@ -14,6 +14,8 @@ public interface ISteganographyContainer {
 	public long getMaxContentToHide();
 	public byte[] getUnHideData();
 	public DataSource getDataSource();	
-
+	public void setFileStreamDirectory(String directory);
+	public String getFileStreamDirectory();
+	
 	public void cleanUpResources();
 }

@@ -6,6 +6,7 @@ import com.stegandroid.configuration.Configuration;
 import com.stegandroid.configuration.Preferences;
 import com.stegandroid.error.ErrorManager;
 import com.stegandroid.parameters.EncodeParameters;
+import com.stegandroid.tools.Utils;
 
 public class EncodeParametersController {
 
@@ -36,7 +37,7 @@ public class EncodeParametersController {
 			}
 			return false;
 		}
-		return true;
+		return controlEnoughSpaceOnSdCard(parameters);
 	}
 	
 	public Boolean controlDestVideoPath(EncodeParameters parameters) {
@@ -76,6 +77,26 @@ public class EncodeParametersController {
 		if (!parameters.isHidingText() && (parameters.getFileToHidePath() == null || parameters.getFileToHidePath().isEmpty())) {
 			if (!_quite) {
 				ErrorManager.getInstance().addErrorMessage(R.string.error_file_to_hide_empty_string);
+			}
+			return false;
+		}
+		return true;
+	}
+
+	private Boolean controlEnoughSpaceOnSdCard(EncodeParameters parameters) {
+		long free = Utils.getAvailableBytesOnSdcard();
+		long required = Utils.getFileSize(parameters.getSourceVideoPath());
+		
+		if (required == -1) {
+			return false;
+		}
+		
+		if (required > 10000000) { // 10 MO
+			required *= 2;
+		}
+		if (required >= free) {
+			if (!_quite) {
+				ErrorManager.getInstance().addErrorMessage("Not enough space on SD Card! This operation requires at least " + required + " bytes free on the SD Card");
 			}
 			return false;
 		}

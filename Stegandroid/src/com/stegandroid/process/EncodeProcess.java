@@ -2,7 +2,6 @@ package com.stegandroid.process;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -101,7 +100,7 @@ public class EncodeProcess {
 	private boolean initContentToHideStream(EncodeParameters parameters) {
 		boolean ret = true;
 		
-		long size = new File(parameters.getFileToHidePath()).length();
+		long size = Utils.getFileSize(parameters.getFileToHidePath());
 		
 		if (parameters.isHidingText()) {
 			_contentToHideStream = new ByteArrayInputStream(parameters.getTextToHide().getBytes());

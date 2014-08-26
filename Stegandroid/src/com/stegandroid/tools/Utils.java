@@ -17,6 +17,8 @@ import java.util.List;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Environment;
+import android.os.StatFs;
 import android.provider.MediaStore;
 import dalvik.system.DexFile;
 
@@ -248,6 +250,22 @@ public class Utils {
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 		Date date = new Date();
 		return dateFormat.format(date);
+	}
+
+	public static long getFileSize(String path) {
+		File file = new File(path);
+		
+		if (file != null && file.isFile()) {
+			return file.length();
+		}
+		return -1;
+	} 
+	
+	@SuppressWarnings("deprecation")
+	public static long getAvailableBytesOnSdcard() {
+		String path = Environment.getExternalStorageDirectory().getPath();
+		StatFs fs = new StatFs(path);
+		return (long) fs.getBlockSize() * (long) fs.getAvailableBlocks();
 	}
 	
 }
