@@ -116,17 +116,6 @@ public class DecodeActivity extends Activity {
 		
 		// ------------------
 		
-		SharedPreferences wmbPreference = PreferenceManager.getDefaultSharedPreferences(this);
-		boolean isFirstRun = wmbPreference.getBoolean("FIRSTRUNDECODE", true);
-		if (isFirstRun)
-		{
-		    
-			// TODO : put the tutorial here 
-			
-		    SharedPreferences.Editor editor = wmbPreference.edit();
-		    editor.putBoolean("FIRSTRUNDECODE", false);
-		    editor.commit();
-		}
 	}
 
 	@Override

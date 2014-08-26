@@ -21,6 +21,10 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.stegandroid.R;
 import com.stegandroid.algorithms.IDataAlgorithm;
 import com.stegandroid.algorithms.data.SteganographyAlgorithmData.SteganographyChannelType;
@@ -81,17 +85,12 @@ public class SettingsActivity extends Activity {
 		
 		// ------------------
 		
-		SharedPreferences wmbPreference = PreferenceManager.getDefaultSharedPreferences(this);
-		boolean isFirstRun = wmbPreference.getBoolean("FIRSTRUNSETTINGS", true);
-		if (isFirstRun)
-		{
-		    
-			// TODO : put the tutorial here 
-			
-		    SharedPreferences.Editor editor = wmbPreference.edit();
-		    editor.putBoolean("FIRSTRUNSETTINGS", false);
-		    editor.commit();
-		}
+		Target viewTarget = new ViewTarget(R.id.chk_box_audio_channel, this);
+        new ShowcaseView.Builder(this, true)
+                .setTarget(viewTarget)
+                .setContentTitle("Now, you can select which channel you want to use to hide your data")
+                .setContentText("You can select both channels, and also a cryptography algorithm !")
+                .build();
 	}
 	
 	private void initCheckboxes() {

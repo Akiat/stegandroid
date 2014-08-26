@@ -116,18 +116,7 @@ public class EncodeActivity extends Activity{
 		
 		// ------------------
 		
-		SharedPreferences wmbPreference = PreferenceManager.getDefaultSharedPreferences(this);
-		boolean isFirstRun = wmbPreference.getBoolean("FIRSTRUNENCODE", true);
-		if (isFirstRun)
-		{
-		    
-			// TODO : put the tutorial here 
-			
-		    SharedPreferences.Editor editor = wmbPreference.edit();
-		    editor.putBoolean("FIRSTRUNENCODE", false);
-		    editor.commit();
-		}
-		
+
 	}
 
 	@Override

@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.stegandroid.R;
 import com.stegandroid.activities.AboutActivity;
 import com.stegandroid.activities.DecodeActivity;
@@ -45,6 +48,13 @@ public class MainActivity extends Activity {
         _btnSettings.setOnClickListener(onClickListener);
         _btnSocialNetwork.setOnClickListener(onClickListener);
         _btnAbout.setOnClickListener(onClickListener);
+        
+		Target viewTarget = new ViewTarget(R.id.btn_main_choose_settings, this);
+        new ShowcaseView.Builder(this, true)
+                .setTarget(viewTarget)
+                .setContentTitle("Before hiding your data, you must configure the application !")
+                .setContentText("Click on settings !")
+                .build();
 	}
 
 
