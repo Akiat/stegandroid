@@ -79,14 +79,17 @@ public class DecodeActivity extends Activity {
 
 		if (_decodeParameters.getDisplay())
 		{
+			String dialogMsg = "";
+			if (_decodeParameters.getDisplayText().length() > Utils.MAX_CHAR_BEFORE_CREATE_FILE_ON_DECODE) {
+				toastMsg += " A file was created.";
+				dialogMsg += "More than " + Utils.MAX_CHAR_BEFORE_CREATE_FILE_ON_DECODE + " characters, a file was created.\n\n";
+			}
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle("Your data");
-			builder.setMessage("More than " + Utils.MAX_CHAR_BEFORE_CREATE_FILE_ON_DECODE + " characters, a file was created.\n\n" + _decodeParameters.getDisplayText());
+			builder.setMessage(dialogMsg + _decodeParameters.getDisplayText());
 			builder.setPositiveButton("OK", null);
 			builder.show();
 			
-			if (_decodeParameters.getDisplayText().length() > Utils.MAX_CHAR_BEFORE_CREATE_FILE_ON_DECODE)
-				toastMsg += " A file was created.";
 		}
 		Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
 	}
