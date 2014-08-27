@@ -53,7 +53,8 @@ public class MainActivity extends Activity {
         new ShowcaseView.Builder(this, true)
                 .setTarget(viewTarget)
                 .setContentTitle("Before hiding your data, you must configure the application !")
-                .setContentText("Click on settings !")
+                .setContentText("Tap on settings !")
+                .singleShot(42)
                 .build();
 	}
 

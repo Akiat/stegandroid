@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.view.Display;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,7 +22,6 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.stegandroid.R;
@@ -86,10 +85,20 @@ public class SettingsActivity extends Activity {
 		// ------------------
 		
 		Target viewTarget = new ViewTarget(R.id.chk_box_audio_channel, this);
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		
         new ShowcaseView.Builder(this, true)
                 .setTarget(viewTarget)
-                .setContentTitle("Now, you can select which channel you want to use to hide your data")
-                .setContentText("You can select both channels, and also a cryptography algorithm !")
+                .setContentTitle("Select the channels to use")
+                .setContentText("You can select both channels and a cryptography algorithm !")
+                .singleShot(42)
+                .hasManualPosition(true)
+                .setTextXPostion((int) (size.x * 0.05))
+                .setTextYPostion((int) (size.y * 0.6))
+                .hasManualWidth(true)
+                .setTextWidth((int) (size.x * 0.90))
                 .build();
 	}
 	
