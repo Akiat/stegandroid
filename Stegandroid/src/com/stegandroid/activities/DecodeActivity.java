@@ -80,13 +80,13 @@ public class DecodeActivity extends Activity {
 		if (_decodeParameters.getDisplay())
 		{
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Unhide data result");
-			builder.setMessage(_decodeParameters.getDisplayText());
+			builder.setTitle("Your data");
+			builder.setMessage("More than " + Utils.MAX_CHAR_BEFORE_CREATE_FILE_ON_DECODE + " characters, a file was created.\n\n" + _decodeParameters.getDisplayText());
 			builder.setPositiveButton("OK", null);
 			builder.show();
 			
 			if (_decodeParameters.getDisplayText().length() > Utils.MAX_CHAR_BEFORE_CREATE_FILE_ON_DECODE)
-				toastMsg += " Lot of unhide data : A file was created.";
+				toastMsg += " A file was created.";
 		}
 		Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
 	}
