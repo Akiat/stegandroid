@@ -188,7 +188,10 @@ public class DecodeProcess {
 		try {
 			if (parameters.getDisplay()) {
 				parameters.setDisplayText(new String(_unHideData, "US-ASCII"));
-				return;
+				
+				// if ther is a long message, we create a file, so no return
+				if (parameters.getDisplayText().length() < Utils.MAX_CHAR_BEFORE_CREATE_FILE_ON_DECODE)
+					return;
 			}
 
 			String filename = parameters.getDestinationVideoDirectory() + "steg_decoded_" + Utils.getCurrentDateAndTime() + ".txt";

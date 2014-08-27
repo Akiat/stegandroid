@@ -25,6 +25,7 @@ import dalvik.system.DexFile;
 public class Utils {
 	
 	public static final int MAX_BYTE_TO_HIDE = 30720000; // 30mo
+	public static final int MAX_CHAR_BEFORE_CREATE_FILE_ON_DECODE = 100;
 	
 	/**
 	 * @param b The byte you want to change the LSB.

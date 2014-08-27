@@ -1,6 +1,7 @@
 package com.stegandroid.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -74,7 +75,20 @@ public class DecodeActivity extends Activity {
 	}
 	
 	private void displayProcessSuccess() {
-		Toast.makeText(this, "Your data was unhidden.", Toast.LENGTH_LONG).show();
+		String toastMsg = "Your data was unhidden.";
+
+		if (_decodeParameters.getDisplay())
+		{
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Unhide data result");
+			builder.setMessage(_decodeParameters.getDisplayText());
+			builder.setPositiveButton("OK", null);
+			builder.show();
+			
+			if (_decodeParameters.getDisplayText().length() > Utils.MAX_CHAR_BEFORE_CREATE_FILE_ON_DECODE)
+				toastMsg += " Lot of unhide data : A file was created.";
+		}
+		Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
 	}
 
 	@Override
