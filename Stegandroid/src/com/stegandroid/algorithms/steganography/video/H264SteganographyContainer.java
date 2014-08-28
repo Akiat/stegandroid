@@ -23,7 +23,7 @@ import com.stegandroid.mp4.StegandroidMemoryDataSourceImpl;
 
 public class H264SteganographyContainer implements ISteganographyContainer {
 
-	private final int MAX_SIZE_BUFFERING = 10000000; // 10 Mo
+	private final int MAX_SIZE_BUFFERING = 7000000; // 10 Mo
 	private final String FILE_STORAGE_NAME = "h264.tmp";
 
 	protected SeqParameterSetParser _seqParameterSetParser;
