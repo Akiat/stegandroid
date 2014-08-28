@@ -1,5 +1,9 @@
 package com.stegandroid.tools;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -8,6 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Utils {
+	
+	public static final int MAX_BYTE_TO_HIDE = 30720000; // 30mo
+	public static final int MAX_CHAR_BEFORE_CREATE_FILE_ON_DECODE = 100;
 	
 	/**
 	 * @param b The byte you want to change the LSB.
@@ -97,14 +104,6 @@ public class Utils {
 
 		return toHideByteArray;
 	}
-	
-	public static void bArrayDump(byte[] a) {
-		int max = a.length;
-		for (int i = 0; i<max; i++){
-			System.out.print(a[i] + " ");
-		}
-		System.out.println("");
-	}
 
 	public static void compare(byte[] original, byte[] decoded, boolean bitRepr){
 		if (bitRepr)
@@ -122,10 +121,94 @@ public class Utils {
 			e.printStackTrace();
 		}
 	}
+		
+	public static String convertClassNameToReadableName(String name) {
+		StringBuffer res = new StringBuffer("");
+		
+		if (name.contains(".") && name.lastIndexOf(".") != name.length() - 1) {
+			res.append(name.substring(name.lastIndexOf(".") + 1));
+		} else {
+			res.append(name);
+		}
+		
+		if (!res.toString().toUpperCase().equals(res.toString())) {
+			for (int i = 0; i < res.length(); ++i) {
+				if ((res.charAt(i) >= 'A' && res.charAt(i) <= 'Z' || res.charAt(i) >= '0' && res.charAt(i) <= '9')
+						&& i != 0 && res.charAt(i - 1) != ' ') {
+					res.insert(i, ' ');
+					++i;
+				}
+			}
+		}
+		return (res.toString());
+	}
+
+	public static String getBasenameFromPath(String path) {
+		StringBuilder sb; 
+		String chunks[];
+		
+		sb = new StringBuilder();
+		if (path == null) {
+			return (sb.toString());
+		}
+		
+		chunks = path.split("/");
+		if (chunks == null || chunks.length == 0) {
+			return (sb.toString());
+		}
+		
+		for (int i = 0; i < chunks.length - 1; ++i) {
+			if (chunks[i] != null && chunks[i].length() != 0) {
+				sb.append('/').append(chunks[i]);
+			}
+		}
+		sb.append("/");
+		return (sb.toString());
+	}
+	
+	public static String getFileNameFromPath(String path) {
+		String ret = "";
+		File file;
+		
+		if (path != null) {
+			file = new File(path);
+			ret = file.getName();
+		}
+		return (ret);
+	}
+	
+	public static byte[] getContentOfFileAsByteArray(String path) {
+		FileInputStream inputStream;
+		File file;
+		byte ret[] = null;
+		
+		file = new File(path);
+		try {
+			inputStream = new FileInputStream(new File(path));
+			ret = new byte[(int) file.length()];
+			inputStream.read(ret);
+			inputStream.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		return ret;
+	}
 	
 	public static String getCurrentDateAndTime() {
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 		Date date = new Date();
 		return dateFormat.format(date);
 	}
+
+	public static long getFileSize(String path) {
+		File file = new File(path);
+		
+		if (file != null && file.isFile()) {
+			return file.length();
+		}
+		return -1;
+	} 
+	
 }

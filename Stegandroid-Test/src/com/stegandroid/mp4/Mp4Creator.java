@@ -12,6 +12,7 @@ import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
 import com.googlecode.mp4parser.authoring.tracks.AACTrackImpl;
 import com.googlecode.mp4parser.authoring.tracks.H264TrackImpl;
 
+// TODO: Remove this class
 public class Mp4Creator {
 	
 	public Mp4Creator() {

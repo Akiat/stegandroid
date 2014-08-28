@@ -11,6 +11,7 @@ import com.stegandroid.algorithms.ISteganographyContainer;
 import com.stegandroid.configuration.Preferences;
 import com.stegandroid.mp4.MP4MediaReader;
 import com.stegandroid.parameters.DecodeParameters;
+import com.stegandroid.tools.Utils;
 
 public class DecodeProcess {
 
@@ -42,10 +43,20 @@ public class DecodeProcess {
 		if (Preferences.getInstance().getUseVideoChannel()) {
 			_h264SteganographyContainer.unHideData();
 			unHideDataVideo = _h264SteganographyContainer.getUnHideData();
+			// Nothing was found
+			if (unHideDataVideo == null || unHideDataVideo.length == 0) {
+				System.err.println("A problem was detected during the unhide process on H.264");
+				return false;
+			}
 		} 
 		if (Preferences.getInstance().getUseAudioChannel()) {
 			_aacSteganographyContainer.unHideData();
 			unHideDataAudio = _aacSteganographyContainer.getUnHideData();
+			// Nothing was found
+			if (unHideDataAudio == null || unHideDataAudio.length == 0) {
+				System.err.println("A problem was detected during the unhide process on AAC");
+				return false;
+			}
 		} 
 
 		processContentWithCryptography(parameters, unHideDataAudio);
@@ -177,10 +188,13 @@ public class DecodeProcess {
 		try {
 			if (parameters.getDisplay()) {
 				parameters.setDisplayText(new String(_unHideData, "US-ASCII"));
-				return;
+				
+				// if ther is a long message, we create a file, so no return
+				if (parameters.getDisplayText().length() < Utils.MAX_CHAR_BEFORE_CREATE_FILE_ON_DECODE)
+					return;
 			}
 
-			String filename = parameters.getDestinationVideoDirectory() + parameters.getOutputName();
+			String filename = parameters.getDestinationVideoDirectory() + "steg_decoded_" + Utils.getCurrentDateAndTime() + ".txt";
 			FileOutputStream output = new FileOutputStream(filename);
 			output.write(_unHideData);
 			output.close();

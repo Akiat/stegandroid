@@ -1,5 +1,6 @@
 package com.stegandroid.algorithms;
 
+
 public class AlgorithmFactory {
 
 	public static ISteganographyContainer getSteganographyContainerInstanceFromName(String name) {
@@ -10,11 +11,11 @@ public class AlgorithmFactory {
 		    algorithmClass = Class.forName(name); 
 		    algorithm = (ISteganographyContainer) algorithmClass.newInstance();
 		} catch (ClassNotFoundException e) {
-			System.err.println("AlgorithmFactory: Unable to find class " + name);
+			System.err.println("[Algorithm Factory]: Unable to find class " + name);
 		} catch (InstantiationException e) {
-			System.err.println("AlgorithmFactory: Failed to instantiate class " + name);
+			System.err.println("[Algorithm Factory]: Failed to instantiate class " + name);
 		} catch (IllegalAccessException e) {
-			System.err.println("AlgorithmFactory: Illegal access to " + name);
+			System.err.println("[Algorithm Factory]: Illegal access to " + name);
 		}
 		return (algorithm);
 	}
@@ -27,11 +28,11 @@ public class AlgorithmFactory {
 		    algorithmClass = Class.forName(name); 
 		    algorithm = (ICryptographyAlgorithm) algorithmClass.newInstance();
 		} catch (ClassNotFoundException e) {
-			System.err.println("AlgorithmFactory: Unable to find class " + name);
+			System.err.println("[Algorithm Factory]: Unable to find class " + name);
 		} catch (InstantiationException e) {
-			System.err.println("AlgorithmFactory: Failed to instantiate class " + name);
+			System.err.println("[Algorithm Factory]: Failed to instantiate class " + name);
 		} catch (IllegalAccessException e) {
-			System.err.println("AlgorithmFactory: Illegal access to " + name);
+			System.err.println("[Algorithm Factory]: Illegal access to " + name);
 		}
 		return (algorithm);
 	}

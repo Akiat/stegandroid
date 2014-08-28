@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.ErrorManager;
 
 import org.apache.commons.io.IOUtils;
 
@@ -39,7 +40,7 @@ public class EncodeProcess {
 	private InputStream _contentToHideStream;
 	private byte[]		_encryptedBytesForVideo;
 	private byte[]		_encryptedBytesForAudio;
-	private int _blockSize;
+	private int 		_blockSize;
 	
 	public EncodeProcess() {
 		_mp4MediaReader = null;
@@ -54,13 +55,13 @@ public class EncodeProcess {
 
 	public boolean encode(EncodeParameters parameters) {
 		Preferences prefs = Preferences.getInstance();
-		
+
 		if (!this.init(parameters) || !this.checkMemoryRequirementForOperation()) {
 			return false;
 		}
 
-		processContentWithCryptography(parameters, _encryptedBytesForVideo);			
-		processContentWithCryptography(parameters, _encryptedBytesForAudio);			
+		processContentWithCryptography(parameters, _encryptedBytesForVideo);
+		processContentWithCryptography(parameters, _encryptedBytesForAudio);
 		
 		if (prefs.getUseAudioChannel()) {
 			_aacSteganographyContainer.hideData(_encryptedBytesForAudio);
@@ -99,8 +100,11 @@ public class EncodeProcess {
 	private boolean initContentToHideStream(EncodeParameters parameters) {
 		boolean ret = true;
 		
+		long size = Utils.getFileSize(parameters.getFileToHidePath());
+		
 		if (parameters.isHidingText()) {
 			_contentToHideStream = new ByteArrayInputStream(parameters.getTextToHide().getBytes());
+			size = parameters.getTextToHide().getBytes().length;
 		} else {
 			try {
 				_contentToHideStream = new FileInputStream(parameters.getFileToHidePath());
@@ -110,6 +114,12 @@ public class EncodeProcess {
 				ret = false;
 			}
 		}
+		
+		if (size > Utils.MAX_BYTE_TO_HIDE) {
+			System.err.println("The content you want to hide is to big (30Mo max)");
+			ret = false;
+		}
+		
 		return ret;
 	}
 	
@@ -146,9 +156,12 @@ public class EncodeProcess {
 			return false;
 		}
 		
+		_h264SteganographyContainer.setFileStreamDirectory(parameters.getDestinationVideoDirectory());
+		_aacSteganographyContainer.setFileStreamDirectory(parameters.getDestinationVideoDirectory());
+		
 		if (!_h264SteganographyContainer.loadData(_mp4MediaReader) 
 				|| !_aacSteganographyContainer.loadData(_mp4MediaReader)) {
-			System.err.println("Unable to load channel from original MP4");
+			System.err.println("Unable to load channel(s) from original MP4");
 			return false;
 		}
 		
@@ -258,7 +271,13 @@ public class EncodeProcess {
 				audioSteganographyLength -= (audioSteganographyLength % _blockSize);
 			}
 		}
-		if (videoSteganographyLength + audioSteganographyLength < dataLength) {
+		
+		long maxContentToHide = videoSteganographyLength + audioSteganographyLength;
+		if (maxContentToHide < dataLength) {
+			String msg = "Not enough space in video to hide data with selected channel(s). You can hide a maximum of " + maxContentToHide + " bytes.";
+			if (maxContentToHide == 0)
+				msg += " Have you selected a channel in the settings ?";
+			System.err.println(msg);
 			System.err.println("[Encode process] Not enough space in video to hide data with selected channel(s)");
 			return false;
 		}
@@ -283,8 +302,7 @@ public class EncodeProcess {
 		if (_aacSteganographyContainer != null) {
 			_aacSteganographyContainer.writeRemainingSamples();
 		}
-		outputVideoName = Utils.getCurrentDateAndTime() + ".mp4";
-		outputVideoName = "output.mp4";
+		outputVideoName = "steg_" + Utils.getCurrentDateAndTime() + ".mp4";
 		
 		h264DataSource = _h264SteganographyContainer.getDataSource();
 		aacDataSource = _aacSteganographyContainer.getDataSource();

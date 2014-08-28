@@ -31,18 +31,18 @@ public class LSBEncode {
 	/**
 	 * Fill _to_hide var which contains every element we must hide
 	 */
-	private void constructToHide() {
+	public void constructToHide() {
 		byte[] one = Utils.intToByteArray(_to_hide_byte_length);
 		byte[] two = Utils.intToByteArray(_nbBitToHideInOneByte);
 		byte[] combined = new byte[one.length + two.length];
-		
+
 		System.arraycopy(one,0,combined,0         ,one.length);
 		System.arraycopy(two,0,combined,one.length,two.length);
 		
 		_to_hide = new byte[combined.length + _content.length];
 		System.arraycopy(combined,0,_to_hide,0         ,combined.length);
 		System.arraycopy(_content,0,_to_hide,combined.length,_content.length);
-		
+
 		// re compute the length
 		_to_hide_byte_length 	= _to_hide.length;
 		_to_hide_bit_length 	= _to_hide_byte_length * BYTE_SIZE;

@@ -20,6 +20,11 @@ public class AACSteganographyContainerLsb extends AACSteganographyContainer {
 	@Override
 	public void unHideData() {
 		LSBDecode decoder = new LSBDecode();
+		
+		if (_sampleList == null) {
+			return;
+		}
+		
 		for (Sample sample : _sampleList) {
 			byte[] frame = sampleToByteArray(sample);
 			

@@ -23,7 +23,7 @@ import com.stegandroid.mp4.StegandroidMemoryDataSourceImpl;
 
 public class H264SteganographyContainer implements ISteganographyContainer {
 
-	private final int MAX_SIZE_BUFFERING = 200000000; // 200 Mo
+	private final int MAX_SIZE_BUFFERING = 7000000; // 10 Mo
 	private final String FILE_STORAGE_NAME = "h264.tmp";
 
 	protected SeqParameterSetParser _seqParameterSetParser;
@@ -32,6 +32,7 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 	protected OutputStream _content;
 	protected DataSource _dataSource;
 	protected SampleList _sampleList;
+	protected String _fileStreamDirectory;
 	protected int _sampleLengthSize;
 	protected int _sampleListPosition;
 	protected int _subSampleIdx;
@@ -43,6 +44,7 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 		_content = null;
 		_dataSource = null;
 		_sampleList = null;
+		_fileStreamDirectory = null;
 		_sampleLengthSize = 0;
 		_sampleListPosition = 0;
 		_subSampleIdx = 0;
@@ -66,22 +68,25 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 			_subSampleIdx = 0;
 			_subSampleOffset = 0;
 			
-			this.addData(new byte[]{0, 0, 0, 1});
 			sps = mediaReader.getSequenceParameterSets();
-			this.addData(sps);			
-			naluParser = new NaluParser();
-			_seqParameterSetParser = new SeqParameterSetParser();
-			naluParser.parseNaluData(sps);
-			_seqParameterSetParser.parseSeqParameterSetData(naluParser.getRbsp());
+			if (sps != null && sps.length > 0) {
+				this.addData(new byte[]{0, 0, 0, 1});
+				this.addData(sps);
+				naluParser = new NaluParser();
+				_seqParameterSetParser = new SeqParameterSetParser();
+				naluParser.parseNaluData(sps);
+				_seqParameterSetParser.parseSeqParameterSetData(naluParser.getRbsp());
+			}
 
-			this.addData(new byte[]{0, 0, 0, 1});
 			pps = mediaReader.getPictureParameterSets();
-			this.addData(pps);
-			naluParser = new NaluParser();
-			_pictureParameterSetParser = new PictureParameterSetParser(_seqParameterSetParser);
-			naluParser.parseNaluData(pps);
-			_pictureParameterSetParser.parsePictureParameterSet(naluParser.getRbsp());
-			
+			if (pps != null && pps.length > 0) {
+				this.addData(new byte[]{0, 0, 0, 1});
+				this.addData(pps);
+				naluParser = new NaluParser();
+				_pictureParameterSetParser = new PictureParameterSetParser(_seqParameterSetParser);
+				naluParser.parseNaluData(pps);
+				_pictureParameterSetParser.parsePictureParameterSet(naluParser.getRbsp());
+			}
 			return true;
 		}
 		return false;
@@ -161,15 +166,23 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 					_content.close();
 					_content = null;
 					System.gc();
-					_dataSource = new FileDataSourceImpl(new File(FILE_STORAGE_NAME));
+					_dataSource = new FileDataSourceImpl(new File(_fileStreamDirectory + FILE_STORAGE_NAME));
 				} catch (FileNotFoundException e) {
-					e.printStackTrace();
+					System.err.println("[H264 Steganography container]: Unable to get data source: " +  e.getMessage());
 				} catch (IOException e) {
-					e.printStackTrace();
+					System.err.println("[H264 Steganography container]: Unable to get data source: " +  e.getMessage());
 				}
 			}
 		}
 		return _dataSource;
+	}
+	
+	public void setFileStreamDirectory(String directory) {
+		_fileStreamDirectory = directory;
+	}
+	
+	public String getFileStreamDirectory() {
+		return _fileStreamDirectory;
 	}
 	
 	// Specific methods
@@ -179,7 +192,7 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 			try {
 				_content.write(content);
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.err.println("[H264 Steganography container]: Unable to add data: " +  e.getMessage());
 			}
 		}
 	}
@@ -213,7 +226,7 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 				_dataSource.close();
 				_dataSource = null;
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.err.println("[H264 Steganography container]: Unable to clean data source: " +  e.getMessage());
 			}
 		}
 		System.gc();		
@@ -225,11 +238,11 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 				_content.close();
 				_content = null;
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.err.println("[H264 Steganography container]: Unable to clean content stream: " +  e.getMessage());
 			}
 		}
 		System.gc();
-		File file = new File(FILE_STORAGE_NAME);
+		File file = new File(_fileStreamDirectory + FILE_STORAGE_NAME);
 		file.delete();
 	}
 	
@@ -251,18 +264,18 @@ public class H264SteganographyContainer implements ISteganographyContainer {
 	private void switchOutputStreamToFile() {
 		if (_content != null && _content instanceof ByteArrayOutputStream
 				&& ((ByteArrayOutputStream)_content).size() >= MAX_SIZE_BUFFERING) {
-				FileOutputStream fos;
-				try {
-					fos = new FileOutputStream(new File(FILE_STORAGE_NAME));
-					((ByteArrayOutputStream)_content).writeTo(fos);
-					_content.close();
-					_content = null;
-					System.gc();
-					_content = fos;
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
+			FileOutputStream fos;
+			try {
+				fos = new FileOutputStream(new File(_fileStreamDirectory + FILE_STORAGE_NAME));
+				((ByteArrayOutputStream)_content).writeTo(fos);
+				_content.close();
+				_content = null;
+				System.gc();
+				_content = fos;
+			} catch (FileNotFoundException e) {
+				System.err.println("[H264 Steganography container]: Unable to switch content stream: " +  e.getMessage());
+			} catch (IOException e) {
+				System.err.println("[H264 Steganography container]: Unable to switch content stream: " +  e.getMessage());
 			}
 		}		
 	}

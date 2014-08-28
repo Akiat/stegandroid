@@ -21,24 +21,36 @@ public class LSBDecode {
 	/**
 	 * @param frame The frame which contains hidden data
 	 * @return null until all the content is not recover,
-	 * a byte array with the unhidden content otherwise
+	 * a byte array of length 0 if nothing is found,
+	 *  or a byte array with the unhidden content otherwise
 	 */
 	public byte[] decodeFrame(byte[] frame) {
-		if (_cursor > _to_unhide_bit_length) {
+		if (_cursor > _to_unhide_bit_length)
 			return _unhide_content;
-		}
 		
 		for (int i = 0; i < frame.length; i++) {
 			if (_get_int_cursor < INT_SIZE * 2) {
 				_intRepr += Utils.getBit(frame[i], 0);
 				_get_int_cursor++;
-				if (_get_int_cursor == INT_SIZE) {
-					_to_unhide_byte_length = Integer.parseInt(_intRepr, 2);
-					_to_unhide_bit_length = _to_unhide_byte_length * BYTE_SIZE;
-					_unhide_content = new byte[_to_unhide_byte_length];
-					_intRepr = "";
-				} else if (_get_int_cursor == INT_SIZE * 2) {
-					_nbBitToDecodeInOneByte = Integer.parseInt(_intRepr, 2);
+				try {
+					
+					if (_get_int_cursor == INT_SIZE) {
+						_to_unhide_byte_length = Integer.parseInt(_intRepr, 2);
+						_to_unhide_bit_length = _to_unhide_byte_length * BYTE_SIZE;
+						if (_to_unhide_byte_length > Utils.MAX_BYTE_TO_HIDE)
+							return new byte[0];
+						_unhide_content = new byte[_to_unhide_byte_length];
+						_intRepr = "";
+					} else if (_get_int_cursor == INT_SIZE * 2) {
+						_nbBitToDecodeInOneByte = Integer.parseInt(_intRepr, 2);
+						// The nb of bit to hide in one byte is limited to 4
+						// If its > 4, there is a problem
+						if (_nbBitToDecodeInOneByte > 4)
+							return new byte[0];
+					}
+					
+				} catch (NumberFormatException e) {
+					return new byte[0];
 				}
 			} else {
 				for (int j = 0; j < _nbBitToDecodeInOneByte; j++) {
