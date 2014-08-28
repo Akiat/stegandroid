@@ -27,8 +27,8 @@
 
 	<string name="empty_string"></string>
 	<string name="encode_video_string">Encode a video</string>
-	<string name="enter_key_encrypt_string">Enter key for encrypt data</string>
-	<string name="enter_key_decrypt_string">Enter key for decrypt data</string>
+	<string name="enter_key_encrypt_string">Enter key to encrypt data</string>
+	<string name="enter_key_decrypt_string">Enter key to decrypt data</string>
   	<string name="enter_file_extension_string">Enter file extension</string>
 	<string name="enter_text_hide_string">Enter here the text to hide</string>
 			
