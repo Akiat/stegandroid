@@ -156,6 +156,9 @@ public class EncodeProcess {
 			return false;
 		}
 		
+		_h264SteganographyContainer.setFileStreamDirectory(parameters.getDestinationVideoDirectory());
+		_aacSteganographyContainer.setFileStreamDirectory(parameters.getDestinationVideoDirectory());
+		
 		if (!_h264SteganographyContainer.loadData(_mp4MediaReader) 
 				|| !_aacSteganographyContainer.loadData(_mp4MediaReader)) {
 			ErrorManager.getInstance().addErrorMessage("Unable to load channel(s) from original MP4");
