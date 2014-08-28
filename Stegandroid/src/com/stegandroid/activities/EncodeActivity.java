@@ -260,7 +260,7 @@ public class EncodeActivity extends Activity{
 	}
 	
 	private void process() {
-		_progressDialog = ProgressDialog.show(this, "Loading", "Stegandroid hiding your data...");
+		_progressDialog = ProgressDialog.show(this, "Loading", "Stegandroid is hiding your data...");
 		
 		new Thread(new Runnable() {
 			public void run() {
