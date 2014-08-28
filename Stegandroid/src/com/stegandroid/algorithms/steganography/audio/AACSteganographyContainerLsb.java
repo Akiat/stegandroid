@@ -70,7 +70,7 @@ public class AACSteganographyContainerLsb extends AACSteganographyContainer {
 			}
 		}
 
-		ret -= 8; // The header of LSBEncode/LSBDecode (size + nbBitsHideInOneByte)
+		ret -= (8 * sizeNeededToHideOneByte); // The header of LSBEncode/LSBDecode (size + nbBitsHideInOneByte)
 		ret /= Math.floor(sizeNeededToHideOneByte);
 		return ret;
 	}

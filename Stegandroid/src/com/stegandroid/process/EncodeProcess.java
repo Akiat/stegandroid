@@ -224,6 +224,8 @@ public class EncodeProcess {
 		for (int i = 0; i < dataToHide.length; ++i) {
 			if (list.get(indexList).getFirst().size() < list.get(indexList).getSecond()) {
 				list.get(indexList).getFirst().write(dataToHide[i]);
+			} else {
+				--i;
 			}
 			indexList++;
 			if (indexList >= list.size()) {
